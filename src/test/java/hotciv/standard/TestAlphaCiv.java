@@ -160,4 +160,15 @@ public class TestAlphaCiv {
   }
 
 
+  @Test
+  public void shouldMoveUnitOneTileHorizontal(){
+    Position startPos = new Position(2, 0);
+    Position endPos = new Position(2, 1);
+    assertThat(game.getUnitAt(startPos).getTypeString(), is("archer"));
+    game.moveUnit(startPos, endPos);
+    assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
+  }
+
+
+
 }

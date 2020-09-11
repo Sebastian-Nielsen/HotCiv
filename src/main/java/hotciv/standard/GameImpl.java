@@ -41,6 +41,8 @@ public class GameImpl implements Game {
   public Player getWinner() { if (age < -3000) return null; else return RED; }
   public int getAge() { return age; }
   public boolean moveUnit( Position from, Position to ) {
+    Unit unit = posToUnits.remove(from);
+    posToUnits.put(to, unit);
     return false;
   }
 
