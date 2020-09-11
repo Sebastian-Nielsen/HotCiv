@@ -29,6 +29,7 @@ public class GameImpl implements Game {
     // Initialize units
     posToUnits.put(new Position(2, 0), new UnitImpl("archer", RED));
     posToUnits.put(new Position(3, 2), new UnitImpl("legion", BLUE));
+    posToUnits.put(new Position(4, 3), new UnitImpl("settler", RED));
   }
 
   public Tile getTileAt(Position p) {

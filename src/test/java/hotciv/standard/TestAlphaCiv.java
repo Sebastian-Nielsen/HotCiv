@@ -64,6 +64,12 @@ public class TestAlphaCiv {
   }
 
   @Test
+  public void shouldBeRedSettlerAtPos4_3() {
+    assertThat(game.getUnitAt(new Position(4, 3)).getTypeString(), is("settler"));
+    assertThat(game.getUnitAt(new Position(4, 3)).getOwner(), is(Player.RED));
+  }
+
+  @Test
   public void shouldAlwaysBeBlueAfterRed() {
     // It's red's turn
     game.endOfTurn(); // Red ends his turn
