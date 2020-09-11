@@ -169,6 +169,22 @@ public class TestAlphaCiv {
     assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
   }
 
+  @Test
+  public void shouldMoveUnitOneTileVertical(){
+    Position startPos = new Position(2, 0);
+    Position endPos = new Position(3, 0);
+    assertThat(game.getUnitAt(startPos).getTypeString(), is("archer"));
+    game.moveUnit(startPos, endPos);
+    assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
+  }
 
+  @Test
+  public void shouldMoveUnitOneTileDiagonal(){
+    Position startPos = new Position(2, 0);
+    Position endPos = new Position(3, 1);
+    assertThat(game.getUnitAt(startPos).getTypeString(), is("archer"));
+    game.moveUnit(startPos, endPos);
+    assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
+  }
 
 }
