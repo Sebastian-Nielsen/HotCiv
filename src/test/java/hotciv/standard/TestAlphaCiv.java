@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
@@ -186,5 +187,26 @@ public class TestAlphaCiv {
     game.moveUnit(startPos, endPos);
     assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
   }
+
+  @Test
+  public void unitCanOnlyMoveOncePrRound(){
+    // Positions
+    Position startPos = new Position(2, 0);
+    Position endPos = new Position(3, 1);
+    // Red archer is at 2, 0
+    assertThat(game.getUnitAt(startPos).getTypeString(), is("archer"));
+    // Unit moves and method returns true
+    assertTrue(game.moveUnit(startPos, endPos));
+    // Unit has moved
+    assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
+    // Unit cannot be moved again so method returns false
+    assertFalse(game.moveUnit(endPos, new Position(4, 1)));
+  }
+
+  @Test
+  private void unitShouldOnlyMoveOneTile(){
+
+  }
+
 
 }

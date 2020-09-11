@@ -13,9 +13,10 @@ import static hotciv.framework.Player.*;
 public class GameImpl implements Game {
   private Player playerInTurn = RED;
   private int age = -4000;
-  private Map<Position, City> posToCity = new HashMap<>();
-  private Map<Position, Tile> posToTiles = new HashMap<>();
-  private Map<Position, Unit> posToUnits = new HashMap<>();
+  private final Map<Position, City> posToCity = new HashMap<>();
+  private final Map<Position, Tile> posToTiles = new HashMap<>();
+  private final Map<Position, Unit> posToUnits = new HashMap<>();
+  private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
 
   /* Accessor methods */
   public GameImpl() {
@@ -27,9 +28,17 @@ public class GameImpl implements Game {
     posToTiles.put(new Position(0, 1), new TileImpl("hill"));
     posToTiles.put(new Position(2, 2), new TileImpl("mountain"));
     // Initialize units
-    posToUnits.put(new Position(2, 0), new UnitImpl("archer", RED));
-    posToUnits.put(new Position(3, 2), new UnitImpl("legion", BLUE));
-    posToUnits.put(new Position(4, 3), new UnitImpl("settler", RED));
+    Unit redArcher = new UnitImpl("archer", RED);
+    Unit blueLegion = new UnitImpl("legion", BLUE);
+    Unit redSettler = new UnitImpl("settler", RED);
+    // Initialize units' positions
+    posToUnits.put(new Position(2, 0), redArcher);
+    posToUnits.put(new Position(3, 2), blueLegion);
+    posToUnits.put(new Position(4, 3), redSettler);
+    // Initialize units' moves left
+    unitToMovesLeft.put(redArcher, redArcher.getMoveCount());
+    unitToMovesLeft.put(blueLegion, blueLegion.getMoveCount());
+    unitToMovesLeft.put(redSettler, redSettler.getMoveCount());
   }
 
   public Tile getTileAt(Position p) {
@@ -43,6 +52,10 @@ public class GameImpl implements Game {
   public boolean moveUnit( Position from, Position to ) {
     Unit unit = posToUnits.remove(from);
     posToUnits.put(to, unit);
+    if (unitToMovesLeft.getOrDefault(unit, 0) > 0){
+      unitToMovesLeft.put(unit, 0);
+      return true;
+    }
     return false;
   }
 
