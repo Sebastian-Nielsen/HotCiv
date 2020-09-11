@@ -50,13 +50,24 @@ public class GameImpl implements Game {
   public Player getWinner() { if (age < -3000) return null; else return RED; }
   public int getAge() { return age; }
   public boolean moveUnit( Position from, Position to ) {
-    Unit unit = posToUnits.remove(from);
-    posToUnits.put(to, unit);
-    if (unitToMovesLeft.getOrDefault(unit, 0) > 0){
+    Unit unit = posToUnits.get(from);
+    // If unit has more than 0 moves left
+    if (unitToMovesLeft.get(unit) >= calcDistance(from, to)){
+      // Update units position
+      posToUnits.remove(from);
+      posToUnits.put(to, unit);
+      // Update moves left
       unitToMovesLeft.put(unit, 0);
       return true;
     }
     return false;
+  }
+
+
+
+  private int calcDistance(Position from, Position to) {
+    return Math.max(Math.abs(from.getColumn() - to.getColumn()),
+                    Math.abs(from.getRow() - to.getRow()));
   }
 
   /* Mutator methods */
@@ -65,7 +76,10 @@ public class GameImpl implements Game {
     setAge(getAge() + 100);
     // Increment production by 6 in all cities
     posToCity.values().forEach(c -> c.setTreasury(c.getTreasury() + 6));
-
+    // Reset moves left
+    for (Unit p : posToUnits.values()){
+      unitToMovesLeft.put(p, p.getMoveCount());
+    }
   }
 
   public void endOfTurn() {

@@ -200,12 +200,21 @@ public class TestAlphaCiv {
     // Unit has moved
     assertThat(game.getUnitAt(endPos).getTypeString(), is("archer"));
     // Unit cannot be moved again so method returns false
-    assertFalse(game.moveUnit(endPos, new Position(4, 1)));
+    Position newEndPos = new Position(4, 1);
+    assertFalse(game.moveUnit(endPos, newEndPos));
+    // End the round
+    endRound();
+    // The unit should now be able to move
+    assertTrue(game.moveUnit(endPos, newEndPos));
   }
 
   @Test
-  private void unitShouldOnlyMoveOneTile(){
-
+  public void unitShouldOnlyMoveOneTilePrMove(){
+    // Positions
+    Position startPos = new Position(2, 0);
+    Position endPos = new Position(4, 0);
+    // Move unit 2 tiles
+    assertFalse(game.moveUnit(startPos, endPos));
   }
 
 
