@@ -106,7 +106,11 @@ public class TestAlphaCiv {
 
   @Test
   public void redShouldWinGameAt3000BC(){
-    game.setAge(-3000);
+    // End round 10 times (= we advance 1000 years)
+    for (int i=0; i<10; i++)
+      endRound();
+
+    assertThat(game.getAge(), is(-4000 + 10*100)); // = -3000
     assertThat(game.getWinner(), is(Player.RED));
   }
 
