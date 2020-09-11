@@ -36,9 +36,15 @@ public class TestAlphaCiv {
   }
 
   @Test
+  public void hillTileAtPos0_1() {
+    assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is("hill"));
+  }
+
+  @Test
   public void mountainTileAtPos2_2() {
     assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountain"));
   }
+
 
   @Test
   public void shouldAlwaysBeBlueAfterRed() {

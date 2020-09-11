@@ -23,6 +23,7 @@ public class GameImpl implements Game {
     posToCity.put(new Position(4, 1), new CityImpl(Player.BLUE));
     // Initialize tiles
     posToTiles.put(new Position(1, 0), new TileImpl("ocean"));
+    posToTiles.put(new Position(0, 1), new TileImpl("hill"));
     posToTiles.put(new Position(2, 2), new TileImpl("mountain"));
   }
 
