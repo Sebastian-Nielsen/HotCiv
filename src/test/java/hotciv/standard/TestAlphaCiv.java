@@ -45,6 +45,12 @@ public class TestAlphaCiv {
     assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountain"));
   }
 
+  @Test
+  public void defaultTileShouldBePlains() {
+    assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is("plains"));
+    assertThat(game.getTileAt(new Position(5, 5)).getTypeString(), is("plains"));
+  }
+
 
   @Test
   public void shouldAlwaysBeBlueAfterRed() {
