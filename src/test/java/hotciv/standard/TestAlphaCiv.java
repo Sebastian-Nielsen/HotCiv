@@ -57,6 +57,11 @@ public class TestAlphaCiv {
     assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(Player.RED));
   }
 
+  @Test
+  public void shouldBeBlueLegionAtPos3_2() {
+    assertThat(game.getUnitAt(new Position(3, 2)).getTypeString(), is("legion"));
+    assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(Player.BLUE));
+  }
 
   @Test
   public void shouldAlwaysBeBlueAfterRed() {

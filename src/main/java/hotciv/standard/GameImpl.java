@@ -15,47 +15,26 @@ public class GameImpl implements Game {
   private int age = -4000;
   private Map<Position, City> posToCity = new HashMap<>();
   private Map<Position, Tile> posToTiles = new HashMap<>();
+  private Map<Position, Unit> posToUnits = new HashMap<>();
 
   /* Accessor methods */
   public GameImpl() {
     // Initialize cities
-    posToCity.put(new Position(1, 1), new CityImpl(Player.RED));
-    posToCity.put(new Position(4, 1), new CityImpl(Player.BLUE));
+    posToCity.put(new Position(1, 1), new CityImpl(RED));
+    posToCity.put(new Position(4, 1), new CityImpl(BLUE));
     // Initialize tiles
     posToTiles.put(new Position(1, 0), new TileImpl("ocean"));
     posToTiles.put(new Position(0, 1), new TileImpl("hill"));
     posToTiles.put(new Position(2, 2), new TileImpl("mountain"));
+    // Initialize units
+    posToUnits.put(new Position(2, 0), new UnitImpl("archer", RED));
+    posToUnits.put(new Position(3, 2), new UnitImpl("legion", BLUE));
   }
 
   public Tile getTileAt(Position p) {
     return posToTiles.getOrDefault(p, new TileImpl("plains"));
   }
-  public Unit getUnitAt( Position p ) { return new Unit() {
-    @Override
-    public String getTypeString() {
-      return "archer";
-    }
-
-    @Override
-    public Player getOwner() {
-      return Player.RED;
-    }
-
-    @Override
-    public int getMoveCount() {
-      return 0;
-    }
-
-    @Override
-    public int getDefensiveStrength() {
-      return 0;
-    }
-
-    @Override
-    public int getAttackingStrength() {
-      return 0;
-    }
-  }; }
+  public Unit getUnitAt( Position p ) { return posToUnits.getOrDefault(p, null); }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
   public Player getPlayerInTurn() { return playerInTurn; }
   public Player getWinner() { if (age < -3000) return null; else return RED; }
