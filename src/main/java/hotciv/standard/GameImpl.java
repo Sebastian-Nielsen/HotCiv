@@ -22,7 +22,14 @@ public class GameImpl implements Game {
     posToCity.put(new Position(4, 1), new CityImpl(Player.BLUE));
   }
 
-  public Tile getTileAt( Position p ) { return null; }
+  public Tile getTileAt(Position p) {
+    return new Tile() {
+      @Override
+      public String getTypeString() {
+        return "ocean";
+      }
+    };
+  }
   public Unit getUnitAt( Position p ) { return null; }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
   public Player getPlayerInTurn() { return playerInTurn; }

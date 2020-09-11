@@ -30,7 +30,10 @@ public class TestAlphaCiv {
      assertThat(game.getPlayerInTurn(), is(Player.RED));
   }
 
-
+  @Test
+  public void oceanTileAtPos0_1() {
+    assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is("ocean"));
+  }
 
   @Test
   public void shouldAlwaysBeBlueAfterRed() {
