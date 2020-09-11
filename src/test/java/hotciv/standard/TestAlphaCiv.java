@@ -30,23 +30,29 @@ public class TestAlphaCiv {
      assertThat(game.getPlayerInTurn(), is(Player.RED));
   }
 
+
+
   @Test
-  public void shouldAlwaysBeRedThenBlueThenYellowThenGreenThenRed() {
+  public void shouldAlwaysBeBlueAfterRed() {
     // It's red's turn
     game.endOfTurn(); // Red ends his turn
-    // It's blue's turn
     assertThat(game.getPlayerInTurn(), is(Player.BLUE));
-
     game.endOfTurn(); // Blue ends his turn
-    // It's yellow's turn
-    assertThat(game.getPlayerInTurn(), is(Player.YELLOW));
+    // It's red's turn
+    game.endOfTurn(); // Red ends his turn
+    assertThat(game.getPlayerInTurn(), is(Player.BLUE));
+  }
 
-    game.endOfTurn(); // Yellow ends his turn
-    // It's Green's turn
-    assertThat(game.getPlayerInTurn(), is(Player.GREEN));
 
-    game.endOfTurn(); // Green ends his turn
-    // It's Red's turn
+  @Test
+  public void shouldAlwaysBeRedAfterBlue() {
+    // It's red's turn
+    game.endOfTurn(); // Red ends his turn
+    game.endOfTurn(); // Blue ends his turn
+    assertThat(game.getPlayerInTurn(), is(Player.RED));
+    game.endOfTurn(); // Red ends his turn
+    assertThat(game.getPlayerInTurn(), is(Player.BLUE));
+    game.endOfTurn(); // Blue ends his turn
     assertThat(game.getPlayerInTurn(), is(Player.RED));
   }
 
@@ -74,8 +80,6 @@ public class TestAlphaCiv {
   private void endRound() {
     game.endOfTurn(); // End red's turn
     game.endOfTurn(); // End blue's turn
-    game.endOfTurn(); // End yellow's turn
-    game.endOfTurn(); // End green's turn
   }
 
   @Test
@@ -96,10 +100,7 @@ public class TestAlphaCiv {
 
   @Test
   public void shouldIncrementYearBy100EachRound(){
-    game.endOfTurn(); // Red ends his turn
-    game.endOfTurn(); // Blue ends his turn
-    game.endOfTurn(); // Yellow ends his turn
-    game.endOfTurn(); // Green ends his turn
+    endRound();
     assertThat(game.getAge(), is(-4000 + 100));
   }
 

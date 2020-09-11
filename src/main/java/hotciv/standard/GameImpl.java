@@ -44,9 +44,7 @@ public class GameImpl implements Game {
   public void endOfTurn() {
     switch (playerInTurn) {
       case RED:    playerInTurn = BLUE; break;
-      case BLUE:   playerInTurn = YELLOW; break;
-      case YELLOW: playerInTurn = GREEN; break;
-      case GREEN:  playerInTurn = RED; endOfRoundEffects(); break;
+      case BLUE:   playerInTurn = RED; endOfRoundEffects(); break;
     }
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
