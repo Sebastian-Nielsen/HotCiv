@@ -14,21 +14,20 @@ public class GameImpl implements Game {
   private Player playerInTurn = RED;
   private int age = -4000;
   private Map<Position, City> posToCity = new HashMap<>();
+  private Map<Position, Tile> posToTiles = new HashMap<>();
 
   /* Accessor methods */
   public GameImpl() {
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(Player.RED));
     posToCity.put(new Position(4, 1), new CityImpl(Player.BLUE));
+    // Initialize tiles
+    posToTiles.put(new Position(1, 0), new TileImpl("ocean"));
+    posToTiles.put(new Position(2, 2), new TileImpl("mountain"));
   }
 
   public Tile getTileAt(Position p) {
-    return new Tile() {
-      @Override
-      public String getTypeString() {
-        return "ocean";
-      }
-    };
+    return posToTiles.getOrDefault(p, new TileImpl("plains"));
   }
   public Unit getUnitAt( Position p ) { return null; }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }

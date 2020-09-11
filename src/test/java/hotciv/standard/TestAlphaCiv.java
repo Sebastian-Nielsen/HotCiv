@@ -31,8 +31,13 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void oceanTileAtPos0_1() {
-    assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is("ocean"));
+  public void oceanTileAtPos1_0() {
+    assertThat(game.getTileAt(new Position(1,0)).getTypeString(), is("ocean"));
+  }
+
+  @Test
+  public void mountainTileAtPos2_2() {
+    assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountain"));
   }
 
   @Test
