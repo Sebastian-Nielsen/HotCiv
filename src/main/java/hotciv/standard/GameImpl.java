@@ -16,6 +16,12 @@ public class GameImpl implements Game {
   private Map<Position, City> posToCity = new HashMap<>();
 
   /* Accessor methods */
+  public GameImpl() {
+    // Initialize cities
+    posToCity.put(new Position(1, 1), new CityImpl(Player.RED));
+    posToCity.put(new Position(4, 1), new CityImpl(Player.BLUE));
+  }
+
   public Tile getTileAt( Position p ) { return null; }
   public Unit getUnitAt( Position p ) { return null; }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
@@ -27,11 +33,6 @@ public class GameImpl implements Game {
   }
 
   /* Mutator methods */
-  public City addCity(Position pos, City city) {
-    posToCity.put(pos, city);
-    return city;
-  }
-
   private void endOfRoundEffects() {
     // Increment age by 100 years
     setAge(getAge() + 100);

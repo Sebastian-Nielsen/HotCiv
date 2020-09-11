@@ -50,14 +50,6 @@ public interface Game {
     
   // === Mutator methods ======================================
 
-  /**
-   * Associate the given positition to the given city
-   * @param pos  The position of the city
-   * @param city The city to associate to the position
-   * @return The city being added
-   */
-  public City addCity(Position pos, City city);
-
   /** move a unit from one position to another. If that other position
    * is occupied by an opponent unit, a battle is conducted leading to
    * either victory or defeat. If victorious then the opponent unit is

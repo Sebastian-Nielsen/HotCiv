@@ -20,9 +20,8 @@ public class TestAlphaCiv {
   @BeforeEach
   public void setUp() {
     game = new GameImpl();
-    redCity  = game.addCity(new Position(1, 1), new CityImpl(Player.RED));
-    blueCity = game.addCity(new Position(4, 1), new CityImpl(Player.BLUE));
-
+    redCity = game.getCityAt(new Position(1, 1));
+    blueCity = game.getCityAt(new Position(4, 1));
   }
 
   // FRS p. 455 states that 'Red is the first player to take a turn'.
@@ -119,36 +118,4 @@ public class TestAlphaCiv {
   }
 
 
-
-
-
-
-
-
-
-  /** REMOVE ME. Not a test of HotCiv, just an example of the
-      matchers that the hamcrest library has... */
-  @Test
-  public void shouldDefinetelyBeRemoved() {
-    // Matching null and not null values
-    // 'is' require an exact match
-    String s = null;
-    assertThat(s, is(nullValue()));
-    s = "Ok";
-    assertThat(s, is(notNullValue()));
-    assertThat(s, is("Ok"));
-
-    // If you only validate substrings, use containsString
-    assertThat("This is a dummy test", containsString("dummy"));
-
-    // Match contents of Lists
-    List<String> l = new ArrayList<String>();
-    l.add("Bimse");
-    l.add("Bumse");
-    // Note - ordering is ignored when matching using hasItems
-    assertThat(l, hasItems(new String[] {"Bumse","Bimse"}));
-
-    // Matchers may be combined, like is-not
-    assertThat(l.get(0), is(not("Bumse")));
-  }
 }
