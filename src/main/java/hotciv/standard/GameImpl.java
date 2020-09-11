@@ -30,7 +30,32 @@ public class GameImpl implements Game {
   public Tile getTileAt(Position p) {
     return posToTiles.getOrDefault(p, new TileImpl("plains"));
   }
-  public Unit getUnitAt( Position p ) { return null; }
+  public Unit getUnitAt( Position p ) { return new Unit() {
+    @Override
+    public String getTypeString() {
+      return "archer";
+    }
+
+    @Override
+    public Player getOwner() {
+      return Player.RED;
+    }
+
+    @Override
+    public int getMoveCount() {
+      return 0;
+    }
+
+    @Override
+    public int getDefensiveStrength() {
+      return 0;
+    }
+
+    @Override
+    public int getAttackingStrength() {
+      return 0;
+    }
+  }; }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
   public Player getPlayerInTurn() { return playerInTurn; }
   public Player getWinner() { if (age < -3000) return null; else return RED; }

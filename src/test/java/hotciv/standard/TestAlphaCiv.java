@@ -51,6 +51,12 @@ public class TestAlphaCiv {
     assertThat(game.getTileAt(new Position(5, 5)).getTypeString(), is("plains"));
   }
 
+  @Test
+  public void shouldBeRedArcherAtPos2_0() {
+    assertThat(game.getUnitAt(new Position(2, 0)).getTypeString(), is("archer"));
+    assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(Player.RED));
+  }
+
 
   @Test
   public void shouldAlwaysBeBlueAfterRed() {
