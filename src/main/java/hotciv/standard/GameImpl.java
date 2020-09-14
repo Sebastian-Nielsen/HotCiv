@@ -61,19 +61,21 @@ public class GameImpl implements Game {
     Unit fromUnit = posToUnits.get(from);
 
     // If unit has less than 0 moves left
-    if (unitToMovesLeft.get(fromUnit) < calcDistance(from, to)) {
+    if (unitToMovesLeft.get(fromUnit) < calcDistance(from, to))
       return false;
-    }
+
     // If Unit at to-position is an ally-unit
     if (getUnitAt(to) != null &&
-        getUnitAt(to).getOwner() == fromUnit.getOwner()) {
+        getUnitAt(to).getOwner() == fromUnit.getOwner())
       return false;
-    }
-    // Units cannot move to "mountain" tile
-    if (getTileAt(to).getTypeString().equals("mountain")) {
-      return false;
-    }
 
+    // Units cannot move to "mountain" tile
+    if (getTileAt(to).getTypeString().equals("mountain"))
+      return false;
+
+    // A player cannot move other player's units
+    if (fromUnit.getOwner() != playerInTurn)
+      return false;
 
     return true;
   }

@@ -248,4 +248,15 @@ public class TestAlphaCiv {
     );
   }
 
+  @Test
+  public void redCannotMoveBluesUnit() {
+    Position fromPos = new Position(3, 2);
+    Position toPos = new Position(3, 3);
+
+    Unit blueLegion = game.getUnitAt(fromPos);
+
+    // It's red's turn; therefore he cannot move the blue unit
+    assertFalse(game.moveUnit(fromPos, toPos));
+  }
+
 }
