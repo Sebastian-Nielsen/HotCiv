@@ -69,6 +69,11 @@ public class GameImpl implements Game {
         getUnitAt(to).getOwner() == fromUnit.getOwner()) {
       return false;
     }
+    // Units cannot move to "mountain" tile
+    if (getTileAt(to).getTypeString().equals("mountain")) {
+      return false;
+    }
+
 
     return true;
   }

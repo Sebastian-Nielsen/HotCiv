@@ -217,5 +217,35 @@ public class TestAlphaCiv {
     assertFalse(game.moveUnit(startPos, endPos));
   }
 
+  @Test
+  public void unitCannotMoveToTileOccupiedByAllyUnit() {
+    Position fromPos = new Position(2, 0);
+
+    Unit redArcher = game.getUnitAt(fromPos);
+
+    game.moveUnit(fromPos, new Position(3, 1));
+    endRound();
+
+    game.moveUnit(new Position(3, 1), new Position(4, 2));
+    endRound();
+
+    assertFalse(
+            game.moveUnit(new Position(4, 2), new Position(4, 3))
+    );
+  }
+
+  @Test
+  public void unitCannotMoveOverMountainTile() {
+    Position fromPos = new Position(2, 0);
+
+    Unit redArcher = game.getUnitAt(fromPos);
+
+    game.moveUnit(fromPos, new Position(2, 1));
+    endRound();
+
+    assertFalse(
+            game.moveUnit(new Position(2, 1), new Position(2, 2))
+    );
+  }
 
 }
