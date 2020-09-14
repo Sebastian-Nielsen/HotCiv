@@ -4,6 +4,7 @@ import hotciv.framework.*;
 
 import org.junit.jupiter.api.*;
 
+import static hotciv.framework.GameConstants.ARCHER;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -281,6 +282,29 @@ public class TestAlphaCiv {
     assertThat(
             "Red should destroy and move to the to-position",
             game.getUnitAt(new Position(3, 2)), is(redArcher)
+    );
+  }
+
+  @Test
+  public void redProducesAnArcherFor10Production() {
+    assertThat(
+            "By default the production focus is on 'archer'",
+            redCity.getProduction(), is("archer")
+    );
+
+    // Treasury is 0 to begin
+    endRound(); // Treasury should increase by 6
+    // Treasury is 6
+    endRound(); // Treasury should increase by 6
+    // Treasury is 12
+
+    assertThat(
+            "The cost of the archer (10) is deducted from the treasury",
+            redCity.getTreasury(), is(12 - 10)
+    );
+    assertThat(
+            "An archer should spawn at the city's location",
+            game.getUnitAt(new Position(1, 1)).getTypeString(), is("archer")
     );
   }
 

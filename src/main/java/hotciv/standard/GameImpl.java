@@ -5,6 +5,7 @@ import hotciv.framework.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.*;
 
 /** Skeleton implementation of HotCiv.
@@ -110,20 +111,65 @@ public class GameImpl implements Game {
 
   /* Mutator methods */
   private void endOfRoundEffects() {
-    // Increment age by 100 years
+    /* Increment age by 100 years ***********************/
     setAge(getAge() + 100);
-    // Increment production by 6 in all cities
-    posToCity.values().forEach(c -> c.setTreasury(c.getTreasury() + 6));
-    // Reset moves left
+    /* Increment production by 6 in all cities **********/
+    posToCity.values().forEach(c -> {
+      CityImpl cityImpl = (CityImpl) c;
+      cityImpl.setTreasury(cityImpl.getTreasury() + 6);
+    });
+    /* Reset moves left *********************************/
     for (Unit p : posToUnits.values()){
       unitToMovesLeft.put(p, p.getMoveCount());
     }
+
+    for (Map.Entry<Position, City> entry : posToCity.entrySet()) {
+        Position spawnPos = entry.getKey();
+        CityImpl city = (CityImpl) entry.getValue();
+
+        // Get unit-cost
+        int unitCost = getCostOfUnit(city.getProduction());
+
+        // If the city has accumulated enough treasury
+        if (city.getTreasury() >= unitCost) {
+          // Spawn unit
+          spawnUnitAtPos(spawnPos);
+          // Deduct unit cost
+          city.setTreasury(city.getTreasury() - unitCost);
+        }
+    }
+  }
+
+  /**
+   * Spawns a unit at the given position
+   * @param pos Position to spawn unit at
+   */
+  private void spawnUnitAtPos(Position pos) {
+    CityImpl city = (CityImpl) posToCity.get(pos);
+    posToUnits.put(
+            pos,
+            new UnitImpl(city.getProduction(), city.getOwner())
+    );
+  }
+
+  private int getCostOfUnit(String unitType) {
+    switch (unitType) {
+      case ARCHER: return ARCHER_COST;
+      case LEGION: return LEGION_COST;
+      case SETTLER: return SETTLER_COST;
+    }
+    throw new RuntimeException("Unrecognized unitType " + unitType);
   }
 
   public void endOfTurn() {
     switch (playerInTurn) {
-      case RED:    playerInTurn = BLUE; break;
-      case BLUE:   playerInTurn = RED; endOfRoundEffects(); break;
+      case RED:
+        playerInTurn = BLUE;
+        break;
+      case BLUE:
+        playerInTurn = RED;
+        endOfRoundEffects();
+        break;
     }
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}

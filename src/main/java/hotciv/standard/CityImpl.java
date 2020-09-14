@@ -15,25 +15,17 @@ public class CityImpl implements City {
         return owner;
     }
 
-    ;
-
     public int getSize() {
         return 1;
     }
-
-    ;
 
     public int getTreasury() {
         return treasury;
     }
 
-    ;
-
     public String getProduction() {
-        return null;
+        return "archer";
     }
-
-    ;
 
     public String getWorkforceFocus() {
         return null;
@@ -42,7 +34,5 @@ public class CityImpl implements City {
     public void setTreasury(int p) {
         treasury = p;
     }
-
-    ;
 
 }
