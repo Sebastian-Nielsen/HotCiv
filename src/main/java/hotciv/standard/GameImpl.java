@@ -49,18 +49,43 @@ public class GameImpl implements Game {
   public Player getPlayerInTurn() { return playerInTurn; }
   public Player getWinner() { if (age < -3000) return null; else return RED; }
   public int getAge() { return age; }
+
+  /**
+   * Checks whether the unit-move is valid
+   * precondition: A unit is positioned at the from-position
+   * @param from from-position where the unit is positioned
+   * @param to   to-position
+   * @return whether the move is valid
+   */
+  private boolean isValidUnitMove( Position from, Position to ) {
+    Unit fromUnit = posToUnits.get(from);
+
+    // If unit has less than 0 moves left
+    if (unitToMovesLeft.get(fromUnit) < calcDistance(from, to)) {
+      return false;
+    }
+    // If Unit at to-position is an ally-unit
+    if (getUnitAt(to) != null &&
+        getUnitAt(to).getOwner() == fromUnit.getOwner()) {
+      return false;
+    }
+
+    return true;
+  }
+
   public boolean moveUnit( Position from, Position to ) {
     Unit unit = posToUnits.get(from);
-    // If unit has more than 0 moves left
-    if (unitToMovesLeft.get(unit) >= calcDistance(from, to)){
-      // Update units position
-      posToUnits.remove(from);
-      posToUnits.put(to, unit);
-      // Update moves left
-      unitToMovesLeft.put(unit, 0);
-      return true;
-    }
-    return false;
+
+    // If the move isn't valid return false
+    if (!isValidUnitMove(from, to))
+      return false;
+
+    // Update unit's position
+    posToUnits.remove(from);
+    posToUnits.put(to, unit);
+    // Update moves left
+    unitToMovesLeft.put(unit, 0);
+    return true;
   }
 
 
