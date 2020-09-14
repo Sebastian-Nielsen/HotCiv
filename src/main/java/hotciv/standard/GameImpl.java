@@ -87,11 +87,17 @@ public class GameImpl implements Game {
     if (!isValidUnitMove(from, to))
       return false;
 
+      /* Update the move left count of units */
+    // The unit is destroyed so remove it from the Map
+    unitToMovesLeft.remove(getUnitAt(to));
+    // Update moves left
+    unitToMovesLeft.put(unit, 0);
+
+       /* Move the unit */
     // Update unit's position
     posToUnits.remove(from);
     posToUnits.put(to, unit);
-    // Update moves left
-    unitToMovesLeft.put(unit, 0);
+
     return true;
   }
 

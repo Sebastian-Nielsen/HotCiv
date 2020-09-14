@@ -255,8 +255,33 @@ public class TestAlphaCiv {
 
     Unit blueLegion = game.getUnitAt(fromPos);
 
-    // It's red's turn; therefore he cannot move the blue unit
-    assertFalse(game.moveUnit(fromPos, toPos));
+    assertFalse(
+            game.moveUnit(fromPos, toPos),
+            "It's red's turn; therefore he cannot move the blue unit"
+    );
+  }
+
+  @Test
+  public void redShouldAttackAndDestroyBluesUnit() {
+    Position fromPos = new Position(2, 0);
+    Position toPos = new Position(3, 2);
+
+    Unit redArcher = game.getUnitAt(fromPos);
+
+    game.moveUnit(fromPos, new Position(3, 1));
+    endRound();
+
+    assertThat(
+            "A blue unit should be at position (3,2)",
+            game.getUnitAt(toPos).getOwner(), is(Player.BLUE)
+    );
+
+    game.moveUnit(new Position(3, 1), toPos);
+
+    assertThat(
+            "Red should destroy and move to the to-position",
+            game.getUnitAt(new Position(3, 2)), is(redArcher)
+    );
   }
 
 }
