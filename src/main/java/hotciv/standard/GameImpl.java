@@ -2,11 +2,14 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.*;
+
 
 /** Skeleton implementation of HotCiv.
 */
@@ -18,6 +21,7 @@ public class GameImpl implements Game {
   private final Map<Position, Tile> posToTiles = new HashMap<>();
   private final Map<Position, Unit> posToUnits = new HashMap<>();
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
+  private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
 
   /* Accessor methods */
   public GameImpl() {
@@ -132,11 +136,17 @@ public class GameImpl implements Game {
 
         // If the city has accumulated enough treasury
         if (city.getTreasury() >= unitCost) {
-          if (posToUnits.getOrDefault(spawnPos, null) == null){
-            // Spawn unit
-            spawnUnitAtPos(spawnPos, city.getProduction(), city.getOwner());
-          } else {
-            spawnUnitAtPos(new Position(spawnPos.getRow() - 1, spawnPos.getColumn()), city.getProduction(), city.getOwner());
+          // Search for empty tile to spawn unit
+          for (int[] deltaPos : adjacentPositions) {
+            // Find possible position for the unit to spawn at
+            Position unitPos = new Position(spawnPos.getRow() + deltaPos[0],
+                                            spawnPos.getColumn() + deltaPos[1]);
+            if (posToUnits.get(unitPos) == null) {
+              // Spawn unit
+              spawnUnitAtPos(unitPos, city.getProduction(), city.getOwner());
+              // An empty tile has been found, so we are finished
+              break;
+            }
           }
           // Deduct unit cost
           city.setTreasury(city.getTreasury() - unitCost);

@@ -311,9 +311,9 @@ public class TestAlphaCiv {
 
 
   @Test
-  public void unitShouldSpawnOutsideCityIfOccupiedByUnit(){
+  public void unitShouldSpawnNorthCityIfOccupiedByUnit(){
     endRound();
-    endRound();// New unit is spawned in the city and treasury is at 2
+    endRound(); // New unit is spawned in the city and treasury is at 2
     endRound();
     endRound(); // New unit is spawned north of the city and treasury is at 4
     assertThat(
@@ -323,6 +323,22 @@ public class TestAlphaCiv {
     assertThat(
             "An archer should spawn north of the city",
             game.getUnitAt(new Position(0, 1)).getTypeString(), is("archer")
+    );
+  }
+
+
+  @Test
+  public void unitShouldSpawnAroundTheCityIfCityIsOccupied(){
+    endRound();
+    endRound(); // New unit is spawned in the city and treasury is at 2
+    endRound();
+    endRound(); // New unit is spawned north of the city and treasury is at 4
+    endRound();
+    endRound(); // New unit is spawned in the city and treasury is at 6
+    // Tiles north of city (0,1) is occupied
+    assertThat(
+            "An archer should spawn north-east of the city",
+            game.getUnitAt(new Position(0, 2)).getTypeString(), is("archer")
     );
   }
 
