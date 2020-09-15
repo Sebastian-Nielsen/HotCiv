@@ -132,8 +132,12 @@ public class GameImpl implements Game {
 
         // If the city has accumulated enough treasury
         if (city.getTreasury() >= unitCost) {
-          // Spawn unit
-          spawnUnitAtPos(spawnPos);
+          if (posToUnits.getOrDefault(spawnPos, null) == null){
+            // Spawn unit
+            spawnUnitAtPos(spawnPos, city.getProduction(), city.getOwner());
+          } else {
+            spawnUnitAtPos(new Position(spawnPos.getRow() - 1, spawnPos.getColumn()), city.getProduction(), city.getOwner());
+          }
           // Deduct unit cost
           city.setTreasury(city.getTreasury() - unitCost);
         }
@@ -143,12 +147,13 @@ public class GameImpl implements Game {
   /**
    * Spawns a unit at the given position
    * @param pos Position to spawn unit at
+   * @param unitType The type of unit to spawn
+   * @param owner Owner of the unit
    */
-  private void spawnUnitAtPos(Position pos) {
-    CityImpl city = (CityImpl) posToCity.get(pos);
+  private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
     posToUnits.put(
             pos,
-            new UnitImpl(city.getProduction(), city.getOwner())
+            new UnitImpl(unitType, owner)
     );
   }
 

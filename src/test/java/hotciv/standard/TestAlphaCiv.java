@@ -308,4 +308,22 @@ public class TestAlphaCiv {
     );
   }
 
+
+
+  @Test
+  public void unitShouldSpawnOutsideCityIfOccupiedByUnit(){
+    endRound();
+    endRound();// New unit is spawned in the city and treasury is at 2
+    endRound();
+    endRound(); // New unit is spawned north of the city and treasury is at 4
+    assertThat(
+            "The cost of the archer (10) is deducted from the treasury twice",
+            redCity.getTreasury(), is((6*4) - (10*2))
+    );
+    assertThat(
+            "An archer should spawn north of the city",
+            game.getUnitAt(new Position(0, 1)).getTypeString(), is("archer")
+    );
+  }
+
 }
