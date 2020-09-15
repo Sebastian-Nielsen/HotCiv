@@ -334,12 +334,34 @@ public class TestAlphaCiv {
     endRound();
     endRound(); // New unit is spawned north of the city and treasury is at 4
     endRound();
-    endRound(); // New unit is spawned in the city and treasury is at 6
-    // Tiles north of city (0,1) is occupied
+    endRound(); // New unit is north-east and treasury is at 6,
+                // since tiles north of city (0,1) is occupied
     assertThat(
             "An archer should spawn north-east of the city",
             game.getUnitAt(new Position(0, 2)).getTypeString(), is("archer")
     );
+  }
+
+
+  @Test
+  public void unitShouldOnlySpawnOnOccupiableTile(){
+    endRound();
+    endRound(); // New unit is spawned in the city and treasury is at 2
+    endRound();
+    endRound(); // New unit is spawned north of the city and treasury is at 4
+    endRound();
+    endRound(); // New unit is spawned north-east and treasury is at 6
+    endRound();
+    endRound(); // New unit is spawned east and treasury is at 6
+    endRound();
+    endRound(); // New unit is spawned south and treasury is at 6,
+                // since south-east tile (2,2) is and unoccupiable ocean tile
+    assertThat(
+            "An archer should spawn south of the city",
+            game.getUnitAt(new Position(2, 1)).getTypeString(), is("archer")
+    );
+    assertNull(game.getUnitAt(new Position(2, 2)),
+            "An archer should spawn south of the city, instead of in the ocean south-east");
   }
 
 }

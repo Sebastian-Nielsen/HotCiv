@@ -75,7 +75,8 @@ public class GameImpl implements Game {
       return false;
 
     // Units cannot move to "mountain" tile
-    if (getTileAt(to).getTypeString().equals("mountain"))
+    //if (getTileAt(to).getTypeString().equals("mountain"))
+    if (!isOccupiableTile(to))
       return false;
 
     // A player cannot move other player's units
@@ -127,8 +128,9 @@ public class GameImpl implements Game {
       unitToMovesLeft.put(p, p.getMoveCount());
     }
 
+    // Spawn units for each city that has enough production
     for (Map.Entry<Position, City> entry : posToCity.entrySet()) {
-        Position spawnPos = entry.getKey();
+        Position cityPos = entry.getKey();
         CityImpl city = (CityImpl) entry.getValue();
 
         // Get unit-cost
@@ -137,17 +139,12 @@ public class GameImpl implements Game {
         // If the city has accumulated enough treasury
         if (city.getTreasury() >= unitCost) {
           // Search for empty tile to spawn unit
-          for (int[] deltaPos : adjacentPositions) {
-            // Find possible position for the unit to spawn at
-            Position unitPos = new Position(spawnPos.getRow() + deltaPos[0],
-                                            spawnPos.getColumn() + deltaPos[1]);
-            if (posToUnits.get(unitPos) == null) {
-              // Spawn unit
-              spawnUnitAtPos(unitPos, city.getProduction(), city.getOwner());
-              // An empty tile has been found, so we are finished
-              break;
-            }
-          }
+          Position spawnPos = searchForEmptyAdjacentTile(cityPos);
+          if (spawnPos == null)
+            continue; // No empty or occupiable tile, so do nothing
+
+          // Spawn unit
+          spawnUnitAtPos(spawnPos, city.getProduction(), city.getOwner());
           // Deduct unit cost
           city.setTreasury(city.getTreasury() - unitCost);
         }
@@ -165,6 +162,36 @@ public class GameImpl implements Game {
             pos,
             new UnitImpl(unitType, owner)
     );
+  }
+
+
+  /**
+   * @param pos The position of the tile
+   * @return Whether the tile is occupiable by unit
+   */
+  private Boolean isOccupiableTile(Position pos){
+    return !((posToTiles.getOrDefault(pos, new TileImpl("plains")).getTypeString().equals("ocean")) ||
+             (posToTiles.getOrDefault(pos, new TileImpl("plains")).getTypeString().equals("mountain")));
+  }
+
+  /** Returns the first empty and occupiable adjacent to, or on, pos
+   * starting from the center tile, then north and then clockwise
+   * @param pos center position
+   * @return the first empty and occupiable tile
+   */
+  private Position searchForEmptyAdjacentTile(Position pos){
+    for (int[] deltaPos : adjacentPositions) {
+      // Find possible position for the unit to spawn at
+      Position unitPos = new Position(pos.getRow() + deltaPos[0],
+              pos.getColumn() + deltaPos[1]);
+
+      // Check whether there isn't a unit on the tile and the tile is occupiable
+      if (posToUnits.get(unitPos) == null && isOccupiableTile(unitPos)) {
+        // An empty tile has been found, so we are finished
+        return unitPos;
+      }
+    }
+    return null;
   }
 
   private int getCostOfUnit(String unitType) {
