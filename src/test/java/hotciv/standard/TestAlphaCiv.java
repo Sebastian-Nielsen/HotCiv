@@ -263,6 +263,22 @@ public class TestAlphaCiv {
   }
 
   @Test
+  public void unitShouldBeRemovedFromFromposWhenMoved() {
+    Position fromPos = new Position(2, 0);
+    Position toPos = new Position(2, 1);
+
+    Unit redArcher = game.getUnitAt(fromPos);
+
+    // The archer is at fromPos before moving
+    assertThat(game.getUnitAt(fromPos), is(redArcher));
+
+    game.moveUnit(fromPos, toPos);
+
+    // The archer is not at fromPos after moving
+    assertNull(game.getUnitAt(fromPos));
+  }
+
+  @Test
   public void redShouldAttackAndDestroyBluesUnit() {
     Position fromPos = new Position(2, 0);
     Position toPos = new Position(3, 2);
