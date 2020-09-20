@@ -2,10 +2,8 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
 
 import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.*;
@@ -25,9 +23,9 @@ public class GameImpl implements Game {
   private final AgingStrategy agingStrategy;
 
   /* Accessor methods */
-  public GameImpl() {
+  public GameImpl(AgingStrategy agingStrategy) {
     // Initialize strategies
-    agingStrategy = new LinearAgingStrategy();
+    this.agingStrategy = new ProgressiveAgingStrategy();
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
