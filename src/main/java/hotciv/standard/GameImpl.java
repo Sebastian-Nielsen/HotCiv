@@ -170,8 +170,8 @@ public class GameImpl implements Game {
    * @return Whether the tile is occupiable by unit
    */
   private Boolean isOccupiableTile(Position pos){
-    return !((posToTiles.getOrDefault(pos, new TileImpl("plains")).getTypeString().equals("ocean")) ||
-             (posToTiles.getOrDefault(pos, new TileImpl("plains")).getTypeString().equals("mountain")));
+    return !((getTileAt(pos).getTypeString().equals("ocean")) ||
+             (getTileAt(pos).getTypeString().equals("mountain")));
   }
 
   /** Returns the first empty and occupiable adjacent to, or on, pos
