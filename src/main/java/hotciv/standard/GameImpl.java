@@ -22,9 +22,12 @@ public class GameImpl implements Game {
   private final Map<Position, Unit> posToUnits = new HashMap<>();
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
+  private final AgingStrategy agingStrategy;
 
   /* Accessor methods */
   public GameImpl() {
+    // Initialize strategies
+    agingStrategy = new LinearAgingStrategy();
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
@@ -116,8 +119,8 @@ public class GameImpl implements Game {
 
   /* Mutator methods */
   private void endOfRoundEffects() {
-    /* Increment age by 100 years ***********************/
-    setAge(getAge() + 100);
+    /* Increment age ***********************/
+    setAge(agingStrategy.incrementAge(age));
     /* Increment production by 6 in all cities **********/
     posToCity.values().forEach(c -> {
       CityImpl cityImpl = (CityImpl) c;
