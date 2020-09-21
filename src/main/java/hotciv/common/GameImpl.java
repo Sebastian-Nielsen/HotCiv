@@ -23,13 +23,14 @@ public class GameImpl implements Game {
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
-  private SettlerActionStrategy settlerActionStrategy;
+  private final SettlerActionStrategy settlerActionStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy, WinnerStrategy winnerStrategy) {
     // Initialize strategies
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
+    this.settlerActionStrategy = new BuildCitySettlerActionStrategy();
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
@@ -236,9 +237,13 @@ public class GameImpl implements Game {
   public void performUnitActionAt( Position pos ) {
     boolean isSettlerAtPos = getUnitAt(pos).getTypeString().equals("settler");
     if (isSettlerAtPos)
-      settlerActionStrategy.performAction();
+      settlerActionStrategy.performAction(this, pos);
   }
   public void setAge(int newAge){
     age = newAge;
+  }
+
+  public void createCityAt(Position pos, CityImpl city) {
+    posToCity.put(pos, city);
   }
 }
