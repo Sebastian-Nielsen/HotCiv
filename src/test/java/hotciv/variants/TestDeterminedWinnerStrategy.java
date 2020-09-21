@@ -18,7 +18,7 @@ public class TestDeterminedWinnerStrategy {
     @Test
     public void redShouldWinAt3000BC() {
         WinnerStrategy determinedWinner = new DeterminedWinnerStrategy();
-        GameImpl game = new GameImpl(new LinearAgingStrategy());
+        GameImpl game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
         game.setAge(-3100);
         assertNull(determinedWinner.getWinner(game));
         game.setAge(-3000);

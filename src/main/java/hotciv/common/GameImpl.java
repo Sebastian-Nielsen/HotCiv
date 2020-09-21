@@ -25,10 +25,10 @@ public class GameImpl implements Game {
   private final WinnerStrategy winnerStrategy;
 
   /* Accessor methods */
-  public GameImpl(AgingStrategy agingStrategy) {
+  public GameImpl(AgingStrategy agingStrategy, WinnerStrategy winnerStrategy) {
     // Initialize strategies
     this.agingStrategy = agingStrategy;
-    this.winnerStrategy = new DeterminedWinnerStrategy();
+    this.winnerStrategy = winnerStrategy;
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));

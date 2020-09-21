@@ -1,5 +1,6 @@
 package hotciv.variants;
 
+import hotciv.common.DeterminedWinnerStrategy;
 import hotciv.common.GameImpl;
 import hotciv.common.LinearAgingStrategy;
 import hotciv.common.ProgressiveAgingStrategy;
@@ -15,7 +16,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateLinearAgingStrategyCorrectly() {
-        game = new GameImpl(new LinearAgingStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
         endRound(game);
         // After ending round age has increased from 4000BC to 3900BC
         assertThat(game.getAge(), is(-4000 + 100));
@@ -28,7 +29,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateProgressiveAgingStrategy() {
-        game = new GameImpl(new ProgressiveAgingStrategy());
+        game = new GameImpl(new ProgressiveAgingStrategy(), new DeterminedWinnerStrategy());
 
         endRound(game); // age increases from 4000BC to 3900BC
 

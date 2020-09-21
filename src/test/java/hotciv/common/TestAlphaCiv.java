@@ -19,7 +19,7 @@ public class TestAlphaCiv {
   /** Fixture for alphaciv testing. */
   @BeforeEach
   public void setUp() {
-    game = new GameImpl(new LinearAgingStrategy());
+    game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
     redCity = game.getCityAt(new Position(1, 1));
     blueCity = game.getCityAt(new Position(4, 1));
   }

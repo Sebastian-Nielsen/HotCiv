@@ -22,7 +22,7 @@ public class TestCityConquerWinnerStrategy {
 
     @BeforeEach
     void setUp() {
-        game = new GameImpl(new LinearAgingStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
     }
 
     @Test
