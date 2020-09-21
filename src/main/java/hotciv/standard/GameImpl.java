@@ -25,7 +25,7 @@ public class GameImpl implements Game {
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy) {
     // Initialize strategies
-    this.agingStrategy = new ProgressiveAgingStrategy();
+    this.agingStrategy = agingStrategy;
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
