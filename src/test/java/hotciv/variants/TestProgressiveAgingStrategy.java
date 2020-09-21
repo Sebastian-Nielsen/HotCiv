@@ -1,5 +1,6 @@
-package hotciv.standard;
+package hotciv.variants;
 
+import hotciv.common.ProgressiveAgingStrategy;
 import hotciv.framework.AgingStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class TestProgressiveAgingStrategy {
+public class TestProgressiveAgingStrategy {
     private AgingStrategy agingStrategy;
 
     @BeforeEach

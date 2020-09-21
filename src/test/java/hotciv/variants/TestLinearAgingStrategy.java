@@ -1,12 +1,13 @@
-package hotciv.standard;
+package hotciv.variants;
 
+import hotciv.common.LinearAgingStrategy;
 import hotciv.framework.AgingStrategy;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class TestLinearAgingStrategy {
+public class TestLinearAgingStrategy {
 
     @Test
     public void shouldIncrementAgeBy100EachRound() {

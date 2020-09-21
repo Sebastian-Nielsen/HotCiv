@@ -1,16 +1,13 @@
-package hotciv.standard;
+package hotciv.common;
 
 import hotciv.framework.*;
 
 import org.junit.jupiter.api.*;
 
-import static hotciv.framework.GameConstants.ARCHER;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static hotciv.standard.TestHelperMethods.*;
-
-import java.util.*;
+import static hotciv.common.TestHelperMethods.*;
 
 /** Skeleton class for AlphaCiv test cases
 */
