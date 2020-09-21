@@ -21,10 +21,13 @@ public class TestAlphaCiv {
   /** Fixture for alphaciv testing. */
   @BeforeEach
   public void setUp() {
-    game = new GameImpl();
+    game = new GameImpl(new LinearAgingStrategy());
     redCity = game.getCityAt(new Position(1, 1));
     blueCity = game.getCityAt(new Position(4, 1));
   }
+
+
+
 
   // FRS p. 455 states that 'Red is the first player to take a turn'.
   @Test
