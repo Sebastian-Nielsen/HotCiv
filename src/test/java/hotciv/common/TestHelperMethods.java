@@ -19,11 +19,14 @@ public class TestHelperMethods {
       endRound(game);
   }
 
+  public static void endRound10Times(GameImpl game) {
+      endRound5Times(game);
+      endRound5Times(game);
+  }
+
   public static void endRound20Times(GameImpl game) {
-      endRound5Times(game);
-      endRound5Times(game);
-      endRound5Times(game);
-      endRound5Times(game);
+      endRound10Times(game);
+      endRound10Times(game);
   }
 
   public static void endRound40Times(GameImpl game) {

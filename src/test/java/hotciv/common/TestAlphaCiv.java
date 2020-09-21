@@ -129,24 +129,6 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void redShouldWinGameAt3000BC(){
-    // End round 10 times (= we advance 1000 years)
-    for (int i=0; i<10; i++)
-      endRound(game);
-
-    assertThat(game.getAge(), is(-4000 + 10*100)); // = -3000
-    assertThat(game.getWinner(), is(Player.RED));
-  }
-
-  @Test
-  public void shouldNotBeAWinnerBefore3000BC(){
-    assertThat(game.getWinner(), is(nullValue()));
-    game.setAge(-3100);
-    assertThat(game.getWinner(), is(nullValue()));
-  }
-
-
-  @Test
   public void shouldMoveUnitOneTileHorizontal(){
     Position startPos = new Position(2, 0);
     Position endPos = new Position(2, 1);
@@ -247,7 +229,7 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void unitShouldBeRemovedFromFromposWhenMoved() {
+  public void unitShouldBeRemovedFromFromPosWhenMoved() {
     Position fromPos = new Position(2, 0);
     Position toPos = new Position(2, 1);
 

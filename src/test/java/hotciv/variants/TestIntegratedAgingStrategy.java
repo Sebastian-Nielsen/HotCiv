@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static hotciv.common.TestHelperMethods.*;
 
-public class TestIntegrated {
+public class TestIntegratedAgingStrategy {
     private GameImpl game;
 
     @Test
@@ -35,8 +35,7 @@ public class TestIntegrated {
         assertThat(game.getAge(), is(-4000 + 100));
 
         endRound20Times(game);
-        endRound5Times(game);
-        endRound5Times(game);
+        endRound10Times(game);
         endRound5Times(game);
         endRound(game);
         endRound(game);

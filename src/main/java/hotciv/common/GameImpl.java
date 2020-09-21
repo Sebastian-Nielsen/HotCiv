@@ -21,7 +21,7 @@ public class GameImpl implements Game {
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
   private final AgingStrategy agingStrategy;
-  private WinnerStrategy winnerStrategy;
+  private final WinnerStrategy winnerStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy) {
@@ -56,7 +56,7 @@ public class GameImpl implements Game {
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
   public Player getPlayerInTurn() { return playerInTurn; }
   //public Player getWinner() { if (age < -3000) return null; else return RED; }
-  public Player getWinner() { return winnerStrategy.getWinner(age); }
+  public Player getWinner() { return winnerStrategy.getWinner(this); }
   public int getAge() { return age; }
 
   /**
