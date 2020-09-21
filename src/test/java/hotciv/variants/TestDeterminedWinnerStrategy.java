@@ -2,7 +2,7 @@ package hotciv.variants;
 
 import hotciv.common.GameImpl;
 import hotciv.common.LinearAgingStrategy;
-import hotciv.framework.DeterminedWinnerStrategy;
+import hotciv.common.DeterminedWinnerStrategy;
 import hotciv.framework.Player;
 import hotciv.framework.WinnerStrategy;
 import org.junit.jupiter.api.Test;

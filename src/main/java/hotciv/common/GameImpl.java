@@ -2,6 +2,7 @@ package hotciv.common;
 
 import hotciv.framework.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,9 @@ public class GameImpl implements Game {
   //public Player getWinner() { if (age < -3000) return null; else return RED; }
   public Player getWinner() { return winnerStrategy.getWinner(this); }
   public int getAge() { return age; }
+  public Collection<City> getAllCities(){
+    return posToCity.values();
+  }
 
   /**
    * Checks whether the unit-move is valid
@@ -103,10 +107,18 @@ public class GameImpl implements Game {
     // Update moves left
     unitToMovesLeft.put(unit, 0);
 
+    // Check if a city should be conquered
+    CityImpl toCity = (CityImpl) getCityAt(to);
+    boolean isCityAtToPos = toCity != null;
+    if (isCityAtToPos) {
+      toCity.setOwner(getUnitAt(from).getOwner());
+    }
+
        /* Move the unit */
     // Update unit's position
     posToUnits.remove(from);
     posToUnits.put(to, unit);
+
 
     return true;
   }

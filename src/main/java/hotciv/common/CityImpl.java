@@ -35,4 +35,6 @@ public class CityImpl implements City {
         treasury = p;
     }
 
+    public void setOwner(Player newOwner) { owner = newOwner; }
+
 }

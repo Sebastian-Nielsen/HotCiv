@@ -344,4 +344,17 @@ public class TestAlphaCiv {
             "An archer should spawn south of the city, instead of in the ocean south-east");
   }
 
+  @Test
+  public void playerShouldConquerCityWhenUnitAttacksIt() {
+    // Red archer moves from (2,0) to (3,1)
+    game.moveUnit(new Position(2, 0), new Position(3, 1));
+    endRound(game);
+
+    // the blue city is at
+    Position blueCityPos = new Position(4, 1);
+    // Red archer moves to the blue city tile
+    game.moveUnit(new Position(3, 1), blueCityPos);
+    assertThat(game.getCityAt(blueCityPos).getOwner(), is(Player.RED));
+  }
+
 }

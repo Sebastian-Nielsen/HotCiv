@@ -1,6 +1,11 @@
-package hotciv.framework;
+package hotciv.common;
 
-import hotciv.common.GameImpl;
+import hotciv.framework.City;
+import hotciv.framework.Game;
+import hotciv.framework.Player;
+import hotciv.framework.WinnerStrategy;
+
+import java.util.Collection;
 
 public class DeterminedWinnerStrategy implements WinnerStrategy {
     @Override
