@@ -23,6 +23,7 @@ public class GameImpl implements Game {
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
+  private SettlerActionStrategy settlerActionStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy, WinnerStrategy winnerStrategy) {
@@ -232,7 +233,11 @@ public class GameImpl implements Game {
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
-  public void performUnitActionAt( Position p ) {}
+  public void performUnitActionAt( Position pos ) {
+    boolean isSettlerAtPos = getUnitAt(pos).getTypeString().equals("settler");
+    if (isSettlerAtPos)
+      settlerActionStrategy.performAction();
+  }
   public void setAge(int newAge){
     age = newAge;
   }
