@@ -21,11 +21,13 @@ public class GameImpl implements Game {
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
   private final AgingStrategy agingStrategy;
+  private WinnerStrategy winnerStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy) {
     // Initialize strategies
     this.agingStrategy = agingStrategy;
+    this.winnerStrategy = new DeterminedWinnerStrategy();
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
@@ -53,7 +55,8 @@ public class GameImpl implements Game {
   public Unit getUnitAt( Position p ) { return posToUnits.getOrDefault(p, null); }
   public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
   public Player getPlayerInTurn() { return playerInTurn; }
-  public Player getWinner() { if (age < -3000) return null; else return RED; }
+  //public Player getWinner() { if (age < -3000) return null; else return RED; }
+  public Player getWinner() { return winnerStrategy.getWinner(age); }
   public int getAge() { return age; }
 
   /**
