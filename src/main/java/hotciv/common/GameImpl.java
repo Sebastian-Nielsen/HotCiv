@@ -26,11 +26,13 @@ public class GameImpl implements Game {
   private final SettlerActionStrategy settlerActionStrategy;
 
   /* Accessor methods */
-  public GameImpl(AgingStrategy agingStrategy, WinnerStrategy winnerStrategy) {
+  public GameImpl(AgingStrategy agingStrategy,
+                  WinnerStrategy winnerStrategy,
+                  SettlerActionStrategy settlerActionStrategy) {
     // Initialize strategies
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
-    this.settlerActionStrategy = new BuildCitySettlerActionStrategy();
+    this.settlerActionStrategy = settlerActionStrategy;
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
@@ -118,11 +120,15 @@ public class GameImpl implements Game {
 
        /* Move the unit */
     // Update unit's position
-    posToUnits.remove(from);
+    popUnitAt(from);
     posToUnits.put(to, unit);
 
 
     return true;
+  }
+
+  public Unit popUnitAt(Position pos) {
+    return posToUnits.remove(pos);
   }
 
 

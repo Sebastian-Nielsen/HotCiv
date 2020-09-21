@@ -10,6 +10,8 @@ public class BuildCitySettlerActionStrategy implements SettlerActionStrategy {
         UnitImpl settler = (UnitImpl) game.getUnitAt(pos);
         // Create a city at the settler's position
         game.createCityAt(pos, new CityImpl(settler.getOwner()));
+        // Remove settler
+        game.popUnitAt(pos);
     }
 
 }

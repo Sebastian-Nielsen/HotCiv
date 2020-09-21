@@ -1,9 +1,6 @@
 package hotciv.variants;
 
-import hotciv.common.DeterminedWinnerStrategy;
-import hotciv.common.GameImpl;
-import hotciv.common.LinearAgingStrategy;
-import hotciv.common.ProgressiveAgingStrategy;
+import hotciv.common.*;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -16,7 +13,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateLinearAgingStrategyCorrectly() {
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
         endRound(game);
         // After ending round age has increased from 4000BC to 3900BC
         assertThat(game.getAge(), is(-4000 + 100));
@@ -29,7 +26,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateProgressiveAgingStrategy() {
-        game = new GameImpl(new ProgressiveAgingStrategy(), new DeterminedWinnerStrategy());
+        game = new GameImpl(new ProgressiveAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
 
         endRound(game); // age increases from 4000BC to 3900BC
 

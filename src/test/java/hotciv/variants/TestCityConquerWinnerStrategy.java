@@ -1,9 +1,6 @@
 package hotciv.variants;
 
-import hotciv.common.CityConquerWinnerStrategy;
-import hotciv.common.GameImpl;
-import hotciv.common.LinearAgingStrategy;
-import hotciv.common.DeterminedWinnerStrategy;
+import hotciv.common.*;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
 import hotciv.framework.WinnerStrategy;
@@ -22,7 +19,7 @@ public class TestCityConquerWinnerStrategy {
 
     @BeforeEach
     void setUp() {
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
     }
 
     @Test
