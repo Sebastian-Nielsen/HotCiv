@@ -3,23 +3,29 @@ package hotciv.variants;
 import hotciv.common.World;
 import hotciv.framework.DeltaCivWorldLayoutStrategy;
 import hotciv.framework.Position;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static hotciv.framework.Player.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestDeltaCivWorldLayoutStrategy {
     DeltaCivWorldLayoutStrategy deltaCivWorldLayoutStrategy;
+    private World world;
+    private String[] layout;
 
-    @Test
-    public void generateWorld() {
+    private Position redCityPos = new Position(8, 12);
+    private Position blueCityPos = new Position(4, 5);
+
+    @BeforeEach
+    public void SetUp() {
         deltaCivWorldLayoutStrategy = new DeltaCivWorldLayoutStrategy();
-        World world = new World();
+        world = new World();
 
         // Define how the layout should be generated
-        String[] layout =
-                new String[]{
+        layout = new String[]{
                         "...ooMooooo.....",
                         "..ohhoooofffoo..",
                         ".oooooMooo...oo.",    // '.' is 'ocean'
@@ -37,7 +43,22 @@ class TestDeltaCivWorldLayoutStrategy {
                         "..ooohhoo.......",
                         ".....ooooooooo..",
                 };
+    }
 
+    @Test
+    public void shouldGenerateRedCityAt8_12WhenLayoutSupplied() {
+        deltaCivWorldLayoutStrategy.generateWorld(world, layout);
+        assertThat(world.getCityAt(redCityPos).getOwner(), is(RED));
+    }
+
+    @Test
+    public void shouldGenerateBlueCityAt4_5WhenLayoutSupplied() {
+        deltaCivWorldLayoutStrategy.generateWorld(world, layout);
+        assertThat(world.getCityAt(blueCityPos).getOwner(), is(BLUE));
+    }
+
+    @Test
+    public void shouldGenerateTilesAccordingToSuppliedLayout() {
         // Generate world using deltaCiv layout strategy
         deltaCivWorldLayoutStrategy.generateWorld(world,layout);
 

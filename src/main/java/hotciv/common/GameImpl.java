@@ -38,8 +38,8 @@ public class GameImpl implements Game {
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
     this.settlerActionStrategy = settlerActionStrategy;
+    this.worldLayoutStrategy = worldLayoutStrategy;
     // Initialize tiles and cities
-    this.worldLayoutStrategy = new AlphaCivWorldLayoutStrategy();
     this.worldLayoutStrategy.generateWorld(world, layout);
     // Initialize units
     Unit redArcher = new UnitImpl("archer", RED);
