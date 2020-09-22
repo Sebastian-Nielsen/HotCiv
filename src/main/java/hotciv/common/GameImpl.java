@@ -14,6 +14,7 @@ import static hotciv.framework.Player.*;
 */
 
 public class GameImpl implements Game {
+  private final WorldLayoutStrategy worldLayoutStrategy;
   private Player playerInTurn = RED;
   private int age = -4000;
   private final Map<Position, City> posToCity = new HashMap<>();
@@ -33,13 +34,9 @@ public class GameImpl implements Game {
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
     this.settlerActionStrategy = settlerActionStrategy;
-    // Initialize cities
-    posToCity.put(new Position(1, 1), new CityImpl(RED));
-    posToCity.put(new Position(4, 1), new CityImpl(BLUE));
-    // Initialize tiles
-    posToTiles.put(new Position(1, 0), new TileImpl("ocean"));
-    posToTiles.put(new Position(0, 1), new TileImpl("hill"));
-    posToTiles.put(new Position(2, 2), new TileImpl("mountain"));
+    // Initialize tiles and cities
+    this.worldLayoutStrategy = new AlphaCivWorldLayoutStrategy();
+    this.worldLayoutStrategy.generateWorld(this);
     // Initialize units
     Unit redArcher = new UnitImpl("archer", RED);
     Unit blueLegion = new UnitImpl("legion", BLUE);
@@ -250,6 +247,25 @@ public class GameImpl implements Game {
   }
 
   public void createCityAt(Position pos, CityImpl city) {
+    posToCity.put(pos, city);
+  }
+
+
+  /**
+   * Create a tile at the given position
+   * @param pos Position to create tile at
+   * @param tile Tile to create
+   */
+  public void createTileAtPos(Position pos, TileImpl tile) {
+    posToTiles.put(pos, tile);
+  }
+
+  /**
+   * Create a city at the given position
+   * @param pos Position to create city at
+   * @param city City to create
+   */
+  public void createCityAtPos(Position pos, CityImpl city) {
     posToCity.put(pos, city);
   }
 }

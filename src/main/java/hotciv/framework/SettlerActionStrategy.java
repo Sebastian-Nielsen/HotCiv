@@ -1,5 +1,6 @@
-package hotciv.common;
+package hotciv.framework;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.Position;
 
 public interface SettlerActionStrategy {

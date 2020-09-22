@@ -1,7 +1,7 @@
 package hotciv.common;
 
-import hotciv.framework.Player;
 import hotciv.framework.Position;
+import hotciv.framework.SettlerActionStrategy;
 
 public class BuildCitySettlerActionStrategy implements SettlerActionStrategy {
     @Override
