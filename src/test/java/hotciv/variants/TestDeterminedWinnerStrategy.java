@@ -1,9 +1,6 @@
 package hotciv.variants;
 
-import hotciv.common.BuildCitySettlerActionStrategy;
-import hotciv.common.GameImpl;
-import hotciv.common.LinearAgingStrategy;
-import hotciv.common.DeterminedWinnerStrategy;
+import hotciv.common.*;
 import hotciv.framework.Player;
 import hotciv.framework.WinnerStrategy;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,10 @@ public class TestDeterminedWinnerStrategy {
     @Test
     public void redShouldWinAt3000BC() {
         WinnerStrategy determinedWinner = new DeterminedWinnerStrategy();
-        GameImpl game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        GameImpl game = new GameImpl(new LinearAgingStrategy(),
+                                     new DeterminedWinnerStrategy(),
+                                     new BuildCitySettlerActionStrategy(),
+                                     new NoArcherActionStrategy());
         game.setAge(-3100);
         assertNull(determinedWinner.getWinner(game));
         game.setAge(-3000);

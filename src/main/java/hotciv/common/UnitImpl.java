@@ -7,6 +7,8 @@ public class UnitImpl implements Unit {
 
     private final String type;
     private final Player owner;
+    protected int defensiveStrength;
+
 
     public UnitImpl(String type, Player owner) {
         this.type = type;
@@ -30,11 +32,16 @@ public class UnitImpl implements Unit {
 
     @Override
     public int getDefensiveStrength() {
-        return 0;
+        return defensiveStrength;
     }
 
     @Override
     public int getAttackingStrength() {
         return 0;
     }
+
+    public void setDefensiveStrength(int newDef) {
+        defensiveStrength = newDef;
+    }
+
 }

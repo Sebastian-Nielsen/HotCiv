@@ -3,7 +3,6 @@ package hotciv.variants;
 import hotciv.common.*;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static hotciv.common.TestHelperMethods.endRound;
@@ -18,7 +17,7 @@ class TestIntegratedWinnerStrategy {
 
     @Test
     public void shouldMakeRedTheWinnerAt3000BC(){
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy(), new NoArcherActionStrategy());
         endRound10Times(game);
         assertThat(game.getAge(), is(-4000 + 10*100)); // = -3000
         assertThat(game.getWinner(), is(Player.RED));
@@ -26,7 +25,7 @@ class TestIntegratedWinnerStrategy {
 
     @Test
     public void shouldNotBeAWinnerBefore3000BC(){
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy(), new NoArcherActionStrategy());
         assertThat(game.getWinner(), is(nullValue()));
         game.setAge(-3100);
         assertThat(game.getWinner(), is(nullValue()));
@@ -34,7 +33,7 @@ class TestIntegratedWinnerStrategy {
 
     @Test
     public void redShouldWinWhenRedConquersBlueCityAt4_1() {
-        game = new GameImpl(new LinearAgingStrategy(), new CityConquerWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new CityConquerWinnerStrategy(), new BuildCitySettlerActionStrategy(), new NoArcherActionStrategy());
 
         // Red archer moves from (2,0) to (3,1)
         game.moveUnit(new Position(2, 0), new Position(3, 1));

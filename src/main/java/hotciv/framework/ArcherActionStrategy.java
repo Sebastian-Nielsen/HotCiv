@@ -1,7 +1,7 @@
 package hotciv.framework;
 
-import hotciv.common.GameImpl;
+import hotciv.common.ArcherUnitImpl;
 
 public interface ArcherActionStrategy {
-    void performAction(GameImpl game, Position pos);
+    void performAction(ArcherUnitImpl unit);
 }

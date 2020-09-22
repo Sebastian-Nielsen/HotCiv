@@ -21,7 +21,7 @@ public class TestAlphaCiv {
   public void setUp() {
     game = new GameImpl(new LinearAgingStrategy(),
             new DeterminedWinnerStrategy(),
-            new NoSettlerActionStrategy());
+            new NoSettlerActionStrategy(), new NoArcherActionStrategy());
     redCity = game.getCityAt(new Position(1, 1));
     blueCity = game.getCityAt(new Position(4, 1));
   }
@@ -357,6 +357,13 @@ public class TestAlphaCiv {
     // Red archer moves to the blue city tile
     game.moveUnit(new Position(3, 1), blueCityPos);
     assertThat(game.getCityAt(blueCityPos).getOwner(), is(Player.RED));
+  }
+
+
+  @Test
+  public void redArcherShouldHave3DefensiveStrength() {
+    int redArcherDef = game.getUnitAt(new Position(2, 0)).getDefensiveStrength();
+    assertThat(redArcherDef, is(3));
   }
 
 }

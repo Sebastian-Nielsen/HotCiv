@@ -13,7 +13,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateLinearAgingStrategyCorrectly() {
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy(), new NoArcherActionStrategy());
         endRound(game);
         // After ending round age has increased from 4000BC to 3900BC
         assertThat(game.getAge(), is(-4000 + 100));
@@ -26,7 +26,7 @@ public class TestIntegratedAgingStrategy {
 
     @Test
     public void shouldIntegrateProgressiveAgingStrategy() {
-        game = new GameImpl(new ProgressiveAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(new ProgressiveAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy(), new NoArcherActionStrategy());
 
         endRound(game); // age increases from 4000BC to 3900BC
 
