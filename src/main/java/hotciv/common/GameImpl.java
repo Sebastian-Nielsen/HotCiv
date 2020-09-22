@@ -24,6 +24,7 @@ public class GameImpl implements Game {
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
   private final SettlerActionStrategy settlerActionStrategy;
+  private ArcherActionStrategy archerActionStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy,
@@ -33,6 +34,7 @@ public class GameImpl implements Game {
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
     this.settlerActionStrategy = settlerActionStrategy;
+    this.archerActionStrategy = new NoActionStrategy();
     // Initialize cities
     posToCity.put(new Position(1, 1), new CityImpl(RED));
     posToCity.put(new Position(4, 1), new CityImpl(BLUE));
@@ -242,8 +244,12 @@ public class GameImpl implements Game {
   public void changeProductionInCityAt( Position p, String unitType ) {}
   public void performUnitActionAt( Position pos ) {
     boolean isSettlerAtPos = getUnitAt(pos).getTypeString().equals("settler");
+    boolean isArcherAtPos = getUnitAt(pos).getTypeString().equals("archer");
     if (isSettlerAtPos)
       settlerActionStrategy.performAction(this, pos);
+    else if (isArcherAtPos)
+      archerActionStrategy.performAction(this, pos);
+
   }
   public void setAge(int newAge){
     age = newAge;
