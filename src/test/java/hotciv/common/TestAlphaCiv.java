@@ -21,7 +21,9 @@ public class TestAlphaCiv {
   public void setUp() {
     game = new GameImpl(new LinearAgingStrategy(),
             new DeterminedWinnerStrategy(),
-            new NoSettlerActionStrategy());
+            new NoSettlerActionStrategy(),
+            new AlphaCivWorldLayoutStrategy(),
+            null);
     redCity = game.getCityAt(new Position(1, 1));
     blueCity = game.getCityAt(new Position(4, 1));
   }

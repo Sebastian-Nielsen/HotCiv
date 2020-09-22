@@ -25,6 +25,20 @@ public class World {
         return unit != null;
     }
 
+    /**
+     * Converts a tile char to its corresponding type name
+     * E.g. tile char 'o' corresponds to 'plains'
+     * @return Tile type name of the given tile char
+     */
+    public String convertTileCharToTileTypeName(char tileChar) {
+        if ( tileChar == '.' ) return GameConstants.OCEANS;
+        if ( tileChar == 'o' ) return GameConstants.PLAINS;
+        if ( tileChar == 'M' ) return GameConstants.MOUNTAINS;
+        if ( tileChar == 'f' ) return GameConstants.FOREST;
+        if ( tileChar == 'h' ) return GameConstants.HILLS;
+        else return "error"; // Failed to convert tileChar
+    }
+
     /* SETTER METHODS */
     public void createCityAt(Position pos, CityImpl city) {
         posToCity.put(pos, city);

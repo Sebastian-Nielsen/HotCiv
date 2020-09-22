@@ -14,20 +14,24 @@ import static hotciv.framework.Player.*;
 */
 
 public class GameImpl implements Game {
-  private final WorldLayoutStrategy worldLayoutStrategy;
   private Player playerInTurn = RED;
   private int age = -4000;
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
+
+  private final World world;
+
+  private final WorldLayoutStrategy worldLayoutStrategy;
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
   private final SettlerActionStrategy settlerActionStrategy;
-  private final World world;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy,
                   WinnerStrategy winnerStrategy,
-                  SettlerActionStrategy settlerActionStrategy) {
+                  SettlerActionStrategy settlerActionStrategy,
+                  WorldLayoutStrategy worldLayoutStrategy,
+                  String[] layout) {
     // Initialize world
     world = new World();
     // Initialize strategies
@@ -36,7 +40,7 @@ public class GameImpl implements Game {
     this.settlerActionStrategy = settlerActionStrategy;
     // Initialize tiles and cities
     this.worldLayoutStrategy = new AlphaCivWorldLayoutStrategy();
-    this.worldLayoutStrategy.generateWorld(world);
+    this.worldLayoutStrategy.generateWorld(world, layout);
     // Initialize units
     Unit redArcher = new UnitImpl("archer", RED);
     Unit blueLegion = new UnitImpl("legion", BLUE);

@@ -19,7 +19,12 @@ public class TestCityConquerWinnerStrategy {
 
     @BeforeEach
     void setUp() {
-        game = new GameImpl(new LinearAgingStrategy(), new DeterminedWinnerStrategy(), new BuildCitySettlerActionStrategy());
+        game = new GameImpl(
+                new LinearAgingStrategy(),
+                new DeterminedWinnerStrategy(),
+                new BuildCitySettlerActionStrategy(),
+                new AlphaCivWorldLayoutStrategy(),
+                null);
     }
 
     @Test

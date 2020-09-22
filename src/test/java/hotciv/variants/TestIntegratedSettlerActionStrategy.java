@@ -24,9 +24,13 @@ public class TestIntegratedSettlerActionStrategy {
      */
     @Test
     public void settlerShouldPerformNoAction() {
-        game = new GameImpl(new LinearAgingStrategy(),
+        game = new GameImpl(
+                new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy());
+                new NoSettlerActionStrategy(),
+                new AlphaCivWorldLayoutStrategy(),
+                null
+        );
 
         game.performUnitActionAt(settlerPos);
 
@@ -43,8 +47,10 @@ public class TestIntegratedSettlerActionStrategy {
     public void shouldBuildCityWhenSettlerPerformAction() {
         game = new GameImpl(new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy());
-
+                new BuildCitySettlerActionStrategy(),
+                new AlphaCivWorldLayoutStrategy(),
+                null
+        );
         // Settler performs action
         game.performUnitActionAt(settlerPos);
 
@@ -58,10 +64,13 @@ public class TestIntegratedSettlerActionStrategy {
      */
     @Test
     public void settlerShouldBeRemovedAfterPerformingAction() {
-        game = new GameImpl(new LinearAgingStrategy(),
+        game = new GameImpl(
+                new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy());
-
+                new BuildCitySettlerActionStrategy(),
+                new AlphaCivWorldLayoutStrategy(),
+                null
+        );
         // Settler builds a city and is removed
         game.performUnitActionAt(settlerPos);
 

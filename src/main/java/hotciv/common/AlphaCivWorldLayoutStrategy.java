@@ -8,7 +8,7 @@ import static hotciv.framework.Player.RED;
 
 public class AlphaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     @Override
-    public void generateWorld(World world) {
+    public void generateWorld(World world, String[] layout) {
         // Initialize tiles
         world.createTileAtPos(new Position(1, 0), new TileImpl("ocean"));
         world.createTileAtPos(new Position(0, 1), new TileImpl("hill"));
