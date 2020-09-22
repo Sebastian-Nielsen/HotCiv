@@ -17,34 +17,34 @@ public class GameImpl implements Game {
   private final WorldLayoutStrategy worldLayoutStrategy;
   private Player playerInTurn = RED;
   private int age = -4000;
-  private final Map<Position, City> posToCity = new HashMap<>();
-  private final Map<Position, Tile> posToTiles = new HashMap<>();
-  private final Map<Position, Unit> posToUnits = new HashMap<>();
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
   private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
   private final SettlerActionStrategy settlerActionStrategy;
+  private final World world;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy,
                   WinnerStrategy winnerStrategy,
                   SettlerActionStrategy settlerActionStrategy) {
+    // Initialize world
+    world = new World();
     // Initialize strategies
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
     this.settlerActionStrategy = settlerActionStrategy;
     // Initialize tiles and cities
     this.worldLayoutStrategy = new AlphaCivWorldLayoutStrategy();
-    this.worldLayoutStrategy.generateWorld(this);
+    this.worldLayoutStrategy.generateWorld(world);
     // Initialize units
     Unit redArcher = new UnitImpl("archer", RED);
     Unit blueLegion = new UnitImpl("legion", BLUE);
     Unit redSettler = new UnitImpl("settler", RED);
     // Initialize units' positions
-    posToUnits.put(new Position(2, 0), redArcher);
-    posToUnits.put(new Position(3, 2), blueLegion);
-    posToUnits.put(new Position(4, 3), redSettler);
+    world.createUnitAt(new Position(2, 0), redArcher);
+    world.createUnitAt(new Position(3, 2), blueLegion);
+    world.createUnitAt(new Position(4, 3), redSettler);
     // Initialize units' moves left
     unitToMovesLeft.put(redArcher, redArcher.getMoveCount());
     unitToMovesLeft.put(blueLegion, blueLegion.getMoveCount());
@@ -52,16 +52,16 @@ public class GameImpl implements Game {
   }
 
   public Tile getTileAt(Position p) {
-    return posToTiles.getOrDefault(p, new TileImpl("plains"));
+    return world.getTileAt(p);
   }
-  public Unit getUnitAt( Position p ) { return posToUnits.getOrDefault(p, null); }
-  public City getCityAt( Position p ) { return posToCity.getOrDefault(p, null); }
+  public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
+  public City getCityAt( Position p ) { return world.getCityAt(p); }
   public Player getPlayerInTurn() { return playerInTurn; }
   //public Player getWinner() { if (age < -3000) return null; else return RED; }
   public Player getWinner() { return winnerStrategy.getWinner(this); }
   public int getAge() { return age; }
   public Collection<City> getAllCities(){
-    return posToCity.values();
+    return world.getAllCities();
   }
 
   /**
@@ -72,7 +72,7 @@ public class GameImpl implements Game {
    * @return whether the move is valid
    */
   private boolean isValidUnitMove( Position from, Position to ) {
-    Unit fromUnit = posToUnits.get(from);
+    Unit fromUnit = world.getUnitAt(from);
 
     // If unit has less than 0 moves left
     if (unitToMovesLeft.get(fromUnit) < calcDistance(from, to))
@@ -96,7 +96,7 @@ public class GameImpl implements Game {
   }
 
   public boolean moveUnit( Position from, Position to ) {
-    Unit unit = posToUnits.get(from);
+    Unit unit = world.getUnitAt(from);
 
     // If the move isn't valid return false
     if (!isValidUnitMove(from, to))
@@ -118,14 +118,14 @@ public class GameImpl implements Game {
        /* Move the unit */
     // Update unit's position
     popUnitAt(from);
-    posToUnits.put(to, unit);
+    world.createUnitAt(to, unit);
 
 
     return true;
   }
 
   public Unit popUnitAt(Position pos) {
-    return posToUnits.remove(pos);
+    return world.popUnitAt(pos);
   }
 
 
@@ -140,17 +140,17 @@ public class GameImpl implements Game {
     /* Increment age ***********************/
     setAge(agingStrategy.incrementAge(age));
     /* Increment production by 6 in all cities **********/
-    posToCity.values().forEach(c -> {
+    world.getAllCities().forEach(c -> {
       CityImpl cityImpl = (CityImpl) c;
       cityImpl.setTreasury(cityImpl.getTreasury() + 6);
     });
     /* Reset moves left *********************************/
-    for (Unit p : posToUnits.values()){
+    for (Unit p : world.getAllUnits()){
       unitToMovesLeft.put(p, p.getMoveCount());
     }
 
     // Spawn units for each city that has enough production
-    for (Map.Entry<Position, City> entry : posToCity.entrySet()) {
+    for (Map.Entry<Position, City> entry : world.getSetOfPosCityEntry()) {
         Position cityPos = entry.getKey();
         CityImpl city = (CityImpl) entry.getValue();
 
@@ -179,10 +179,7 @@ public class GameImpl implements Game {
    * @param owner Owner of the unit
    */
   private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
-    posToUnits.put(
-            pos,
-            new UnitImpl(unitType, owner)
-    );
+    world.spawnUnitAtPos(pos, unitType, owner);
   }
 
 
@@ -207,7 +204,7 @@ public class GameImpl implements Game {
               pos.getColumn() + deltaPos[1]);
 
       // Check whether there isn't a unit on the tile and the tile is occupiable
-      if (posToUnits.get(unitPos) == null && isOccupiableTile(unitPos)) {
+      if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos)) {
         // An empty tile has been found, so we are finished
         return unitPos;
       }
@@ -247,7 +244,7 @@ public class GameImpl implements Game {
   }
 
   public void createCityAt(Position pos, CityImpl city) {
-    posToCity.put(pos, city);
+    world.createCityAt(pos, city);
   }
 
 
@@ -257,7 +254,7 @@ public class GameImpl implements Game {
    * @param tile Tile to create
    */
   public void createTileAtPos(Position pos, TileImpl tile) {
-    posToTiles.put(pos, tile);
+    world.createTileAtPos(pos, tile);
   }
 
   /**
@@ -266,6 +263,6 @@ public class GameImpl implements Game {
    * @param city City to create
    */
   public void createCityAtPos(Position pos, CityImpl city) {
-    posToCity.put(pos, city);
+    world.createCityAt(pos, city);
   }
 }

@@ -1,10 +1,10 @@
 package hotciv.framework;
 
-import hotciv.common.GameImpl;
+import hotciv.common.World;
 
 public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     @Override
-    public void generateWorld(GameImpl game) {
+    public void generateWorld(World world) {
 
     }
 }

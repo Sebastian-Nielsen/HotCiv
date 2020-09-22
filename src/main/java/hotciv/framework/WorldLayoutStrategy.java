@@ -1,12 +1,12 @@
 package hotciv.framework;
 
-import hotciv.common.GameImpl;
+import hotciv.common.World;
 
 public interface WorldLayoutStrategy {
 
     /**
      * Generates the tiles and cities of the world.
-     * @param game
+     * @param world
      */
-    public void generateWorld(GameImpl game);
+    public void generateWorld(World world);
 }
