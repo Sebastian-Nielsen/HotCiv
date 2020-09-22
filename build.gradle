@@ -61,6 +61,7 @@ dependencies {
     // Use the Hamcrest matcher library
     testCompile group: 'org.hamcrest',
         name: 'hamcrest-library', version: '2.2'
+    implementation 'junit:junit:4.12'
 }
 
 // Tell to use JUnit as testing platform

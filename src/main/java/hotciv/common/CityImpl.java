@@ -1,4 +1,4 @@
-package hotciv.standard;
+package hotciv.common;
 
 import hotciv.framework.City;
 import hotciv.framework.Player;
@@ -34,5 +34,7 @@ public class CityImpl implements City {
     public void setTreasury(int p) {
         treasury = p;
     }
+
+    public void setOwner(Player newOwner) { owner = newOwner; }
 
 }

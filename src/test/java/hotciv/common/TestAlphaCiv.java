@@ -1,30 +1,38 @@
-package hotciv.standard;
+package hotciv.common;
 
 import hotciv.framework.*;
 
 import org.junit.jupiter.api.*;
 
-import static hotciv.framework.GameConstants.ARCHER;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
+import static hotciv.common.TestHelperMethods.*;
 
 /** Skeleton class for AlphaCiv test cases
 */
 public class TestAlphaCiv {
-  private Game game;
+  private GameImpl game;
   private City redCity;
   private City blueCity;
 
   /** Fixture for alphaciv testing. */
   @BeforeEach
   public void setUp() {
-    game = new GameImpl();
+    game = new GameImpl(
+            new LinearAgingStrategy(),
+            new DeterminedWinnerStrategy(),
+            new NoSettlerActionStrategy(),
+            new NoArcherActionStrategy(),
+            new AlphaCivWorldLayoutStrategy(),
+            null
+    );
     redCity = game.getCityAt(new Position(1, 1));
     blueCity = game.getCityAt(new Position(4, 1));
   }
+
+
+
 
   // FRS p. 455 states that 'Red is the first player to take a turn'.
   @Test
@@ -99,7 +107,7 @@ public class TestAlphaCiv {
   public void cityShouldProduce6ProductionAfterEachRound() {
     int productionBefore = redCity.getTreasury();
     assertThat(productionBefore, is(0));
-    endRound();
+    endRound(game);
     int productionAfter = redCity.getTreasury();
     assertThat(productionAfter, is(6));
     assertThat(productionAfter - productionBefore, is(6));
@@ -108,17 +116,8 @@ public class TestAlphaCiv {
   @Test
   public void cityPopulationIsAlwaysOne() {
     assertThat(redCity.getSize(), is(1));
-    endRound();
+    endRound(game);
     assertThat(redCity.getSize(), is(1));
-  }
-
-  /**
-   * End the round: end the turn of all players
-   * precondition: It should be red's turn
-   */
-  private void endRound() {
-    game.endOfTurn(); // End red's turn
-    game.endOfTurn(); // End blue's turn
   }
 
   @Test
@@ -135,32 +134,6 @@ public class TestAlphaCiv {
   public void shouldStartGameAt4000BC(){
     assertThat(game.getAge(), is(-4000));
   }
-
-
-  @Test
-  public void shouldIncrementYearBy100EachRound(){
-    endRound();
-    assertThat(game.getAge(), is(-4000 + 100));
-  }
-
-
-  @Test
-  public void redShouldWinGameAt3000BC(){
-    // End round 10 times (= we advance 1000 years)
-    for (int i=0; i<10; i++)
-      endRound();
-
-    assertThat(game.getAge(), is(-4000 + 10*100)); // = -3000
-    assertThat(game.getWinner(), is(Player.RED));
-  }
-
-  @Test
-  public void shouldNotBeAWinnerBefore3000BC(){
-    assertThat(game.getWinner(), is(nullValue()));
-    game.setAge(-3100);
-    assertThat(game.getWinner(), is(nullValue()));
-  }
-
 
   @Test
   public void shouldMoveUnitOneTileHorizontal(){
@@ -204,7 +177,7 @@ public class TestAlphaCiv {
     Position newEndPos = new Position(4, 1);
     assertFalse(game.moveUnit(endPos, newEndPos));
     // End the round
-    endRound();
+    endRound(game);
     // The unit should now be able to move
     assertTrue(game.moveUnit(endPos, newEndPos));
   }
@@ -225,10 +198,10 @@ public class TestAlphaCiv {
     Unit redArcher = game.getUnitAt(fromPos);
 
     game.moveUnit(fromPos, new Position(3, 1));
-    endRound();
+    endRound(game);
 
     game.moveUnit(new Position(3, 1), new Position(4, 2));
-    endRound();
+    endRound(game);
 
     assertFalse(
             game.moveUnit(new Position(4, 2), new Position(4, 3))
@@ -242,7 +215,7 @@ public class TestAlphaCiv {
     Unit redArcher = game.getUnitAt(fromPos);
 
     game.moveUnit(fromPos, new Position(2, 1));
-    endRound();
+    endRound(game);
 
     assertFalse(
             game.moveUnit(new Position(2, 1), new Position(2, 2))
@@ -263,7 +236,7 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void unitShouldBeRemovedFromFromposWhenMoved() {
+  public void unitShouldBeRemovedFromFromPosWhenMoved() {
     Position fromPos = new Position(2, 0);
     Position toPos = new Position(2, 1);
 
@@ -286,7 +259,7 @@ public class TestAlphaCiv {
     Unit redArcher = game.getUnitAt(fromPos);
 
     game.moveUnit(fromPos, new Position(3, 1));
-    endRound();
+    endRound(game);
 
     assertThat(
             "A blue unit should be at position (3,2)",
@@ -309,9 +282,9 @@ public class TestAlphaCiv {
     );
 
     // Treasury is 0 to begin
-    endRound(); // Treasury should increase by 6
+    endRound(game); // Treasury should increase by 6
     // Treasury is 6
-    endRound(); // Treasury should increase by 6
+    endRound(game); // Treasury should increase by 6
     // Treasury is 12
 
     assertThat(
@@ -324,14 +297,12 @@ public class TestAlphaCiv {
     );
   }
 
-
-
   @Test
   public void unitShouldSpawnNorthCityIfOccupiedByUnit(){
-    endRound();
-    endRound(); // New unit is spawned in the city and treasury is at 2
-    endRound();
-    endRound(); // New unit is spawned north of the city and treasury is at 4
+    endRound(game);
+    endRound(game); // New unit is spawned in the city and treasury is at 2
+    endRound(game);
+    endRound(game); // New unit is spawned north of the city and treasury is at 4
     assertThat(
             "The cost of the archer (10) is deducted from the treasury twice",
             redCity.getTreasury(), is((6*4) - (10*2))
@@ -345,12 +316,12 @@ public class TestAlphaCiv {
 
   @Test
   public void unitShouldSpawnAroundTheCityIfCityIsOccupied(){
-    endRound();
-    endRound(); // New unit is spawned in the city and treasury is at 2
-    endRound();
-    endRound(); // New unit is spawned north of the city and treasury is at 4
-    endRound();
-    endRound(); // New unit is north-east and treasury is at 6,
+    endRound(game);
+    endRound(game); // New unit is spawned in the city and treasury is at 2
+    endRound(game);
+    endRound(game); // New unit is spawned north of the city and treasury is at 4
+    endRound(game);
+    endRound(game); // New unit is north-east and treasury is at 6,
                 // since tiles north of city (0,1) is occupied
     assertThat(
             "An archer should spawn north-east of the city",
@@ -361,16 +332,16 @@ public class TestAlphaCiv {
 
   @Test
   public void unitShouldOnlySpawnOnOccupiableTile(){
-    endRound();
-    endRound(); // New unit is spawned in the city and treasury is at 2
-    endRound();
-    endRound(); // New unit is spawned north of the city and treasury is at 4
-    endRound();
-    endRound(); // New unit is spawned north-east and treasury is at 6
-    endRound();
-    endRound(); // New unit is spawned east and treasury is at 6
-    endRound();
-    endRound(); // New unit is spawned south and treasury is at 6,
+    endRound(game);
+    endRound(game); // New unit is spawned in the city and treasury is at 2
+    endRound(game);
+    endRound(game); // New unit is spawned north of the city and treasury is at 4
+    endRound(game);
+    endRound(game); // New unit is spawned north-east and treasury is at 6
+    endRound(game);
+    endRound(game); // New unit is spawned east and treasury is at 6
+    endRound(game);
+    endRound(game); // New unit is spawned south and treasury is at 6,
                 // since south-east tile (2,2) is and unoccupiable ocean tile
     assertThat(
             "An archer should spawn south of the city",
@@ -378,6 +349,26 @@ public class TestAlphaCiv {
     );
     assertNull(game.getUnitAt(new Position(2, 2)),
             "An archer should spawn south of the city, instead of in the ocean south-east");
+  }
+
+  @Test
+  public void playerShouldConquerCityWhenUnitAttacksIt() {
+    // Red archer moves from (2,0) to (3,1)
+    game.moveUnit(new Position(2, 0), new Position(3, 1));
+    endRound(game);
+
+    // the blue city is at
+    Position blueCityPos = new Position(4, 1);
+    // Red archer moves to the blue city tile
+    game.moveUnit(new Position(3, 1), blueCityPos);
+    assertThat(game.getCityAt(blueCityPos).getOwner(), is(Player.RED));
+  }
+
+
+  @Test
+  public void redArcherShouldHave3DefensiveStrength() {
+    int redArcherDef = game.getUnitAt(new Position(2, 0)).getDefensiveStrength();
+    assertThat(redArcherDef, is(3));
   }
 
 }
