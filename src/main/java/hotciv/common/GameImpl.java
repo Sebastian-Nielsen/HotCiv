@@ -25,26 +25,30 @@ public class GameImpl implements Game {
   private final AgingStrategy agingStrategy;
   private final WinnerStrategy winnerStrategy;
   private final SettlerActionStrategy settlerActionStrategy;
+  private ArcherActionStrategy archerActionStrategy;
 
   /* Accessor methods */
   public GameImpl(AgingStrategy agingStrategy,
                   WinnerStrategy winnerStrategy,
                   SettlerActionStrategy settlerActionStrategy,
+                  ArcherActionStrategy noArcherActionStrategy,
                   WorldLayoutStrategy worldLayoutStrategy,
                   String[] layout) {
     // Initialize world
     world = new World();
+
     // Initialize strategies
     this.agingStrategy = agingStrategy;
     this.winnerStrategy = winnerStrategy;
     this.settlerActionStrategy = settlerActionStrategy;
+    this.archerActionStrategy = noArcherActionStrategy;
     this.worldLayoutStrategy = worldLayoutStrategy;
     // Initialize tiles and cities
     this.worldLayoutStrategy.generateWorld(world, layout);
     // Initialize units
-    Unit redArcher = new UnitImpl("archer", RED);
-    Unit blueLegion = new UnitImpl("legion", BLUE);
-    Unit redSettler = new UnitImpl("settler", RED);
+    Unit redArcher = new ArcherUnitImpl(RED);
+    Unit blueLegion = new LegionUnitImpl(BLUE);
+    Unit redSettler = new SettlerUnitImpl(RED);
     // Initialize units' positions
     world.createUnitAt(new Position(2, 0), redArcher);
     world.createUnitAt(new Position(3, 2), blueLegion);
@@ -240,8 +244,13 @@ public class GameImpl implements Game {
   public void changeProductionInCityAt( Position p, String unitType ) {}
   public void performUnitActionAt( Position pos ) {
     boolean isSettlerAtPos = getUnitAt(pos).getTypeString().equals("settler");
+    UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
+    boolean isArcherAtPos = archerUnit.getTypeString().equals("archer");
     if (isSettlerAtPos)
       settlerActionStrategy.performAction(this, pos);
+    else if (isArcherAtPos)
+      archerActionStrategy.performAction((ArcherUnitImpl) archerUnit);
+
   }
   public void setAge(int newAge){
     age = newAge;

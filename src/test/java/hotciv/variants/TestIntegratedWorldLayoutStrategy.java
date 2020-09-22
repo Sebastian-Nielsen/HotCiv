@@ -39,6 +39,7 @@ public class TestIntegratedWorldLayoutStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new NoSettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new DeltaCivWorldLayoutStrategy(),
                 layout
         );

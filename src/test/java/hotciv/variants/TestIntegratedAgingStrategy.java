@@ -17,6 +17,7 @@ public class TestIntegratedAgingStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
@@ -36,6 +37,7 @@ public class TestIntegratedAgingStrategy {
                 new ProgressiveAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );

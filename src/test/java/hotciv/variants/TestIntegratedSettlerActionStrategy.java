@@ -28,6 +28,7 @@ public class TestIntegratedSettlerActionStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new NoSettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
@@ -48,6 +49,7 @@ public class TestIntegratedSettlerActionStrategy {
         game = new GameImpl(new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
@@ -68,9 +70,11 @@ public class TestIntegratedSettlerActionStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
+
         // Settler builds a city and is removed
         game.performUnitActionAt(settlerPos);
 

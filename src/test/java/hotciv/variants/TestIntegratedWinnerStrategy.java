@@ -3,7 +3,6 @@ package hotciv.variants;
 import hotciv.common.*;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static hotciv.common.TestHelperMethods.endRound;
@@ -22,6 +21,7 @@ class TestIntegratedWinnerStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
@@ -36,6 +36,7 @@ class TestIntegratedWinnerStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
@@ -50,6 +51,7 @@ class TestIntegratedWinnerStrategy {
                 new LinearAgingStrategy(),
                 new CityConquerWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );

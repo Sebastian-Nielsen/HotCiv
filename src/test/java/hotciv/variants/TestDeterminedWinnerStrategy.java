@@ -20,6 +20,7 @@ public class TestDeterminedWinnerStrategy {
                 new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
