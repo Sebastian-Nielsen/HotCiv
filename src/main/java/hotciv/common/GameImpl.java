@@ -17,7 +17,7 @@ public class GameImpl implements Game {
   private Player playerInTurn = RED;
   private int age = -4000;
   private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
-  private final int[][] adjacentPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
+  private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
 
   private final World world;
 
@@ -46,9 +46,9 @@ public class GameImpl implements Game {
     // Initialize tiles and cities
     this.worldLayoutStrategy.generateWorld(world, layout);
     // Initialize units
-    Unit redArcher = new ArcherUnitImpl(RED);
-    Unit blueLegion = new LegionUnitImpl(BLUE);
-    Unit redSettler = new SettlerUnitImpl(RED);
+    Unit redArcher = new UnitImpl("archer", RED);
+    Unit blueLegion = new UnitImpl("legion", BLUE);
+    Unit redSettler = new UnitImpl("settler", RED);
     // Initialize units' positions
     world.createUnitAt(new Position(2, 0), redArcher);
     world.createUnitAt(new Position(3, 2), blueLegion);
@@ -206,7 +206,7 @@ public class GameImpl implements Game {
    * @return the first empty and occupiable tile
    */
   private Position searchForEmptyAdjacentTile(Position pos){
-    for (int[] deltaPos : adjacentPositions) {
+    for (int[] deltaPos : adjacentDeltaPositions) {
       // Find possible position for the unit to spawn at
       Position unitPos = new Position(pos.getRow() + deltaPos[0],
               pos.getColumn() + deltaPos[1]);
@@ -243,15 +243,30 @@ public class GameImpl implements Game {
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
   public void performUnitActionAt( Position pos ) {
-    boolean isSettlerAtPos = getUnitAt(pos).getTypeString().equals("settler");
-    UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
-    boolean isArcherAtPos = archerUnit.getTypeString().equals("archer");
-    if (isSettlerAtPos)
+
+    boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals("settler");
+    if (isSettlerAtPos) {
       settlerActionStrategy.performAction(this, pos);
-    else if (isArcherAtPos)
-      archerActionStrategy.performAction((ArcherUnitImpl) archerUnit);
+      return;
+    }
+
+    boolean isArcherAtPos = getTypeOfUnitAt(pos).equals("archer");
+    if (isArcherAtPos) {
+      UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
+      archerActionStrategy.performAction( archerUnit);
+    }
 
   }
+
+  /**
+   * Get type of unit at the given position
+   * @param pos The position of the unit
+   * @return The type of the unit; e.g. archer
+   */
+  private String getTypeOfUnitAt(Position pos) {
+    return getUnitAt(pos).getTypeString();
+  }
+
   public void setAge(int newAge){
     age = newAge;
   }

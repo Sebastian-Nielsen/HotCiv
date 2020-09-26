@@ -4,7 +4,7 @@ import hotciv.framework.ArcherActionStrategy;
 
 public class NoArcherActionStrategy implements ArcherActionStrategy {
     @Override
-    public void performAction(ArcherUnitImpl unit) {
+    public void performAction(UnitImpl unit) {
 
     }
 }

@@ -1,40 +1,77 @@
 package hotciv.variants;
 
 import hotciv.common.*;
-import hotciv.framework.Player;
 import hotciv.framework.Position;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static hotciv.framework.Player.RED;
 import static org.hamcrest.Matchers.is;
-
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TestIntegratedArcherActionStrategy {
-    private GameImpl game;
+public class TestGammaCiv {
+	private GameImpl game;
+	private Position settlerPos;
+
+	@BeforeEach
+	public void SetUp() {
+		settlerPos = new Position(4, 3);
+	}
 
 
+	/* TestIntegrated SettlerActionStrategy*/
+
+     /**
+     * Test: BuildCitySettlerActionStrategy
+     */
     @Test
-    public void archerShouldPerformNoAction() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
+    public void shouldBuildCityWhenSettlerPerformAction() {
+        game = new GameImpl(new LinearAgingStrategy(),
                 new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
+                new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
-        // Red archers position and the unit
-        Position redArcherPos = new Position(2, 0);
-        UnitImpl redArcher = (UnitImpl) game.getUnitAt(redArcherPos);
-        // The archers defensive stat
-        int unFortifiedDef = redArcher.getDefensiveStrength();
-        // The archer fortifies
-        game.performUnitActionAt(redArcherPos);
-        // The new defensive stat should be the same after action is performed
-        assertThat(redArcher.getDefensiveStrength(), is(unFortifiedDef));
+
+        // Settler performs action
+        game.performUnitActionAt(settlerPos);
+
+        // Assert a city is built
+        assertNotNull(game.getCityAt(settlerPos)); // to avoid nullpointerException
+        MatcherAssert.assertThat(game.getCityAt(settlerPos).getOwner(), is(RED));
     }
 
+    /**
+     * Test: BuildCitySettlerActionStrategy
+     */
+    @Test
+    public void settlerShouldBeRemovedAfterPerformingAction() {
+        game = new GameImpl(
+                new LinearAgingStrategy(),
+                new DeterminedWinnerStrategy(),
+                new BuildCitySettlerActionStrategy(),
+                new NoArcherActionStrategy(),
+                new AlphaCivWorldLayoutStrategy(),
+                null
+        );
+
+        // Settler builds a city and is removed
+        game.performUnitActionAt(settlerPos);
+
+        // Assert settler is removed
+        assertNull(game.getUnitAt(settlerPos));
+    }
+
+
+	/* TestIntegrated ArcherActionStrategy*/
+
+	/**
+	* Test: FortifyArcherActionStrategy
+	*/
     @Test
     public void archerShouldDoubleDefStrengthAfterFortify() {
         game = new GameImpl(
@@ -56,6 +93,9 @@ public class TestIntegratedArcherActionStrategy {
         assertThat(redArcher.getDefensiveStrength(), is(unFortifiedDef * 2));
     }
 
+    /**
+	* Test: FortifyArcherActionStrategy
+	*/
     @Test
     public void archerShouldHalveDefStrengthAfterUnfortifying() {
         game = new GameImpl(
@@ -79,5 +119,6 @@ public class TestIntegratedArcherActionStrategy {
         // The new defensive stat should be same as the base defensive stat
         assertThat(redArcher.getDefensiveStrength(), is(unFortifiedDef));
     }
+
 
 }
