@@ -1,26 +1,28 @@
-package hotciv.variants;
+package hotciv.variants.unitTests;
 
-import hotciv.common.ArcherUnitImpl;
 import hotciv.common.FortifyArcherActionStrategy;
 import hotciv.common.NoArcherActionStrategy;
+import hotciv.common.UnitImpl;
 import hotciv.framework.ArcherActionStrategy;
 import hotciv.framework.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static hotciv.framework.Player.RED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class TestFortifyArcherActionStrategy {
 
     private FortifyArcherActionStrategy strategy;
-    private ArcherUnitImpl archerUnit;
+    private UnitImpl archerUnit;
 
     @BeforeEach
     void setUp() {
         strategy =  new FortifyArcherActionStrategy();
-        archerUnit = new ArcherUnitImpl(Player.RED);
+        archerUnit = new UnitImpl("archer", RED);
     }
 
 

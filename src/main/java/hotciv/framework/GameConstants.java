@@ -16,6 +16,11 @@ public class GameConstants {
   public static final int ARCHER_COST  = 10;
   public static final int LEGION_COST  = 15;
   public static final int SETTLER_COST = 30;
+  // Defensive strength
+  public static final int SETTLER_DEFENSIVE_STRENGTH = 3;
+  public static final int ARCHER_DEFENSIVE_STRENGTH = 3;
+  public static final int LEGION_DEFENSIVE_STRENGTH = 2;
+
   // Valid terrain types
   public static final String PLAINS    = "plains";
   public static final String OCEANS    = "ocean";
@@ -25,4 +30,6 @@ public class GameConstants {
   // Valid production balance types
   public static final String productionFocus = "hammer";
   public static final String foodFocus = "apple";
+  // How much the city's production should incremnt at the end of each round
+  public static final int CITY_PRODUCTION_INCREMENT_RATE = 6;
 }

@@ -1,35 +1,48 @@
 package hotciv.variants;
 
 import hotciv.common.*;
+import hotciv.framework.Player;
+import hotciv.framework.Position;
 import org.junit.jupiter.api.Test;
 
+import static hotciv.common.TestHelperMethods.*;
+import static hotciv.common.TestHelperMethods.endRound5Times;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import static hotciv.common.TestHelperMethods.*;
-
-public class TestIntegratedAgingStrategy {
+public class TestBetaCiv {
     private GameImpl game;
 
+
+    /* TestIntegrated WinnerStrategy */
     @Test
-    public void shouldIntegrateLinearAgingStrategyCorrectly() {
+    public void redShouldWinWhenRedConquersBlueCityAt4_1() {
         game = new GameImpl(
                 new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
+                new CityConquerWinnerStrategy(),
                 new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 null
         );
+
+        // Red archer moves from (2,0) to (3,1)
+        game.moveUnit(new Position(2, 0), new Position(3, 1));
         endRound(game);
-        // After ending round age has increased from 4000BC to 3900BC
-        assertThat(game.getAge(), is(-4000 + 100));
 
-        endRound40Times(game);
+        // There should not be a winner now
+        assertNull(game.getWinner());
 
-        // After ending round another 40 times, age has increased from 3900BC to 100AD (=-3900 + 40*100)
-        assertThat(game.getAge(), is(-3900 + 40*100));
+        // the blue city is at
+        Position blueCityPos = new Position(4, 1);
+        // Red archer moves to the blue city tile
+        game.moveUnit(new Position(3, 1), blueCityPos);
+
+        assertThat(game.getWinner(), is(Player.RED));
     }
+
+	/* TestIntegrated AgingStrategy */
 
     @Test
     public void shouldIntegrateProgressiveAgingStrategy() {
@@ -66,5 +79,6 @@ public class TestIntegratedAgingStrategy {
         // 1BC to 1AD
         assertThat(game.getAge(), is(1));
     }
+
 
 }

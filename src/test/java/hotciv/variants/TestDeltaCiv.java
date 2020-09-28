@@ -1,17 +1,23 @@
 package hotciv.variants;
 
 import hotciv.common.*;
-import hotciv.framework.DeltaCivWorldLayoutStrategy;
+import hotciv.common.DeltaCivWorldLayoutStrategy;
 import hotciv.framework.Position;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class TestIntegratedWorldLayoutStrategy {
+public class TestDeltaCiv {
 
     GameImpl game;
 
+
+    /* TestIntegrated WorldLayoutStrategy */
+
+    /**
+     * Test: DeltaCivWorldLayoutStrategy
+     */
     @Test
     public void shouldGenerateTilesAccordingToSuppliedLayout() {
         // Define how the layout should be generated

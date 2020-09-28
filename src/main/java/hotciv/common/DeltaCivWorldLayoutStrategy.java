@@ -1,8 +1,11 @@
-package hotciv.framework;
+package hotciv.common;
 
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
 import hotciv.common.World;
+import hotciv.framework.GameConstants;
+import hotciv.framework.Position;
+import hotciv.framework.WorldLayoutStrategy;
 
 import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
