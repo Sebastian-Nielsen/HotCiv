@@ -65,6 +65,7 @@ public class GameImpl implements Game {
 	}
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
+	public CityImpl getCityImplAt( Position p ) { return (CityImpl) world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
 	//public Player getWinner() { if (age < -3000) return null; else return RED; }
 	public Player getWinner() { return winnerStrategy.getWinner(this); }
@@ -105,30 +106,44 @@ public class GameImpl implements Game {
 	}
 
 	public boolean moveUnit( Position from, Position to ) {
-		Unit unit = world.getUnitAt(from);
-
-		// If the move isn't valid return false
-		if (!isValidUnitMove(from, to))
+		// If the move isn't valid
+		if (! isValidUnitMove(from, to))
 			return false;
 
-		/* Update the move left count of units */
-		// The unit is destroyed so remove it from the Map
-		unitToMovesLeft.remove(getUnitAt(to));
-		// Update moves left
-		unitToMovesLeft.put(unit, 0);
+		/* Destroy enemy unit (if any) */
+		removeUnit(to);
 
-		// Check if a city should be conquered
-		CityImpl toCity = (CityImpl) getCityAt(to);
-		boolean isCityAtToPos = toCity != null;
-		if (isCityAtToPos)
-			toCity.setOwner(getUnitAt(from).getOwner());
+		/* Move unit */
+		// Pop unit at from-position
+		Unit unitGettingMoved = popUnitAt(from);
+		// Set the unit at the to-position
+		world.createUnitAt(to, unitGettingMoved);
 
-		/* Move the unit */
-		// Update unit's position
-		popUnitAt(from);
-		world.createUnitAt(to, unit);
+		/* Update moves left of the unit being moved */
+		updateMovesLeft(unitGettingMoved, 0);
+
+		/* Check whether a city is conquered */
+		// If a city is at to-position
+		if (isCityAtPos(to))
+			// Update ownership of city
+			getCityImplAt(to).setOwner(unitGettingMoved.getOwner());
 
 		return true;
+	}
+
+	private void updateMovesLeft(Unit unitGettingMoved, int amount) {
+		unitToMovesLeft.put(unitGettingMoved, amount);
+	}
+
+	private void removeUnit(Position to) {
+		// Remove it from the world
+		world.popUnitAt(to);
+		// Remove its movesLeft entry
+		unitToMovesLeft.remove(getUnitAt(to));
+	}
+
+	private boolean isCityAtPos(Position pos) {
+		return getCityAt(pos) != null;
 	}
 
 	public Unit popUnitAt(Position pos) {
@@ -145,8 +160,8 @@ public class GameImpl implements Game {
 	private void endOfRoundEffects() {
 		// Increment age
 		incrementAge();
-		// Increment production by 6 in all cities
-		incrementProductionInAllCities(6);
+		// Increment production by CITY_PRODUCTION_INCREMENT_RATE in all cities
+		incrementProductionInAllCities(CITY_PRODUCTION_INCREMENT_RATE);
 		// Reset units' moves left
 		resetMovesLeftOfAllUnits();
 		// Spawn units for each city that has enough production
@@ -178,7 +193,7 @@ public class GameImpl implements Game {
 	 * Precondition: The city has enough treasury to buy the unit
 	 * Purchase the unit that the city has focused production against
 	 * @param city The city to buy the unit for
-	 * // TODO this method could be made more general along the lines of 'deductCostOfFocusedProductionFromCitysTreasury'
+	 * // TODO this method could be made more general along the lines of 'deductCostOfFocusedProductionFromCitysTreasury', but at the moment, only units can be set as city production focus, so no need
 	 */
 	private void deductUnitCostFromCitysTreasury(CityImpl city) {
 		int unitCost = getCitysProductionCost(city);
@@ -217,12 +232,17 @@ public class GameImpl implements Game {
 	}
 
 	/**
-	 * @param city    The city to check if it can spawn a unit
+	 * The city can spawn a unit if the following conditions are meet:
+	 * (1) It has accumulated enough treasury in comparison to the cost
+	 *     of the production focus.
+	 * (2) There is an empty and occpiable tile adjacent to the city
+	 *     to spawn the unit at.
+	 * @param city    The city
 	 * @param cityPos The position of the city
 	 * @return Wether the city can spawn a unit
 	 */
 	private boolean canCitySpawnUnit(CityImpl city, Position cityPos) {
- 		// Get cost of the unit the city is producing
+ 		// Get the cost of the unit the city is producing
 		int unitCost = getCitysProductionCost(city);
 
 		boolean hasAccumulatedEnoughTreasury = city.getTreasury() >= unitCost;
@@ -237,7 +257,7 @@ public class GameImpl implements Game {
 	}
 
 	/**
-	 * @param pos The position of which to check adjacent tiles for
+	 * @param pos The position which adjacent tiles is checked.
 	 * @return Whether there is an empty and occupiable adjacent tile,
 	 * or the center tile of the given position is empty and occupiable.
 	 */
@@ -298,13 +318,12 @@ public class GameImpl implements Game {
 	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos){
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			// Find possible position for the unit to spawn at
-			Position unitPos = new Position(pos.getRow() + deltaPos[0],
+			Position unitPos = new Position(pos.getRow()    + deltaPos[0],
 			                                pos.getColumn() + deltaPos[1]);
 
 			// Check whether there isn't a unit on the tile and the tile is occupiable
 			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos)) {
 				// An empty tile has been found, so we are finished
-				System.out.println(unitPos + " " + pos);
 				return unitPos;
 			}
 		}

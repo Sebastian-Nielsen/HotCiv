@@ -56,7 +56,8 @@ public interface Game {
    * removed from the game and the move conducted. If defeated then
    * the attacking unit is removed from the game. If a successful move
    * results in the unit entering the position of a city then this
-   * city becomes owned by the owner of the moving unit.
+   * city becomes owned by the owner of the moving unit. Updates
+   * the moves left of the unti being moved.
    * Precondition: both from and to are within the limits of the
    * world.  Precondition: there is a unit located at position from.
    * @param from the position that the unit has now
