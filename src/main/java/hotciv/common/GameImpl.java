@@ -37,7 +37,6 @@ public class GameImpl implements Game {
 	                String[] layout) {
 		// Initialize world
 		world = new World();
-
 		// Initialize strategies
 		this.agingStrategy = agingStrategy;
 		this.winnerStrategy = winnerStrategy;
@@ -65,7 +64,6 @@ public class GameImpl implements Game {
 	}
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
-	public CityImpl getCityImplAt( Position p ) { return (CityImpl) world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
 	//public Player getWinner() { if (age < -3000) return null; else return RED; }
 	public Player getWinner() { return winnerStrategy.getWinner(this); }
@@ -82,64 +80,96 @@ public class GameImpl implements Game {
 	 * @return whether the move is valid
 	 */
 	private boolean isValidUnitMove( Position from, Position to ) {
-		Unit fromUnit = world.getUnitAt(from);
+		Unit fromUnit = getUnitAt(from);
+		Unit toUnit   = getUnitAt(to);
 
 		// If unit has less than 0 moves left
-		if (unitToMovesLeft.get(fromUnit) < calcDistance(from, to))
+		boolean hasLessThanZeroMoves = unitToMovesLeft.get(fromUnit) < calcDistance(from, to);
+		if (hasLessThanZeroMoves)
 			return false;
 
-		// If Unit at to-position is an ally-unit
-		if (getUnitAt(to) != null &&
-				getUnitAt(to).getOwner() == fromUnit.getOwner())
+		// If the unit at to-position is an ally-unit
+		boolean isAllyUnitAtToPos = toUnit != null &&
+									toUnit.getOwner() == fromUnit.getOwner();
+		if (isAllyUnitAtToPos)
 			return false;
 
-		// Units cannot move to "mountain" tile
-		//if (getTileAt(to).getTypeString().equals("mountain"))
-		if (!isOccupiableTile(to))
+		if (! isOccupiableTile(to))
 			return false;
 
-		// A player cannot move other player's units
-		if (fromUnit.getOwner() != playerInTurn)
+		// If the unit at from-position is not an ally unit
+		boolean isFromUnitAnEnemyUnit = fromUnit.getOwner() != playerInTurn;
+		if (isFromUnitAnEnemyUnit)
 			return false;
 
 		return true;
 	}
 
 	public boolean moveUnit( Position from, Position to ) {
-		// If the move isn't valid
-		if (! isValidUnitMove(from, to))
-			return false;
 
-		/* Destroy enemy unit (if any) */
+		if (isValidUnitMove(from, to)) {
+			preMoveUnitSideEffects(to);
+			updateUnitPos(from, to);
+			postMoveUnitSideEffects(to);
+			return true;
+		}
+
+		return false;
+	}
+
+	public void updateUnitPos(Position from, Position to) {
+		world.createUnitAt(to, popUnitAt(from));
+	}
+
+	public void preMoveUnitSideEffects(Position to) {
+		// Remove enemy unit (if any)
 		removeUnit(to);
+	}
 
-		/* Move unit */
-		// Pop unit at from-position
-		Unit unitGettingMoved = popUnitAt(from);
-		// Set the unit at the to-position
-		world.createUnitAt(to, unitGettingMoved);
+	public void postMoveUnitSideEffects(Position to) {
+		Unit unitGettingMoved = getUnitAt(to);
 
-		/* Update moves left of the unit being moved */
-		updateMovesLeft(unitGettingMoved, 0);
+		// Reset moves left of the unit getting moved
+		resetMovesLeft(unitGettingMoved);
+		// Conquer city if city present at to-pos
+		Player newOwner = unitGettingMoved.getOwner();
+		conquerCity(to, newOwner);
+	}
 
-		/* Check whether a city is conquered */
-		// If a city is at to-position
-		if (isCityAtPos(to))
+	/**
+	 * If city is present at the given position,
+	 * change the ownership of the city
+	 * @param pos The position to check for a city at
+	 * @param newOwner The new owner of the city
+	 */
+	private void conquerCity(Position pos, Player newOwner) {
+		// If a city is at the position
+		if (isCityAtPos(pos)) {
 			// Update ownership of city
-			getCityImplAt(to).setOwner(unitGettingMoved.getOwner());
-
-		return true;
+			City city = getCityAt(pos);
+			updateCityOwnership(city, newOwner);
+		}
 	}
 
-	private void updateMovesLeft(Unit unitGettingMoved, int amount) {
-		unitToMovesLeft.put(unitGettingMoved, amount);
+	private void updateCityOwnership(City city, Player newOwner) {
+		CityImpl cityImpl = (CityImpl) city;
+		cityImpl.setOwner(newOwner);
 	}
 
-	private void removeUnit(Position to) {
-		// Remove it from the world
-		world.popUnitAt(to);
+	private void resetMovesLeft(Unit unit) {
+		updateMovesLeft(unit, 0);
+	}
+
+	private void updateMovesLeft(Unit u, int amount) {
+		UnitImpl unit = (UnitImpl) u;
+		unitToMovesLeft.put(unit, amount);
+	}
+
+	private void removeUnit(Position pos) {
+		// Remove unit
+		world.popUnitAt(pos);
 		// Remove its movesLeft entry
-		unitToMovesLeft.remove(getUnitAt(to));
+		unitToMovesLeft.remove(getUnitAt(pos));
 	}
 
 	private boolean isCityAtPos(Position pos) {
