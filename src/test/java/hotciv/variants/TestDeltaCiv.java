@@ -47,8 +47,8 @@ public class TestDeltaCiv {
                 new NoSettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new DeltaCivWorldLayoutStrategy(),
-                layout
-        );
+                layout,
+                new AttackerAlwaysWinsAttackStrategy());
 
         // Assert that the world was correctly generated
         assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is("ocean"));

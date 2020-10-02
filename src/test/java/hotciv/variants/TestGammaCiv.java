@@ -34,8 +34,8 @@ public class TestGammaCiv {
                 new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+				new AttackerAlwaysWinsAttackStrategy());
 
         // Settler performs action
         game.performUnitActionAt(settlerPos);
@@ -56,8 +56,8 @@ public class TestGammaCiv {
                 new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+				new AttackerAlwaysWinsAttackStrategy());
 
         // Settler builds a city and is removed
         game.performUnitActionAt(settlerPos);
@@ -80,8 +80,8 @@ public class TestGammaCiv {
                 new NoSettlerActionStrategy(),
                 new FortifyArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+				new AttackerAlwaysWinsAttackStrategy());
         // Red archers position and the unit
         Position redArcherPos = new Position(2, 0);
         UnitImpl redArcher = (UnitImpl) game.getUnitAt(redArcherPos);
@@ -104,8 +104,8 @@ public class TestGammaCiv {
                 new NoSettlerActionStrategy(),
                 new FortifyArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+				new AttackerAlwaysWinsAttackStrategy());
 
         // Red archers position and the unit
         Position redArcherPos = new Position(2, 0);

@@ -24,8 +24,8 @@ public class TestBetaCiv {
                 new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+                new AttackerAlwaysWinsAttackStrategy());
 
         // Red archer moves from (2,0) to (3,1)
         game.moveUnit(new Position(2, 0), new Position(3, 1));
@@ -52,8 +52,8 @@ public class TestBetaCiv {
                 new BuildCitySettlerActionStrategy(),
                 new NoArcherActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
-                null
-        );
+                null,
+                new AttackerAlwaysWinsAttackStrategy());
 
         endRound(game); // age increases from 4000BC to 3900BC
 

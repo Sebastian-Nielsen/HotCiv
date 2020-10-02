@@ -18,7 +18,7 @@ public class GameImpl implements Game {
 	private Player playerInTurn = RED;
 	private int age = -4000;
 	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
-	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
+	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
 
 	private final World world;
 
@@ -27,14 +27,17 @@ public class GameImpl implements Game {
 	private final WinnerStrategy winnerStrategy;
 	private final SettlerActionStrategy settlerActionStrategy;
 	private ArcherActionStrategy archerActionStrategy;
+	private AttackStrategy attackStrategy;
 
 	/* Accessor methods */
 	public GameImpl(AgingStrategy agingStrategy,
-	                WinnerStrategy winnerStrategy,
-	                SettlerActionStrategy settlerActionStrategy,
-	                ArcherActionStrategy noArcherActionStrategy,
-	                WorldLayoutStrategy worldLayoutStrategy,
-	                String[] layout) {
+					WinnerStrategy winnerStrategy,
+					SettlerActionStrategy settlerActionStrategy,
+					ArcherActionStrategy noArcherActionStrategy,
+					WorldLayoutStrategy worldLayoutStrategy,
+					String[] layout,
+					AttackStrategy attackStrategy) {
+
 		// Initialize world
 		world = new World();
 		// Initialize strategies
@@ -43,6 +46,7 @@ public class GameImpl implements Game {
 		this.settlerActionStrategy = settlerActionStrategy;
 		this.archerActionStrategy = noArcherActionStrategy;
 		this.worldLayoutStrategy = worldLayoutStrategy;
+		this.attackStrategy = attackStrategy;
 		// Initialize tiles and cities
 		this.worldLayoutStrategy.generateWorld(world, layout);
 		// Initialize units
@@ -65,7 +69,6 @@ public class GameImpl implements Game {
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
-	//public Player getWinner() { if (age < -3000) return null; else return RED; }
 	public Player getWinner() { return winnerStrategy.getWinner(this); }
 	public int getAge() { return age; }
 	public Collection<City> getAllCities(){
@@ -107,14 +110,29 @@ public class GameImpl implements Game {
 
 	public boolean moveUnit( Position from, Position to ) {
 
-		if (isValidUnitMove(from, to)) {
-			preMoveUnitSideEffects(to);
-			updateUnitPos(from, to);
-			postMoveUnitSideEffects(to);
-			return true;
-		}
+		if (! isValidUnitMove(from, to))
+			return false;
 
-		return false;
+		boolean didAttack = attackUnit(from, to);
+		if (! didAttack)
+			updateUnitPos(from, to);
+
+		postMoveUnitSideEffects(to);
+		return true;
+	}
+
+
+
+	/**
+	 * @param from position
+	 * @param to position
+	 * @return whether a unit was attacked
+	 */
+	private boolean attackUnit(Position from, Position to) {
+		boolean isUnitAtToPos = getUnitAt(to) != null;
+		if (isUnitAtToPos)
+			attackStrategy.attackUnit(from, to, this);
+		return isUnitAtToPos;
 	}
 
 	public void updateUnitPos(Position from, Position to) {
@@ -123,7 +141,7 @@ public class GameImpl implements Game {
 
 	public void preMoveUnitSideEffects(Position to) {
 		// Remove enemy unit (if any)
-		removeUnit(to);
+		popUnitAt(to);
 	}
 
 	public void postMoveUnitSideEffects(Position to) {
@@ -165,18 +183,20 @@ public class GameImpl implements Game {
 		unitToMovesLeft.put(unit, amount);
 	}
 
-	private void removeUnit(Position pos) {
-		// Remove unit
-		world.popUnitAt(pos);
-		// Remove its movesLeft entry
-		unitToMovesLeft.remove(getUnitAt(pos));
-	}
 
 	private boolean isCityAtPos(Position pos) {
 		return getCityAt(pos) != null;
 	}
 
+	/**
+	 * Removes and returns the unit at the give pos from the world
+	 * and from unitToMovesLeft hashmap
+	 * @param pos unit's position
+	 * @return The unit that is removed
+	 */
 	public Unit popUnitAt(Position pos) {
+		// Remove its movesLeft entry
+		unitToMovesLeft.remove(getUnitAt(pos));
 		return world.popUnitAt(pos);
 	}
 
@@ -397,6 +417,8 @@ public class GameImpl implements Game {
 		}
 
 	}
+
+	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
 
 	/**
 	 * Get type of unit at the given position

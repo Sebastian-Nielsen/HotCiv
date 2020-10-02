@@ -5,7 +5,6 @@ import hotciv.framework.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,8 +26,8 @@ public class TestAlphaCiv {
 				new NoSettlerActionStrategy(),
 				new NoArcherActionStrategy(),
 				new AlphaCivWorldLayoutStrategy(),
-				null
-		);
+				null,
+				new AttackerAlwaysWinsAttackStrategy());
 		redCity = game.getCityAt(new Position(1, 1));
 		blueCity = game.getCityAt(new Position(4, 1));
 	}
@@ -38,14 +37,6 @@ public class TestAlphaCiv {
 
 	@Test
 	public void shouldMakeRedTheWinnerAt3000BC(){
-		game = new GameImpl(
-				new LinearAgingStrategy(),
-				new DeterminedWinnerStrategy(),
-				new BuildCitySettlerActionStrategy(),
-				new NoArcherActionStrategy(),
-				new AlphaCivWorldLayoutStrategy(),
-				null
-		);
 		endRound10Times(game);
 		assertThat(game.getAge(), is(-4000 + 10*100)); // = -3000
 		assertThat(game.getWinner(), is(Player.RED));
@@ -56,14 +47,6 @@ public class TestAlphaCiv {
 
 	@Test
     public void shouldIntegrateLinearAgingStrategyCorrectly() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
         endRound(game);
         // After ending round age has increased from 4000BC to 3900BC
         assertThat(game.getAge(), is(-4000 + 100));
@@ -82,14 +65,6 @@ public class TestAlphaCiv {
 	*/
     @Test
     public void archerShouldPerformNoAction() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
         // Red archers position and the unit
         Position redArcherPos = new Position(2, 0);
         UnitImpl redArcher = (UnitImpl) game.getUnitAt(redArcherPos);
@@ -106,15 +81,6 @@ public class TestAlphaCiv {
 	*/
     @Test
     public void settlerShouldPerformNoAction() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         Position settlerPos = new Position(4, 3);
 
         game.performUnitActionAt(settlerPos);
@@ -141,7 +107,7 @@ public class TestAlphaCiv {
 
 	@Test
 	public void hillTileAtPos0_1() {
-		assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is("hill"));
+		assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is("hills"));
 	}
 
 	@Test
