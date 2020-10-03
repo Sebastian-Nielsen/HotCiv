@@ -17,8 +17,12 @@ import static hotciv.framework.Player.*;
 public class GameImpl implements Game {
 	private Player playerInTurn = RED;
 	private int age = -4000;
+
 	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
+	private final Map<Player, Integer> playerToSuccessfulAttacksCount = new HashMap<>();
+
 	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
+
 
 	private final World world;
 
@@ -29,7 +33,11 @@ public class GameImpl implements Game {
 	private ArcherActionStrategy archerActionStrategy;
 	private AttackStrategy attackStrategy;
 
-	/* Accessor methods */
+	private void initplayerToSuccessfulAttacksCount() {
+		for (Player player : Player.values())
+			playerToSuccessfulAttacksCount.put(player, 0);
+	}
+
 	public GameImpl(AgingStrategy agingStrategy,
 					WinnerStrategy winnerStrategy,
 					SettlerActionStrategy settlerActionStrategy,
@@ -40,6 +48,8 @@ public class GameImpl implements Game {
 
 		// Initialize world
 		world = new World();
+		// Initialize successful attacks count of each player
+		initplayerToSuccessfulAttacksCount();
 		// Initialize strategies
 		this.agingStrategy = agingStrategy;
 		this.winnerStrategy = winnerStrategy;
@@ -130,9 +140,29 @@ public class GameImpl implements Game {
 	 */
 	private boolean attackUnit(Position from, Position to) {
 		boolean isUnitAtToPos = getUnitAt(to) != null;
-		if (isUnitAtToPos)
-			attackStrategy.attackUnit(from, to, this);
-		return isUnitAtToPos;
+
+		// If there is no unit to attack => no unit was attacked
+		if (! isUnitAtToPos)
+			return false;
+
+		// At this point, we know a unit is attacked for sure
+
+		boolean wasAttackSuccessful = attackStrategy.attackUnit(from, to, this);
+
+		if (wasAttackSuccessful)
+			updateSuccessfulAttackCount();
+
+		return true;
+	}
+
+	private void updateSuccessfulAttackCount() {
+		Player playerInTurn = getPlayerInTurn();
+
+		// Get the playerInTurn's successfulAttackCount
+		int successfulAttkackCount = playerToSuccessfulAttacksCount.get(playerInTurn);
+
+		// Update the playerInTurn's successfulAttackCount
+		playerToSuccessfulAttacksCount.put(playerInTurn, successfulAttkackCount + 1);
 	}
 
 	public void updateUnitPos(Position from, Position to) {
@@ -378,6 +408,10 @@ public class GameImpl implements Game {
 			}
 		}
 		return null;
+	}
+
+	public int getSuccessfulAttacksCountOf(Player player) {
+		return playerToSuccessfulAttacksCount.get(player);
 	}
 
 	private int getCostOfUnit(String unitType) {

@@ -2,13 +2,14 @@ package hotciv.variants;
 
 import hotciv.common.*;
 import hotciv.framework.AttackStrategy;
-import hotciv.framework.Player;
 import hotciv.framework.Position;
-import org.junit.jupiter.api.BeforeEach;
+import hotciv.framework.Unit;
 import org.junit.jupiter.api.Test;
 
 
 import static hotciv.common.TestHelperMethods.endRound;
+import static hotciv.framework.Player.BLUE;
+import static hotciv.framework.Player.RED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -19,15 +20,84 @@ public class TestEpsilonCiv {
 	AttackStrategy attackStrategy;
 
 	private GameImpl gameWithFixedRandomNumber(int[] n) {
-		attackStrategy = new CombinedStrengthAttackStrategy(new FixedRandomNumberStrategy(n));
+		attackStrategy = new CombinedStrengthAttackStrategy(new StubFixedRandomNumberStrategy(n));
 		return new GameImpl(
 				new LinearAgingStrategy(),
-				new DeterminedWinnerStrategy(),
+				new FirstPlayerToWinThreeAttacksWinnerStrategy(),
 				new NoSettlerActionStrategy(),
 				new NoArcherActionStrategy(),
 				new AlphaCivWorldLayoutStrategy(),
 				null,
 				attackStrategy);
+	}
+
+
+	@Test
+	public void blueShouldWinAfterWinningThreeSuccesfulAttacks() {
+		int blueLegionRandomNumber = 6;
+		int redSettlerRandomNumber = 1;
+		int redArcherRandomNumber = 1;
+		int redArcher2RandomNumber = 1;
+		int blueArcherRandomNumber = 6;
+		// Create game instance with fixed random number
+		game = gameWithFixedRandomNumber(new int[]{blueLegionRandomNumber, redArcherRandomNumber,
+										           blueLegionRandomNumber, redSettlerRandomNumber,
+										           blueArcherRandomNumber, redArcher2RandomNumber});
+
+		Position blueLegionPos = new Position(3, 2);
+		Position redArcherPos = new Position(2, 0);
+		Position redSettlerPos = new Position(4, 3);
+		Position redCityPos = new Position(1, 1);
+		Unit blueLegion = game.getUnitAt(blueLegionPos);
+
+
+		/* Move blue legion to redArcher */
+		game.endOfTurn(); // It's blue's turn now
+		game.moveUnit(blueLegionPos, new Position(2, 1));
+		game.endOfTurn();
+		game.endOfTurn(); // It's blue's turn now
+		game.moveUnit(new Position(2, 1), redArcherPos); // Blue Legion attacks redArcher       // successfulAttacksCount = 1
+		// blue Legion wins the attack and moves to the red archers position
+		//                              legion attack       >    red archer defence
+		// Blue legion wins because:   ((4 + 0) * 1) * 6    >     ((3 + 1) * 1) * 1
+		assertThat(game.getUnitAt(redArcherPos), is(blueLegion));
+		blueLegionPos = redArcherPos;  // Position(2, 0)
+		assertNull(game.getUnitAt(redCityPos));
+		game.endOfTurn();
+
+		Position redArcher2Pos = redCityPos; // At this point, the red city should spawn a red archer in the city
+		assertThat(game.getUnitAt(redArcher2Pos).getTypeString(), is("archer"));
+
+		game.endOfTurn(); // It's blue turn now
+
+		/* Move blue legion to redSettler */
+		game.moveUnit(blueLegionPos, new Position(3, 1));
+		game.endOfTurn();
+		game.endOfTurn(); // It's blue's turn now
+
+		game.moveUnit(new Position(3, 1), new Position(4, 2));
+		game.endOfTurn(); // It's red's turn now
+		// At this point a blueArcher is spawned north of blue city at pos: (3,1)
+		Position blueArcherPos = new Position(3, 1);
+		assertThat(game.getUnitAt(blueArcherPos).getTypeString(), is("archer"));
+		game.endOfTurn(); // It's blue's turn now
+
+		game.moveUnit(new Position(4,2), redSettlerPos); // Blue Legion attacks redSettler     // successfulAttacksCount = 2
+		// blue Legion wins the attack and moves to the red settler position
+		//                              legion attack       >    red archer defence
+		// Blue legion wins because:   ((4 + 0) * 1) * 6    >     ((3 + 0) * 1) * 1
+		game.endOfTurn(); // It's red's turn now
+
+		game.moveUnit(redArcher2Pos, new Position(2, 1));
+		redArcher2Pos = new Position(2,1);
+		game.endOfTurn(); // It's blue's turn now
+
+		assertNull(game.getWinner());
+		game.moveUnit(blueArcherPos, redArcher2Pos); // BlueArcher attacks redArcher2     // successfulAttacksCount = 3
+		// blue Legion wins the attack and moves to the red settler position
+		//                          blueArcher attack       >     redarcher defence
+		// Blue legion wins because:   ((2 + 0) * 1) * 6    >     ((3 + 0) * 1) * 1
+		assertThat(game.getWinner(), is(BLUE));  // BLUE has 3 successful attacks, so BLUE wins.
 	}
 
 
@@ -47,7 +117,7 @@ public class TestEpsilonCiv {
 		game.moveUnit(new Position(2, 1), new Position(2, 0));
 		// Blue legion should win since (4 * 2) > (3 * 1)
 		assertThat(game.getUnitAt(new Position(2, 0)).getTypeString(), is("legion"));
-		assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(Player.BLUE));
+		assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(BLUE));
 	}
 
 
@@ -57,15 +127,15 @@ public class TestEpsilonCiv {
 		int legionRandomNumber = 1;
 		game = gameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
 
-		Position redArcher = new Position(2, 0);
-		game.moveUnit(redArcher, new Position(2, 1));
+		Position redArcherPos = new Position(2, 0);
+		game.moveUnit(redArcherPos, new Position(2, 1));
 		game.endOfTurn(); // Now blue's turn
 		game.endOfTurn(); // Now red's turn
 		// Red archer attacks blue legion
 		game.moveUnit(new Position(2, 1), new Position(3, 2));
 		// Red archer should lose since (2 * 1) > (2 * 1) isn't true
 		assertThat(game.getUnitAt(new Position(3, 2)).getTypeString(), is("legion"));
-		assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(Player.BLUE));
+		assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(BLUE));
 	}
 
 
@@ -91,7 +161,7 @@ public class TestEpsilonCiv {
 		game.moveUnit(new Position(2, 1), new Position(3, 2));
 		// Red archer should win since (2+1 * 1) > (2 * 1) isn't true
 		assertThat(game.getUnitAt(new Position(3, 2)).getTypeString(), is("archer"));
-		assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(Player.RED));
+		assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(RED));
 	}
 
 	@Test
@@ -121,7 +191,7 @@ public class TestEpsilonCiv {
 		// Red archer attacks blue legion from a hill and wins, since ((2   + 1)    * 2    * 1) > (2   * 1     * 2)
 		game.moveUnit(hillTilePos, new Position(1, 2));
 		assertThat(game.getUnitAt(new Position(1, 2)).getTypeString(), is("archer"));
-		assertThat(game.getUnitAt(new Position(1, 2)).getOwner(), is(Player.RED));
+		assertThat(game.getUnitAt(new Position(1, 2)).getOwner(), is(RED));
 	}
 
 
@@ -153,7 +223,7 @@ public class TestEpsilonCiv {
 		// Blue legion attacks and is killed by red archer at hill, since ((4  + 0)    * 1     * 1) > ((3 + 1)     * 2    * 1)
 		game.moveUnit(new Position(1, 2), hillTilePos);
 		assertThat(game.getUnitAt(hillTilePos).getTypeString(), is("archer"));
-		assertThat(game.getUnitAt(hillTilePos).getOwner(), is(Player.RED));
+		assertThat(game.getUnitAt(hillTilePos).getOwner(), is(RED));
 	}
 
 

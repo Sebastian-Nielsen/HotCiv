@@ -116,4 +116,10 @@ public interface Game {
    * @param newAge the new age
    */
   public void setAge(int newAge);
+
+  void updateUnitPos(Position from, Position to);
+
+  Unit popUnitAt(Position to);
+
+  boolean isUnitAtPos(Position pos);
 }

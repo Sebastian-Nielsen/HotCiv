@@ -11,32 +11,38 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 	}
 
 	@Override
-	public void attackUnit(Position from, Position to, GameImpl game) {
-		int combinedAttackStrength = calcCombinedAttackStrength(from, game);
-		int combinedDefenceStrength = calcDefensiveStrength(to, game);
-		boolean hasAttackerWon = (combinedAttackStrength * randomNumberStrategy.getRandomNumber()) >
-								 (combinedDefenceStrength * randomNumberStrategy.getRandomNumber());
-		if (hasAttackerWon) {
+	public boolean attackUnit(Position from, Position to, Game game) {
+		if (hasAttackerWon(from, to, game)) {
 			game.popUnitAt(to);
 			game.updateUnitPos(from, to);
+			return true;
 		} else {
 			game.popUnitAt(from);
+			return false;
 		}
 	}
 
-	private int calcDefensiveStrength(Position pos, GameImpl game) {
+	private boolean hasAttackerWon(Position from, Position to, Game game) {
+		int combinedAttackStrength = calcCombinedAttackStrength(from, game);
+		int combinedDefenceStrength = calcDefensiveStrength(to, game);
+		return (combinedAttackStrength * randomNumberStrategy.getRandomSixSidedDieNumber()) >
+				(combinedDefenceStrength * randomNumberStrategy.getRandomSixSidedDieNumber());
+
+	}
+
+	private int calcDefensiveStrength(Position pos, Game game) {
 		return (game.getUnitAt(pos).getDefensiveStrength() +
-									getSupportingStrength(pos, game)) *
-									getTileMultiplier(pos, game);
+									getFriendlySupport(pos, game)) *
+									getTerrainFactor(pos, game);
 	}
 
-	private int calcCombinedAttackStrength(Position pos, GameImpl game) {
+	private int calcCombinedAttackStrength(Position pos, Game game) {
 		return (game.getUnitAt(pos).getAttackingStrength() +
-									getSupportingStrength(pos, game)) *
-									getTileMultiplier(pos, game);
+									getFriendlySupport(pos, game)) *
+									getTerrainFactor(pos, game);
 	}
 
-	private int getTileMultiplier(Position pos, GameImpl game) {
+	public int getTerrainFactor(Position pos, Game game) {
 		if (game.getTileAt(pos).getTypeString().equals("hills"))
 			return 2;
 		if (game.getTileAt(pos).getTypeString().equals("forest"))
@@ -46,7 +52,7 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 		return 1;
 	}
 
-	private int getSupportingStrength(Position pos, GameImpl game) {
+	public int getFriendlySupport(Position pos, Game game) {
 		int supportingUnits = 0;
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			Position adjacentPos = new Position(pos.getRow() + deltaPos[0],
@@ -55,11 +61,12 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 			Player unitOwner = game.getUnitAt(pos).getOwner();
 			if (isAllyUnitAtPos(adjacentPos, unitOwner, game))
 				supportingUnits++;
+
 		}
 		return supportingUnits;
 	}
 
-	private boolean isAllyUnitAtPos(Position pos, Player owner, GameImpl game) {
+	private boolean isAllyUnitAtPos(Position pos, Player owner, Game game) {
 		Unit adjacentUnit = game.getUnitAt(pos);
 		return game.isUnitAtPos(pos) && adjacentUnit.getOwner() == owner;
 	}
