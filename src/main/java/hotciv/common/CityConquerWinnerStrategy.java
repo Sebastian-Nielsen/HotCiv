@@ -11,7 +11,7 @@ import java.util.Iterator;
 public class CityConquerWinnerStrategy implements WinnerStrategy {
 
     @Override
-    public Player getWinner(GameImpl game) {
+    public Player determineWinner(GameImpl game) {
         // Retrieve all cities
         Collection<City> allCities = game.getAllCities();
         // Create an iterator over the cities

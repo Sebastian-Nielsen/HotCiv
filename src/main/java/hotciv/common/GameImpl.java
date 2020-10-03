@@ -2,9 +2,7 @@ package hotciv.common;
 
 import hotciv.framework.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static hotciv.framework.GameConstants.*;
@@ -19,10 +17,9 @@ public class GameImpl implements Game {
 	private int age = -4000;
 
 	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
-	private final Map<Player, Integer> playerToSuccessfulAttacksCount = new HashMap<>();
+	private int successfulAttacksThisTurn = 0; // reset at the end of each turn
 
 	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
-
 
 	private final World world;
 
@@ -33,10 +30,7 @@ public class GameImpl implements Game {
 	private ArcherActionStrategy archerActionStrategy;
 	private AttackStrategy attackStrategy;
 
-	private void initplayerToSuccessfulAttacksCount() {
-		for (Player player : Player.values())
-			playerToSuccessfulAttacksCount.put(player, 0);
-	}
+	private int roundNumber = 1;
 
 	public GameImpl(AgingStrategy agingStrategy,
 					WinnerStrategy winnerStrategy,
@@ -48,8 +42,6 @@ public class GameImpl implements Game {
 
 		// Initialize world
 		world = new World();
-		// Initialize successful attacks count of each player
-		initplayerToSuccessfulAttacksCount();
 		// Initialize strategies
 		this.agingStrategy = agingStrategy;
 		this.winnerStrategy = winnerStrategy;
@@ -73,13 +65,16 @@ public class GameImpl implements Game {
 		unitToMovesLeft.put(redSettler, redSettler.getMoveCount());
 	}
 
+	public int getRoundNumber() {
+		return roundNumber;
+	}
 	public Tile getTileAt(Position p) {
 		return world.getTileAt(p);
 	}
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
-	public Player getWinner() { return winnerStrategy.getWinner(this); }
+	public Player getWinner() { return winnerStrategy.determineWinner(this); }
 	public int getAge() { return age; }
 	public Collection<City> getAllCities(){
 		return world.getAllCities();
@@ -150,20 +145,11 @@ public class GameImpl implements Game {
 		boolean wasAttackSuccessful = attackStrategy.attackUnit(from, to, this);
 
 		if (wasAttackSuccessful)
-			updateSuccessfulAttackCount();
+			successfulAttacksThisTurn++;
 
 		return true;
 	}
 
-	private void updateSuccessfulAttackCount() {
-		Player playerInTurn = getPlayerInTurn();
-
-		// Get the playerInTurn's successfulAttackCount
-		int successfulAttkackCount = playerToSuccessfulAttacksCount.get(playerInTurn);
-
-		// Update the playerInTurn's successfulAttackCount
-		playerToSuccessfulAttacksCount.put(playerInTurn, successfulAttkackCount + 1);
-	}
 
 	public void updateUnitPos(Position from, Position to) {
 		world.createUnitAt(to, popUnitAt(from));
@@ -240,12 +226,18 @@ public class GameImpl implements Game {
 	private void endOfRoundEffects() {
 		// Increment age
 		incrementAge();
+		// Increment round number
+		incrementRoundNumber();
 		// Increment production by CITY_PRODUCTION_INCREMENT_RATE in all cities
 		incrementProductionInAllCities(CITY_PRODUCTION_INCREMENT_RATE);
 		// Reset units' moves left
 		resetMovesLeftOfAllUnits();
 		// Spawn units for each city that has enough production
 		spawnUnitsForAllCitiesWherePossible();
+	}
+
+	private void incrementRoundNumber() {
+		roundNumber++;
 	}
 
 	/**
@@ -410,10 +402,6 @@ public class GameImpl implements Game {
 		return null;
 	}
 
-	public int getSuccessfulAttacksCountOf(Player player) {
-		return playerToSuccessfulAttacksCount.get(player);
-	}
-
 	private int getCostOfUnit(String unitType) {
 		switch (unitType) {
 			case ARCHER: return ARCHER_COST;
@@ -424,6 +412,7 @@ public class GameImpl implements Game {
 	}
 
 	public void endOfTurn() {
+		endOfTurnEffects();
 		switch (playerInTurn) {
 			case RED:
 				playerInTurn = BLUE;
@@ -434,6 +423,14 @@ public class GameImpl implements Game {
 				break;
 		}
 	}
+
+	private void endOfTurnEffects() {
+		// See if there is any winner
+		winnerStrategy.determineWinner(this);
+		// Reset success
+		successfulAttacksThisTurn = 0;
+	}
+
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
 	public void changeProductionInCityAt( Position p, String unitType ) {}
 	public void performUnitActionAt( Position pos ) {
@@ -488,5 +485,9 @@ public class GameImpl implements Game {
 	 */
 	public void createCityAtPos(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
+	}
+
+	public int getSuccessfulAttacksThisTurn() {
+		return successfulAttacksThisTurn;
 	}
 }

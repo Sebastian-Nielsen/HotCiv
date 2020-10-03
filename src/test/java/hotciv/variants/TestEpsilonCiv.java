@@ -4,6 +4,7 @@ import hotciv.common.*;
 import hotciv.framework.AttackStrategy;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
+import hotciv.variants.testStubs.StubFixedRandomNumberStrategy;
 import org.junit.jupiter.api.Test;
 
 
@@ -23,7 +24,7 @@ public class TestEpsilonCiv {
 		attackStrategy = new CombinedStrengthAttackStrategy(new StubFixedRandomNumberStrategy(n));
 		return new GameImpl(
 				new LinearAgingStrategy(),
-				new FirstPlayerToWinThreeAttacksWinnerStrategy(),
+				new ThreeSuccessfulAttacksWinnerStrategy(),
 				new NoSettlerActionStrategy(),
 				new NoArcherActionStrategy(),
 				new AlphaCivWorldLayoutStrategy(),
@@ -33,7 +34,7 @@ public class TestEpsilonCiv {
 
 
 	@Test
-	public void blueShouldWinAfterWinningThreeSuccesfulAttacks() {
+	public void blueShouldWinAfterThreeSuccesfulAttacks() {
 		int blueLegionRandomNumber = 6;
 		int redSettlerRandomNumber = 1;
 		int redArcherRandomNumber = 1;
@@ -97,6 +98,7 @@ public class TestEpsilonCiv {
 		// blue Legion wins the attack and moves to the red settler position
 		//                          blueArcher attack       >     redarcher defence
 		// Blue legion wins because:   ((2 + 0) * 1) * 6    >     ((3 + 0) * 1) * 1
+		game.endOfTurn();
 		assertThat(game.getWinner(), is(BLUE));  // BLUE has 3 successful attacks, so BLUE wins.
 	}
 

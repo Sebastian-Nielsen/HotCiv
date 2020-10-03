@@ -6,5 +6,5 @@ Responsibilities:
   1) To represent a player, specifically his/her color.
 */
 public enum Player {
-  RED, BLUE, YELLOW, GREEN
+  RED, BLUE//, YELLOW, GREEN
 }

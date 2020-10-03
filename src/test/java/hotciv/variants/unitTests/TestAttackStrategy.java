@@ -5,7 +5,6 @@ import hotciv.framework.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,13 +17,13 @@ public class TestAttackStrategy {
   private List<Position> neighborhood;
   private Position center;
 
-  Game game;
+  GameImpl game;
 
   @Before
   public void setUp() {
     game = new GameStubForBattleTesting(
 				new LinearAgingStrategy(),
-				new FirstPlayerToWinThreeAttacksWinnerStrategy(),
+				new ThreeSuccessfulAttacksWinnerStrategy(),
 				new NoSettlerActionStrategy(),
 				new NoArcherActionStrategy(),
 				new AlphaCivWorldLayoutStrategy(),
