@@ -1,4 +1,4 @@
-package hotciv.common;
+package hotciv.common.attackStrategies;
 
 import hotciv.framework.AttackStrategy;
 import hotciv.framework.Game;

@@ -1,5 +1,8 @@
-package hotciv.common;
+package hotciv.common.worldLayoutStrategies;
 
+import hotciv.common.CityImpl;
+import hotciv.common.TileImpl;
+import hotciv.common.World;
 import hotciv.framework.Position;
 import hotciv.framework.WorldLayoutStrategy;
 
@@ -9,7 +12,7 @@ import static hotciv.framework.Player.RED;
 
 public class AlphaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     @Override
-    public void generateWorld(World world, String[] layout) {
+    public void generateWorld(World world) {
         // Initialize tiles
         world.createTileAtPos(new Position(1, 0), new TileImpl(OCEANS));
         world.createTileAtPos(new Position(0, 1), new TileImpl(HILLS));

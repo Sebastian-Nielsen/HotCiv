@@ -1,7 +1,7 @@
 package hotciv.variants;
 
 import hotciv.common.*;
-import hotciv.common.DeltaCivWorldLayoutStrategy;
+import hotciv.common.GameFactories.DeltaCivFactory;
 import hotciv.framework.Position;
 import org.junit.jupiter.api.Test;
 
@@ -41,14 +41,7 @@ public class TestDeltaCiv {
                         ".....ooooooooo..",
                 };
 
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new DeltaCivWorldLayoutStrategy(),
-                layout,
-                new AttackerAlwaysWinsAttackStrategy());
+        game = new GameImpl(new DeltaCivFactory(layout));
 
         // Assert that the world was correctly generated
         assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is("ocean"));

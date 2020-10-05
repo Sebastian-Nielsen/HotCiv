@@ -1,6 +1,7 @@
 package hotciv.variants;
 
 import hotciv.common.*;
+import hotciv.common.GameFactories.ZetaCivFactory;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
 import org.hamcrest.Matchers;
@@ -22,18 +23,9 @@ public class TestZetaCiv {
 
 	@BeforeEach
 	public void SetUp() {
-		game = new GameImpl(
-				new LinearAgingStrategy(),
-				new AlternatingWinnerStrategy(),
-				new BuildCitySettlerActionStrategy(),
-				new NoArcherActionStrategy(),
-				new AlphaCivWorldLayoutStrategy(),
-				null,
-				new AttackerAlwaysWinsAttackStrategy()
-		);
+		game = new GameImpl(new ZetaCivFactory());
 
 	}
-
 
 	@Test
 	public void redShouldWinWhenRedConquersBlueCityAt4_1Before20RoundsHasPassed() {

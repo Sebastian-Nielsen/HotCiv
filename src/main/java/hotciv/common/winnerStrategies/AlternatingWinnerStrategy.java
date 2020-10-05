@@ -1,5 +1,8 @@
-package hotciv.common;
+package hotciv.common.winnerStrategies;
 
+import hotciv.common.GameImpl;
+import hotciv.common.winnerStrategies.CityConquerWinnerStrategy;
+import hotciv.common.winnerStrategies.ThreeSuccessfulAttacksWinnerStrategy;
 import hotciv.framework.Player;
 import hotciv.framework.WinnerStrategy;
 

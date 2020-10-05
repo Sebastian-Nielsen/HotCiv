@@ -1,7 +1,7 @@
 package hotciv.variants.unitTests;
 
 import hotciv.common.World;
-import hotciv.common.DeltaCivWorldLayoutStrategy;
+import hotciv.common.worldLayoutStrategies.DeltaCivWorldLayoutStrategy;
 import hotciv.framework.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +20,6 @@ class TestDeltaCivWorldLayoutStrategy {
 
     @BeforeEach
     public void SetUp() {
-        deltaCivWorldLayoutStrategy = new DeltaCivWorldLayoutStrategy();
-        world = new World();
-
         // Define how the layout should be generated
         layout = new String[]{
                         "...ooMooooo.....",
@@ -42,24 +39,26 @@ class TestDeltaCivWorldLayoutStrategy {
                         "..ooohhoo.......",
                         ".....ooooooooo..",
                 };
+        deltaCivWorldLayoutStrategy = new DeltaCivWorldLayoutStrategy(layout);
+        world = new World();
     }
 
     @Test
     public void shouldGenerateRedCityAt8_12WhenLayoutSupplied() {
-        deltaCivWorldLayoutStrategy.generateWorld(world, layout);
+        deltaCivWorldLayoutStrategy.generateWorld(world);
         assertThat(world.getCityAt(redCityPos).getOwner(), is(RED));
     }
 
     @Test
     public void shouldGenerateBlueCityAt4_5WhenLayoutSupplied() {
-        deltaCivWorldLayoutStrategy.generateWorld(world, layout);
+        deltaCivWorldLayoutStrategy.generateWorld(world);
         assertThat(world.getCityAt(blueCityPos).getOwner(), is(BLUE));
     }
 
     @Test
     public void shouldGenerateTilesAccordingToSuppliedLayout() {
         // Generate world using deltaCiv layout strategy
-        deltaCivWorldLayoutStrategy.generateWorld(world,layout);
+        deltaCivWorldLayoutStrategy.generateWorld(world);
 
         // Assert that the world was correctly generated
         assertThat(world.getTileAt(new Position(0, 0)).getTypeString(), is("ocean"));

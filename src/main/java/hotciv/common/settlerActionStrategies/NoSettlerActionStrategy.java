@@ -1,5 +1,6 @@
-package hotciv.common;
+package hotciv.common.settlerActionStrategies;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.Position;
 import hotciv.framework.SettlerActionStrategy;
 

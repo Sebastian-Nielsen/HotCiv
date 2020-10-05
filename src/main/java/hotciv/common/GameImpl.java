@@ -32,25 +32,19 @@ public class GameImpl implements Game {
 
 	private int roundNumber = 1;
 
-	public GameImpl(AgingStrategy agingStrategy,
-					WinnerStrategy winnerStrategy,
-					SettlerActionStrategy settlerActionStrategy,
-					ArcherActionStrategy noArcherActionStrategy,
-					WorldLayoutStrategy worldLayoutStrategy,
-					String[] layout,
-					AttackStrategy attackStrategy) {
 
+	public GameImpl(GameFactory gameFactory) {
+		// Initialize strategies
+		this.agingStrategy = gameFactory.createAgingStrategy();
+		this.winnerStrategy = gameFactory.createWinnerStrategy();
+		this.settlerActionStrategy = gameFactory.createSettlerActionStrategy();
+		this.archerActionStrategy = gameFactory.createArcherActionStrategy();
+		this.worldLayoutStrategy = gameFactory.createWorldLayoutStrategy();
+		this.attackStrategy = gameFactory.createAttackStrategy();
 		// Initialize world
 		world = new World();
-		// Initialize strategies
-		this.agingStrategy = agingStrategy;
-		this.winnerStrategy = winnerStrategy;
-		this.settlerActionStrategy = settlerActionStrategy;
-		this.archerActionStrategy = noArcherActionStrategy;
-		this.worldLayoutStrategy = worldLayoutStrategy;
-		this.attackStrategy = attackStrategy;
 		// Initialize tiles and cities
-		this.worldLayoutStrategy.generateWorld(world, layout);
+		this.worldLayoutStrategy.generateWorld(world);
 		// Initialize units
 		Unit redArcher = new UnitImpl("archer", RED);
 		Unit blueLegion = new UnitImpl("legion", BLUE);

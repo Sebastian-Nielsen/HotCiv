@@ -1,5 +1,6 @@
 package hotciv.common;
 
+import hotciv.common.GameFactories.AlphaCivFactory;
 import hotciv.framework.*;
 
 import org.junit.Assert;
@@ -20,14 +21,7 @@ public class TestAlphaCiv {
 	/** Fixture for alphaciv testing. */
 	@BeforeEach
 	public void setUp() {
-		game = new GameImpl(
-				new LinearAgingStrategy(),
-				new DeterminedWinnerStrategy(),
-				new NoSettlerActionStrategy(),
-				new NoArcherActionStrategy(),
-				new AlphaCivWorldLayoutStrategy(),
-				null,
-				new AttackerAlwaysWinsAttackStrategy());
+		game = new GameImpl(new AlphaCivFactory());
 		redCity = game.getCityAt(new Position(1, 1));
 		blueCity = game.getCityAt(new Position(4, 1));
 	}

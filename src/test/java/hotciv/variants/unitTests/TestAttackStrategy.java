@@ -1,6 +1,8 @@
 package hotciv.variants.unitTests;
 
 import hotciv.common.*;
+import hotciv.common.GameFactories.EpsilonCivFactory;
+import hotciv.common.attackStrategies.CombinedStrengthAttackStrategy;
 import hotciv.framework.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,16 +23,7 @@ public class TestAttackStrategy {
 
   @Before
   public void setUp() {
-    game = new GameStubForBattleTesting(
-				new LinearAgingStrategy(),
-				new ThreeSuccessfulAttacksWinnerStrategy(),
-				new NoSettlerActionStrategy(),
-				new NoArcherActionStrategy(),
-				new AlphaCivWorldLayoutStrategy(),
-				null,
-				attackStrategy
-    );
-    attackStrategy = new CombinedStrengthAttackStrategy(new TrueRandomNumberStrategy());
+    game = new GameStubForBattleTesting(new EpsilonCivFactory());
   }
 
   @Test public void shouldGiveCorrectTerrainFactors() {
@@ -93,17 +86,8 @@ class StubUnit implements Unit {
  * Red has units on 2,3; 3,2; 3,3; blue one on 4,4
  */
 class GameStubForBattleTesting extends GameImpl {
-  public GameStubForBattleTesting(AgingStrategy agingStrategy,
-					WinnerStrategy winnerStrategy,
-					SettlerActionStrategy settlerActionStrategy,
-					ArcherActionStrategy noArcherActionStrategy,
-					WorldLayoutStrategy worldLayoutStrategy,
-					String[] layout,
-					AttackStrategy attackStrategy) {
-    super(agingStrategy, winnerStrategy, settlerActionStrategy,
-          noArcherActionStrategy, worldLayoutStrategy,
-          layout, attackStrategy
-    );
+  public GameStubForBattleTesting(GameFactory gameFactory) {
+    super(gameFactory);
   }
 
   @Override

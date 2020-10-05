@@ -1,7 +1,7 @@
 package hotciv.variants;
 
 import hotciv.common.*;
-import hotciv.framework.AttackStrategy;
+import hotciv.common.GameFactories.StubEpsilonCivFactory;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
 import hotciv.variants.testStubs.StubFixedRandomNumberStrategy;
@@ -18,18 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestEpsilonCiv {
 	GameImpl game;
-	AttackStrategy attackStrategy;
 
-	private GameImpl gameWithFixedRandomNumber(int[] n) {
-		attackStrategy = new CombinedStrengthAttackStrategy(new StubFixedRandomNumberStrategy(n));
+	private GameImpl createGameWithFixedRandomNumber(int[] n) {
 		return new GameImpl(
-				new LinearAgingStrategy(),
-				new ThreeSuccessfulAttacksWinnerStrategy(),
-				new NoSettlerActionStrategy(),
-				new NoArcherActionStrategy(),
-				new AlphaCivWorldLayoutStrategy(),
-				null,
-				attackStrategy);
+				new StubEpsilonCivFactory(new StubFixedRandomNumberStrategy(n))
+		);
 	}
 
 
@@ -41,7 +34,7 @@ public class TestEpsilonCiv {
 		int redArcher2RandomNumber = 1;
 		int blueArcherRandomNumber = 6;
 		// Create game instance with fixed random number
-		game = gameWithFixedRandomNumber(new int[]{blueLegionRandomNumber, redArcherRandomNumber,
+		game = createGameWithFixedRandomNumber(new int[]{blueLegionRandomNumber, redArcherRandomNumber,
 										           blueLegionRandomNumber, redSettlerRandomNumber,
 										           blueArcherRandomNumber, redArcher2RandomNumber});
 
@@ -107,7 +100,7 @@ public class TestEpsilonCiv {
 	public void blueLegionShouldAttackAndKillRedArcher() {
 		int legionRandomNumber = 2;
 		int archerRandomNumber = 1;
-		game = gameWithFixedRandomNumber(new int[]{legionRandomNumber, archerRandomNumber}); // Create game instance with fixed random number
+		game = createGameWithFixedRandomNumber(new int[]{legionRandomNumber, archerRandomNumber}); // Create game instance with fixed random number
 		Position blueLegionPos = new Position(3, 2);
 
 		// It's red's turn
@@ -127,7 +120,7 @@ public class TestEpsilonCiv {
 	public void redArcherShouldAttackAndBeKilledByBlueLegion() {
 		int archerRandomNumber = 1;
 		int legionRandomNumber = 1;
-		game = gameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
+		game = createGameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
 
 		Position redArcherPos = new Position(2, 0);
 		game.moveUnit(redArcherPos, new Position(2, 1));
@@ -145,7 +138,7 @@ public class TestEpsilonCiv {
 	public void redArcherShouldAttackWithSupportAndKillBlueLegion() {
 		int archerRandomNumber = 1;
 		int legionRandomNumber = 1;
-		game = gameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
+		game = createGameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
 
 		Position redSettlerPos = new Position(4, 3);
 		game.moveUnit(redSettlerPos, new Position(4, 2));
@@ -170,7 +163,7 @@ public class TestEpsilonCiv {
 	public void redArcherShouldAttackFromHillAndKillBlueLegion() {
 		int archerRandomNumber = 1;
 		int legionRandomNumber = 2;
-		game = gameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
+		game = createGameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
 
 		Position hillTilePos = new Position(0, 1);
 
@@ -201,7 +194,7 @@ public class TestEpsilonCiv {
 	public void blueLegionShouldAttackRedArcherAtHillAndBeKilled() {
 		int legionRandomNumber = 1;
 		int archerRandomNumber = 1;
-		game = gameWithFixedRandomNumber(new int[]{legionRandomNumber, archerRandomNumber}); // Create game instance with fixed random number
+		game = createGameWithFixedRandomNumber(new int[]{legionRandomNumber, archerRandomNumber}); // Create game instance with fixed random number
 
 		Position hillTilePos = new Position(0, 1);
 
