@@ -1,6 +1,7 @@
 package hotciv.variants;
 
 import hotciv.common.*;
+import hotciv.common.GameFactories.GammaCivFactory;
 import hotciv.framework.Position;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ public class TestGammaCiv {
 
 	@BeforeEach
 	public void SetUp() {
+		game = new GameImpl(new GammaCivFactory());
 		settlerPos = new Position(4, 3);
 	}
 
@@ -29,14 +31,6 @@ public class TestGammaCiv {
      */
     @Test
     public void shouldBuildCityWhenSettlerPerformAction() {
-        game = new GameImpl(new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         // Settler performs action
         game.performUnitActionAt(settlerPos);
 
@@ -50,15 +44,6 @@ public class TestGammaCiv {
      */
     @Test
     public void settlerShouldBeRemovedAfterPerformingAction() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         // Settler builds a city and is removed
         game.performUnitActionAt(settlerPos);
 
@@ -74,14 +59,6 @@ public class TestGammaCiv {
 	*/
     @Test
     public void archerShouldDoubleDefStrengthAfterFortify() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
-                new FortifyArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
         // Red archers position and the unit
         Position redArcherPos = new Position(2, 0);
         UnitImpl redArcher = (UnitImpl) game.getUnitAt(redArcherPos);
@@ -98,21 +75,11 @@ public class TestGammaCiv {
 	*/
     @Test
     public void archerShouldHalveDefStrengthAfterUnfortifying() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new NoSettlerActionStrategy(),
-                new FortifyArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         // Red archers position and the unit
         Position redArcherPos = new Position(2, 0);
         UnitImpl redArcher = (UnitImpl) game.getUnitAt(redArcherPos);
         // The archers base defensive stat
         int unFortifiedDef = redArcher.getDefensiveStrength();
-        // The archer fortifies
         game.performUnitActionAt(redArcherPos);
         // The archer unfortifies
         game.performUnitActionAt(redArcherPos);

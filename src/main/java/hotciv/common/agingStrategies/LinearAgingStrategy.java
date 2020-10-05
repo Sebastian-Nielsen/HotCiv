@@ -1,4 +1,4 @@
-package hotciv.common;
+package hotciv.common.agingStrategies;
 
 import hotciv.framework.AgingStrategy;
 

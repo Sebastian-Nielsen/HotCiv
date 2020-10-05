@@ -10,6 +10,7 @@ public class UnitImpl implements Unit {
 	private final String type;
 	private final Player owner;
 	private boolean isFortified;
+	private int attackingStrength;
 	protected int defensiveStrength;
 
 
@@ -17,16 +18,19 @@ public class UnitImpl implements Unit {
 		this.type = type;
 		this.owner = owner;
 		
-		// Set defensiveStrength
+		// Set defensiveStrength and attackStrength
 		switch (type) {
 			case SETTLER:
 				this.defensiveStrength = SETTLER_DEFENSIVE_STRENGTH;
+				this.attackingStrength = SETTLER_ATTACK_STRENGTH;
 				break;
 			case ARCHER:
 				this.defensiveStrength = ARCHER_DEFENSIVE_STRENGTH;
+				this.attackingStrength = ARCHER_ATTACK_STRENGTH;
 				break;
 			case LEGION:
 				this.defensiveStrength = LEGION_DEFENSIVE_STRENGTH;
+				this.attackingStrength = LEGION_ATTACK_STRENGTH;
 				break;
 		}
 	}
@@ -53,7 +57,7 @@ public class UnitImpl implements Unit {
 
 	@Override
 	public int getAttackingStrength() {
-		return 0;
+		return attackingStrength;
 	}
 
 	public void setDefensiveStrength(int newDef) {

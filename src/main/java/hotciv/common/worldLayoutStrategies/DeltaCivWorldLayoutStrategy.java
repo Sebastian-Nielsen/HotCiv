@@ -1,4 +1,4 @@
-package hotciv.common;
+package hotciv.common.worldLayoutStrategies;
 
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
@@ -12,15 +12,23 @@ import static hotciv.framework.Player.RED;
 
 public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
 
+    private String[] layout;
+
+    public DeltaCivWorldLayoutStrategy(String[] layout) {
+        this.layout = layout;
+    }
+
     /**
-     * Precondition: Layout is not null
      * @param world The world in which to generate the layout
-     * @param layout An optional custom layout
      */
     @Override
-    public void generateWorld(World world, String[] layout) {
+    public void generateWorld(World world) {
         generateCities(world);
         generateTiles(world, layout);
+    }
+
+    public void setLayout(String[] newLayout) {
+        layout = newLayout;
     }
 
     private void generateCities(World world) {

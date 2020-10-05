@@ -1,8 +1,10 @@
 package hotciv.variants;
 
 import hotciv.common.*;
+import hotciv.common.GameFactories.BetaCivFactory;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static hotciv.common.TestHelperMethods.*;
@@ -14,19 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class TestBetaCiv {
     private GameImpl game;
 
+    @BeforeEach
+    public void setUp() {
+        game = new GameImpl(new BetaCivFactory());
+    }
 
     /* TestIntegrated WinnerStrategy */
     @Test
     public void redShouldWinWhenRedConquersBlueCityAt4_1() {
-        game = new GameImpl(
-                new LinearAgingStrategy(),
-                new CityConquerWinnerStrategy(),
-                new BuildCitySettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         // Red archer moves from (2,0) to (3,1)
         game.moveUnit(new Position(2, 0), new Position(3, 1));
         endRound(game);
@@ -43,18 +40,8 @@ public class TestBetaCiv {
     }
 
 	/* TestIntegrated AgingStrategy */
-
     @Test
     public void shouldIntegrateProgressiveAgingStrategy() {
-        game = new GameImpl(
-                new ProgressiveAgingStrategy(),
-                new DeterminedWinnerStrategy(),
-                new BuildCitySettlerActionStrategy(),
-                new NoArcherActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                null
-        );
-
         endRound(game); // age increases from 4000BC to 3900BC
 
         assertThat(game.getAge(), is(-4000 + 100));

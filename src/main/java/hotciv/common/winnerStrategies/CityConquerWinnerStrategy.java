@@ -1,5 +1,6 @@
-package hotciv.common;
+package hotciv.common.winnerStrategies;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 import hotciv.framework.WinnerStrategy;
@@ -11,7 +12,7 @@ import java.util.Iterator;
 public class CityConquerWinnerStrategy implements WinnerStrategy {
 
     @Override
-    public Player getWinner(GameImpl game) {
+    public Player determineWinner(GameImpl game) {
         // Retrieve all cities
         Collection<City> allCities = game.getAllCities();
         // Create an iterator over the cities

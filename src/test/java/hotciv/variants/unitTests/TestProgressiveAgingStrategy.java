@@ -1,6 +1,6 @@
 package hotciv.variants.unitTests;
 
-import hotciv.common.ProgressiveAgingStrategy;
+import hotciv.common.agingStrategies.ProgressiveAgingStrategy;
 import hotciv.framework.AgingStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,9 +2,7 @@ package hotciv.common;
 
 import hotciv.framework.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static hotciv.framework.GameConstants.*;
@@ -17,8 +15,11 @@ import static hotciv.framework.Player.*;
 public class GameImpl implements Game {
 	private Player playerInTurn = RED;
 	private int age = -4000;
+
 	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
-	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1} ,{-1,-1}};
+	private int successfulAttacksThisTurn = 0; // reset at the end of each turn
+
+	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
 
 	private final World world;
 
@@ -27,24 +28,23 @@ public class GameImpl implements Game {
 	private final WinnerStrategy winnerStrategy;
 	private final SettlerActionStrategy settlerActionStrategy;
 	private ArcherActionStrategy archerActionStrategy;
+	private AttackStrategy attackStrategy;
 
-	/* Accessor methods */
-	public GameImpl(AgingStrategy agingStrategy,
-	                WinnerStrategy winnerStrategy,
-	                SettlerActionStrategy settlerActionStrategy,
-	                ArcherActionStrategy noArcherActionStrategy,
-	                WorldLayoutStrategy worldLayoutStrategy,
-	                String[] layout) {
+	private int roundNumber = 1;
+
+
+	public GameImpl(GameFactory gameFactory) {
+		// Initialize strategies
+		this.agingStrategy = gameFactory.createAgingStrategy();
+		this.winnerStrategy = gameFactory.createWinnerStrategy();
+		this.settlerActionStrategy = gameFactory.createSettlerActionStrategy();
+		this.archerActionStrategy = gameFactory.createArcherActionStrategy();
+		this.worldLayoutStrategy = gameFactory.createWorldLayoutStrategy();
+		this.attackStrategy = gameFactory.createAttackStrategy();
 		// Initialize world
 		world = new World();
-		// Initialize strategies
-		this.agingStrategy = agingStrategy;
-		this.winnerStrategy = winnerStrategy;
-		this.settlerActionStrategy = settlerActionStrategy;
-		this.archerActionStrategy = noArcherActionStrategy;
-		this.worldLayoutStrategy = worldLayoutStrategy;
 		// Initialize tiles and cities
-		this.worldLayoutStrategy.generateWorld(world, layout);
+		this.worldLayoutStrategy.generateWorld(world);
 		// Initialize units
 		Unit redArcher = new UnitImpl("archer", RED);
 		Unit blueLegion = new UnitImpl("legion", BLUE);
@@ -59,14 +59,16 @@ public class GameImpl implements Game {
 		unitToMovesLeft.put(redSettler, redSettler.getMoveCount());
 	}
 
+	public int getRoundNumber() {
+		return roundNumber;
+	}
 	public Tile getTileAt(Position p) {
 		return world.getTileAt(p);
 	}
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
-	//public Player getWinner() { if (age < -3000) return null; else return RED; }
-	public Player getWinner() { return winnerStrategy.getWinner(this); }
+	public Player getWinner() { return winnerStrategy.determineWinner(this); }
 	public int getAge() { return age; }
 	public Collection<City> getAllCities(){
 		return world.getAllCities();
@@ -107,15 +109,41 @@ public class GameImpl implements Game {
 
 	public boolean moveUnit( Position from, Position to ) {
 
-		if (isValidUnitMove(from, to)) {
-			preMoveUnitSideEffects(to);
-			updateUnitPos(from, to);
-			postMoveUnitSideEffects(to);
-			return true;
-		}
+		if (! isValidUnitMove(from, to))
+			return false;
 
-		return false;
+		boolean didAttack = attackUnit(from, to);
+		if (! didAttack)
+			updateUnitPos(from, to);
+
+		postMoveUnitSideEffects(to);
+		return true;
 	}
+
+
+
+	/**
+	 * @param from position
+	 * @param to position
+	 * @return whether a unit was attacked
+	 */
+	private boolean attackUnit(Position from, Position to) {
+		boolean isUnitAtToPos = getUnitAt(to) != null;
+
+		// If there is no unit to attack => no unit was attacked
+		if (! isUnitAtToPos)
+			return false;
+
+		// At this point, we know a unit is attacked for sure
+
+		boolean wasAttackSuccessful = attackStrategy.attackUnit(from, to, this);
+
+		if (wasAttackSuccessful)
+			successfulAttacksThisTurn++;
+
+		return true;
+	}
+
 
 	public void updateUnitPos(Position from, Position to) {
 		world.createUnitAt(to, popUnitAt(from));
@@ -123,7 +151,7 @@ public class GameImpl implements Game {
 
 	public void preMoveUnitSideEffects(Position to) {
 		// Remove enemy unit (if any)
-		removeUnit(to);
+		popUnitAt(to);
 	}
 
 	public void postMoveUnitSideEffects(Position to) {
@@ -165,18 +193,20 @@ public class GameImpl implements Game {
 		unitToMovesLeft.put(unit, amount);
 	}
 
-	private void removeUnit(Position pos) {
-		// Remove unit
-		world.popUnitAt(pos);
-		// Remove its movesLeft entry
-		unitToMovesLeft.remove(getUnitAt(pos));
-	}
 
 	private boolean isCityAtPos(Position pos) {
 		return getCityAt(pos) != null;
 	}
 
+	/**
+	 * Removes and returns the unit at the give pos from the world
+	 * and from unitToMovesLeft hashmap
+	 * @param pos unit's position
+	 * @return The unit that is removed
+	 */
 	public Unit popUnitAt(Position pos) {
+		// Remove its movesLeft entry
+		unitToMovesLeft.remove(getUnitAt(pos));
 		return world.popUnitAt(pos);
 	}
 
@@ -190,12 +220,18 @@ public class GameImpl implements Game {
 	private void endOfRoundEffects() {
 		// Increment age
 		incrementAge();
+		// Increment round number
+		incrementRoundNumber();
 		// Increment production by CITY_PRODUCTION_INCREMENT_RATE in all cities
 		incrementProductionInAllCities(CITY_PRODUCTION_INCREMENT_RATE);
 		// Reset units' moves left
 		resetMovesLeftOfAllUnits();
 		// Spawn units for each city that has enough production
 		spawnUnitsForAllCitiesWherePossible();
+	}
+
+	private void incrementRoundNumber() {
+		roundNumber++;
 	}
 
 	/**
@@ -370,6 +406,7 @@ public class GameImpl implements Game {
 	}
 
 	public void endOfTurn() {
+		endOfTurnEffects();
 		switch (playerInTurn) {
 			case RED:
 				playerInTurn = BLUE;
@@ -380,6 +417,14 @@ public class GameImpl implements Game {
 				break;
 		}
 	}
+
+	private void endOfTurnEffects() {
+		// See if there is any winner
+		winnerStrategy.determineWinner(this);
+		// Reset success
+		successfulAttacksThisTurn = 0;
+	}
+
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
 	public void changeProductionInCityAt( Position p, String unitType ) {}
 	public void performUnitActionAt( Position pos ) {
@@ -397,6 +442,8 @@ public class GameImpl implements Game {
 		}
 
 	}
+
+	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
 
 	/**
 	 * Get type of unit at the given position
@@ -432,5 +479,9 @@ public class GameImpl implements Game {
 	 */
 	public void createCityAtPos(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
+	}
+
+	public int getSuccessfulAttacksThisTurn() {
+		return successfulAttacksThisTurn;
 	}
 }

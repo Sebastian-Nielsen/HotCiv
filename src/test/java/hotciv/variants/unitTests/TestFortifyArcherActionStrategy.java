@@ -1,10 +1,7 @@
 package hotciv.variants.unitTests;
 
-import hotciv.common.FortifyArcherActionStrategy;
-import hotciv.common.NoArcherActionStrategy;
+import hotciv.common.archerActionStrategies.FortifyArcherActionStrategy;
 import hotciv.common.UnitImpl;
-import hotciv.framework.ArcherActionStrategy;
-import hotciv.framework.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
