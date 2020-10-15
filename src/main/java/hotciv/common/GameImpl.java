@@ -68,7 +68,9 @@ public class GameImpl implements Game {
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
-	public Player getWinner() { return winnerStrategy.determineWinner(this); }
+	public Player getWinner() {
+		return winnerStrategy.determineWinner(this);
+	}
 	public int getAge() { return age; }
 	public Collection<City> getAllCities(){
 		return world.getAllCities();
@@ -370,8 +372,9 @@ public class GameImpl implements Game {
 	 * @return Whether the tile is occupiable by unit
 	 */
 	private Boolean isOccupiableTile(Position pos) {
-		return !(getTileAt(pos).getTypeString().equals("ocean") ||
-			 	getTileAt(pos).getTypeString().equals("mountain"));
+		return !(getTileAt(pos).getTypeString().equals(OCEANS) ||
+				 getTileAt(pos).getTypeString().equals(MOUNTAINS) ||
+				 getTileAt(pos).getTypeString().equals(DESERT));
 	}
 
 	/** Returns the first empty (no other unit standing on it) AND
