@@ -422,6 +422,10 @@ public class GameImpl implements Game {
 		// See if there is any winner
 		winnerStrategy.determineWinner(this);
 		// Reset success
+		ResetSuccessfulAttacksThisTurn();
+	}
+
+	private void ResetSuccessfulAttacksThisTurn() {
 		successfulAttacksThisTurn = 0;
 	}
 

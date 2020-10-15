@@ -23,24 +23,29 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 	}
 
 	private boolean hasAttackerWon(Position from, Position to, Game game) {
-		int combinedAttackStrength = calcCombinedAttackStrength(from, game);
-		int combinedDefenceStrength = calcDefensiveStrength(to, game);
-		return (combinedAttackStrength * randomNumberStrategy.getRandomSixSidedDieNumber()) >
-				(combinedDefenceStrength * randomNumberStrategy.getRandomSixSidedDieNumber());
+		int attackerStrength = getAttackerStrength(from, game);
+		int defenderStrength = getDefenderStrength(to,   game);
+
+		int combinedAttackerStrength = calcCombinedStrength(attackerStrength, from, game);
+		int combinedDefenderStrength = calcCombinedStrength(defenderStrength, to,   game);
+
+		return (combinedAttackerStrength * randomNumberStrategy.getRandomSixSidedDieNumber()) >
+				(combinedDefenderStrength * randomNumberStrategy.getRandomSixSidedDieNumber());
 
 	}
 
-	private int calcDefensiveStrength(Position pos, Game game) {
-		return (game.getUnitAt(pos).getDefensiveStrength() +
-									getFriendlySupport(pos, game)) *
-									getTerrainFactor(pos, game);
+	private int getAttackerStrength(Position pos, Game game) {
+		return game.getUnitAt(pos).getAttackingStrength();
 	}
 
-	private int calcCombinedAttackStrength(Position pos, Game game) {
-		return (game.getUnitAt(pos).getAttackingStrength() +
-									getFriendlySupport(pos, game)) *
-									getTerrainFactor(pos, game);
+	private int getDefenderStrength(Position pos, Game game) {
+		return game.getUnitAt(pos).getDefensiveStrength();
 	}
+
+	private int calcCombinedStrength(int baseStrength, Position pos, Game game) {
+		return (baseStrength + getFriendlySupport(pos, game)) * getTerrainFactor(pos, game);
+	}
+
 
 	public int getTerrainFactor(Position pos, Game game) {
 		if (game.getTileAt(pos).getTypeString().equals("hills"))

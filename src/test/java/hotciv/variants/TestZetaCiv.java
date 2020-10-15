@@ -76,7 +76,7 @@ public class TestZetaCiv {
 	 * gets three successful attacks, because 20 rounds haven't passed.
 	 */
 	@Test
-	public void blueShouldNOTWinAfterThreeSuccesfulAttacksbeforeRound21() {
+	public void blueShouldNOTWinAfterThreeSuccesfulAttacksBeforeRound21() {
 
 		Position blueLegionPos = new Position(3, 2);
 		Position redArcherPos = new Position(2, 0);

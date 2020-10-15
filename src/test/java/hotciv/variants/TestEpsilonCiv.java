@@ -191,7 +191,7 @@ public class TestEpsilonCiv {
 
 
 	@Test
-	public void blueLegionShouldAttackRedArcherAtHillAndBeKilled() {
+	public void blueLegionShouldAttackRedArcherOnHillAndBeKilled() {
 		int legionRandomNumber = 1;
 		int archerRandomNumber = 1;
 		game = createGameWithFixedRandomNumber(new int[]{legionRandomNumber, archerRandomNumber}); // Create game instance with fixed random number
@@ -221,5 +221,29 @@ public class TestEpsilonCiv {
 		assertThat(game.getUnitAt(hillTilePos).getOwner(), is(RED));
 	}
 
+	@Test
+	public void enemyUnitsShouldNotCountTowardsFriendlySupportBonusStrength() {
+		int archerRandomNumber = 1;
+		int legionRandomNumber = 1;
+		game = createGameWithFixedRandomNumber(new int[]{archerRandomNumber, legionRandomNumber}); // Create game instance with fixed random number
+
+		endRound(game);
+		endRound(game); // Now its red's turn again
+
+		Position redArcherPos = new Position(2, 0);
+		game.moveUnit(redArcherPos, new Position(2, 1));
+		endRound(game); // Now its red's turn again
+
+		// At this is point we have:
+		// Red archer: (2,1)
+		// Blue legion: (3,2)
+		// Blue archer: (3,1)   (spawned in blue city (4,1), and moved to (3,1))
+
+		// Red archer should not gain friendly support bonus off of the blue adjacent units
+
+		// Red archer should win since ((2+0) * 1) >= ((2+1) * 1) isn't true
+		// (If the red archer gained at least one friendly support bonus, this wouldn't be true)
+		assertTrue(game.moveUnit(new Position(2, 1), new Position(3, 2)));
+	}
 
 }
