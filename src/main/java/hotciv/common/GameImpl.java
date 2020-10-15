@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.*;
+import static org.junit.Assert.assertNotNull;
 
 
 /** Skeleton implementation of HotCiv.
@@ -16,7 +17,6 @@ public class GameImpl implements Game {
 	private Player playerInTurn = RED;
 	private int age = -4000;
 
-	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
 	private int successfulAttacksThisTurn = 0; // reset at the end of each turn
 
 	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
@@ -45,18 +45,6 @@ public class GameImpl implements Game {
 		world = new World();
 		// Initialize tiles and cities
 		this.worldLayoutStrategy.generateWorld(world);
-		// Initialize units
-		Unit redArcher = new UnitImpl("archer", RED);
-		Unit blueLegion = new UnitImpl("legion", BLUE);
-		Unit redSettler = new UnitImpl("settler", RED);
-		// Initialize units' positions
-		world.createUnitAt(new Position(2, 0), redArcher);
-		world.createUnitAt(new Position(3, 2), blueLegion);
-		world.createUnitAt(new Position(4, 3), redSettler);
-		// Initialize units' moves left
-		unitToMovesLeft.put(redArcher, redArcher.getMoveCount());
-		unitToMovesLeft.put(blueLegion, blueLegion.getMoveCount());
-		unitToMovesLeft.put(redSettler, redSettler.getMoveCount());
 	}
 
 	public int getRoundNumber() {
@@ -84,11 +72,12 @@ public class GameImpl implements Game {
 	 * @return whether the move is valid
 	 */
 	private boolean isValidUnitMove( Position from, Position to ) {
-		Unit fromUnit = getUnitAt(from);
-		Unit toUnit   = getUnitAt(to);
+		UnitImpl fromUnit = (UnitImpl) getUnitAt(from);
+		UnitImpl toUnit   = (UnitImpl) getUnitAt(to);
 
 		// If unit has less than 0 moves left
-		boolean hasLessThanZeroMoves = unitToMovesLeft.get(fromUnit) < calcDistance(from, to);
+		assertNotNull(fromUnit);
+		boolean hasLessThanZeroMoves = fromUnit.getMovesLeft() < calcDistance(from, to);
 		if (hasLessThanZeroMoves)
 			return false;
 
@@ -161,6 +150,7 @@ public class GameImpl implements Game {
 
 		// Reset moves left of the unit getting moved
 		resetMovesLeft(unitGettingMoved);
+
 		// Conquer city if city present at to-pos
 		Player newOwner = unitGettingMoved.getOwner();
 		conquerCity(to, newOwner);
@@ -190,9 +180,9 @@ public class GameImpl implements Game {
 		updateMovesLeft(unit, 0);
 	}
 
-	private void updateMovesLeft(Unit u, int amount) {
+	private void updateMovesLeft(Unit u, int value) {
 		UnitImpl unit = (UnitImpl) u;
-		unitToMovesLeft.put(unit, amount);
+		unit.setMovesLeft(value);
 	}
 
 
@@ -202,13 +192,10 @@ public class GameImpl implements Game {
 
 	/**
 	 * Removes and returns the unit at the give pos from the world
-	 * and from unitToMovesLeft hashmap
 	 * @param pos unit's position
 	 * @return The unit that is removed
 	 */
 	public Unit popUnitAt(Position pos) {
-		// Remove its movesLeft entry
-		unitToMovesLeft.remove(getUnitAt(pos));
 		return world.popUnitAt(pos);
 	}
 
@@ -337,8 +324,9 @@ public class GameImpl implements Game {
 	 * Resets the moves left count for each unit
 	 */
 	private void resetMovesLeftOfAllUnits() {
-		for (Unit unit : world.getAllUnits()){
-			unitToMovesLeft.put(unit, unit.getMoveCount());
+		for (Unit u : world.getAllUnits()){
+			UnitImpl unit = (UnitImpl) u;
+			unit.resetMovesLeft();
 		}
 	}
 

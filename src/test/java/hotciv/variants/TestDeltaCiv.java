@@ -53,7 +53,7 @@ public class TestDeltaCiv {
 
         // Init game
         game = new GameImpl(
-                new DeltaCivFactory(layout, posToCities)
+                new DeltaCivFactory(layout, posToCities, new HashMap<>())
         );
 
         // Assert that the world was correctly generated

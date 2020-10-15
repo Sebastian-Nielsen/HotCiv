@@ -329,7 +329,8 @@ public class TestAlphaCiv {
 
 		Unit redArcher = game.getUnitAt(fromPos);
 
-		game.moveUnit(fromPos, new Position(3, 1));
+		assertNotNull(redArcher);
+		assertTrue(game.moveUnit(fromPos, new Position(3, 1)));
 		endRound(game);
 
 		assertThat(

@@ -2,11 +2,9 @@ package hotciv.common.worldLayoutStrategies;
 
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
+import hotciv.common.UnitImpl;
 import hotciv.common.World;
-import hotciv.framework.City;
-import hotciv.framework.GameConstants;
-import hotciv.framework.Position;
-import hotciv.framework.WorldLayoutStrategy;
+import hotciv.framework.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,12 +14,14 @@ import static hotciv.framework.Player.RED;
 
 public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
 
+    private Map<Position, Unit> posToUnits;
     private Map<Position, City> posToCities;
     private String[] layout;
 
-    public CustomWorldLayoutStrategy(String[] layout, Map posToCities) {
+    public CustomWorldLayoutStrategy(String[] layout, Map<Position, City> posToCities, Map<Position, Unit> posToUnits) {
         this.layout = layout;
         this.posToCities = posToCities;
+        this.posToUnits = posToUnits;
     }
 
     /**
@@ -30,7 +30,17 @@ public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
     @Override
     public void generateWorld(World world) {
         generateCities(world);
+        spawnUnits(world);
         generateTiles(world, layout);
+    }
+
+    private void spawnUnits(World world) {
+        for (Map.Entry<Position, Unit> e : posToUnits.entrySet()) {
+            Position pos  =            e.getKey();
+            UnitImpl unit = (UnitImpl) e.getValue();
+
+            world.createUnitAt(pos, unit);
+        }
     }
 
     public void setLayout(String[] newLayout) {

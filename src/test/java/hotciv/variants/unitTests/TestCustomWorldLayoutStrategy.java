@@ -49,7 +49,7 @@ class TestCustomWorldLayoutStrategy {
         posToCities.put(new Position(8, 12), new CityImpl(RED));
         posToCities.put(new Position(4,  5), new CityImpl(BLUE));
 
-        customWorldLayoutStrategy = new CustomWorldLayoutStrategy(layout, posToCities);
+        customWorldLayoutStrategy = new CustomWorldLayoutStrategy(layout, posToCities, new HashMap<>());
         world = new World();
     }
 

@@ -2,8 +2,10 @@ package hotciv.common.worldLayoutStrategies;
 
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
+import hotciv.common.UnitImpl;
 import hotciv.common.World;
 import hotciv.framework.Position;
+import hotciv.framework.Unit;
 import hotciv.framework.WorldLayoutStrategy;
 
 import static hotciv.framework.GameConstants.*;
@@ -22,5 +24,14 @@ public class AlphaCivWorldLayoutStrategy implements WorldLayoutStrategy {
         // Initialize cities
         world.createCityAtPos(new Position(1, 1), new CityImpl(RED));
         world.createCityAtPos(new Position(4, 1), new CityImpl(BLUE));
+
+        // Initialize units
+		Unit redArcher = new UnitImpl("archer", RED);
+		Unit blueLegion = new UnitImpl("legion", BLUE);
+		Unit redSettler = new UnitImpl("settler", RED);
+        // Initialize units' positions
+		world.createUnitAt(new Position(2, 0), redArcher);
+		world.createUnitAt(new Position(3, 2), blueLegion);
+		world.createUnitAt(new Position(4, 3), redSettler);
     }
 }

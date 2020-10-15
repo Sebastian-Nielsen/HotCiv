@@ -11,12 +11,14 @@ import hotciv.framework.*;
 import java.util.Map;
 
 public class DeltaCivFactory implements GameFactory {
+	private Map<Position, Unit> posToUnits;
 	private Map<Position, City> posToCities;
 	private String[] layout;
 
-	public DeltaCivFactory(String[] layout, Map<Position, City> posToCities) {
+	public DeltaCivFactory(String[] layout, Map<Position, City> posToCities, Map<Position, Unit> posToUnits) {
 		this.layout = layout;
 		this.posToCities = posToCities;
+		this.posToUnits = posToUnits;
 	}
 
 	@Override
@@ -36,7 +38,7 @@ public class DeltaCivFactory implements GameFactory {
 
 	@Override
 	public WorldLayoutStrategy createWorldLayoutStrategy() {
-		return new CustomWorldLayoutStrategy(layout, posToCities);
+		return new CustomWorldLayoutStrategy(layout, posToCities, posToUnits);
 	}
 
 	@Override

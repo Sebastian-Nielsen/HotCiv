@@ -12,7 +12,7 @@ public class UnitImpl implements Unit {
 	private boolean isFortified;
 	private int attackingStrength;
 	protected int defensiveStrength;
-
+	private int movesLeft = 1;
 
 	public UnitImpl(String type, Player owner) {
 		this.type = type;
@@ -33,6 +33,14 @@ public class UnitImpl implements Unit {
 				this.attackingStrength = LEGION_ATTACK_STRENGTH;
 				break;
 		}
+	}
+
+	public void setMovesLeft(int value) {
+		movesLeft = value;
+	}
+
+	public int getMovesLeft() {
+		return movesLeft;
 	}
 
 	@Override
@@ -72,4 +80,7 @@ public class UnitImpl implements Unit {
 		return isFortified;
 	}
 
+	public void resetMovesLeft() {
+		movesLeft = 1;
+	}
 }

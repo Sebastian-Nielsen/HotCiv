@@ -13,17 +13,19 @@ import java.util.Map;
 
 public class SemiCivFactory implements GameFactory {
 
+	private Map<Position, Unit> posToUnits;
 	private Map<Position, City> posToCities;
 	private String[] layout;
 
-	public SemiCivFactory(String[] layout, Map<Position, City> posToCities) {
+	public SemiCivFactory(String[] layout, Map<Position, City> posToCities, Map<Position, Unit> posToUnits) {
 		this.layout = layout;
 		this.posToCities = posToCities;
+		this.posToUnits = posToUnits;
 	}
 
 	@Override
 	public WorldLayoutStrategy createWorldLayoutStrategy() {
-		return new CustomWorldLayoutStrategy(layout, posToCities);
+		return new CustomWorldLayoutStrategy(layout, posToCities, posToUnits);
 	}
 
 	@Override
