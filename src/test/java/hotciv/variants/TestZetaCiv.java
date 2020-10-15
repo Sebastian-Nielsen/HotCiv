@@ -8,8 +8,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static hotciv.common.TestHelperMethods.endRound;
-import static hotciv.common.TestHelperMethods.endRound20Times;
+import static hotciv.common.TestHelperMethods.*;
 import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
 import static org.hamcrest.CoreMatchers.is;
@@ -155,6 +154,45 @@ public class TestZetaCiv {
 
 		assertTrue(game.getRoundNumber() > 20);
 		assertThat(game.getWinner(), is(RED));  // Red is the winner
+	}
+
+
+	@Test
+	public void successfulAttacksBeforeRound21ShouldNotCountTowardsWin() {
+		Position redSettlerPos = new Position(4, 3);
+		Position blueCityPos = new Position(4, 1);
+
+		endRound10Times(game);
+		// 20 rounds have passed, (we are at round 21), so blue units
+		// have spawned all around the blue city.
+		assertThat(game.getUnitAt(new Position(3,2)).getOwner(), is(BLUE)); // North-east of city
+		assertThat(game.getUnitAt(new Position(4,2)).getOwner(), is(BLUE)); // east of city
+		assertThat(game.getUnitAt(new Position(5,2)).getOwner(), is(BLUE)); // south-east of city
+
+
+		// Move redSettler to the positions of the three blue units and attack them
+		game.moveUnit(redSettlerPos, new Position(3,2));
+		endRound(game);
+		game.moveUnit(new Position(3,2), new Position(4,2));
+		endRound(game);
+
+		assertNull(game.getWinner()); // No winner at this point
+
+		game.moveUnit(new Position(4,2), new Position(5,2));
+
+		// At this point
+		// Blue legion from (3,2) has killed three units in the following order:
+		// Red unit at (3,2)
+		// Red unit at (4,2)
+		// Red unit at (5,2)
+		// So succcessful-attacks-count is now: 3
+
+
+		endRound10Times(game);
+
+		assertNull(game.getWinner());  // Should be no winner yet
+
+		// We have now roundNumber 21, so the successful-attacks-count should be 0
 	}
 
 
