@@ -76,7 +76,6 @@ public class GameImpl implements Game {
 		UnitImpl toUnit   = (UnitImpl) getUnitAt(to);
 
 		// If unit has less than 0 moves left
-		assertNotNull(fromUnit);
 		boolean hasLessThanZeroMoves = fromUnit.getMovesLeft() < calcDistance(from, to);
 		if (hasLessThanZeroMoves)
 			return false;
@@ -87,7 +86,7 @@ public class GameImpl implements Game {
 		if (isAllyUnitAtToPos)
 			return false;
 
-		if (! isOccupiableTile(to))
+		if (! isOccupiableTile(to, fromUnit))
 			return false;
 
 		// If the unit at from-position is not an ally unit
@@ -270,10 +269,12 @@ public class GameImpl implements Game {
 	 * @param cityPos Position of the city
 	 */
 	private void spawnUnitForCity(City city, Position cityPos) {
+		String unitType = city.getProduction();
+		Player owner = city.getOwner();
+
 		spawnUnitAtPos(
-				getFirstEmptyAndOccupiableAdjacentTile(cityPos),
-				city.getProduction(),
-				city.getOwner()
+				getFirstEmptyAndOccupiableAdjacentTile(cityPos, unitType),
+				unitType, owner
 		);
 	}
 
@@ -304,7 +305,7 @@ public class GameImpl implements Game {
 		if (! hasAccumulatedEnoughTreasury)
 			return false;
 
-		if (! isEmptyAndOccupiableAdjacentTile(cityPos))
+		if (! isEmptyAndOccupiableAdjacentTile(cityPos, city.getProduction()))
 			// No empty and occupiable tile to spawn unit at
 			return false;
 
@@ -316,8 +317,8 @@ public class GameImpl implements Game {
 	 * @return Whether there is an empty and occupiable adjacent tile,
 	 * or the center tile of the given position is empty and occupiable.
 	 */
-	private boolean isEmptyAndOccupiableAdjacentTile(Position pos) {
-		return getFirstEmptyAndOccupiableAdjacentTile(pos) != null;
+	private boolean isEmptyAndOccupiableAdjacentTile(Position pos, String unitType) {
+		return getFirstEmptyAndOccupiableAdjacentTile(pos, unitType) != null;
 	}
 
 	/**
@@ -354,32 +355,33 @@ public class GameImpl implements Game {
 		world.spawnUnitAtPos(pos, unitType, owner);
 	}
 
-
 	/**
-	 * @param pos The position of the tile
-	 * @return Whether the tile is occupiable by unit
+	 * @param unit A unit
+	 * @param pos  The position of the tile
+	 * @return Whether the tile is occupiable by the given unit
 	 */
-	private Boolean isOccupiableTile(Position pos) {
-		return !(getTileAt(pos).getTypeString().equals(OCEANS) ||
-				 getTileAt(pos).getTypeString().equals(MOUNTAINS) ||
-				 getTileAt(pos).getTypeString().equals(DESERT));
+	private Boolean isOccupiableTile(Position pos, UnitImpl unit) {
+		return unit.canTraverse(getTileAt(pos));
 	}
 
 	/** Returns the first empty (no other unit standing on it) AND
 	 * occupiable (tile is walkable) adjacent to, or on, the given
 	 * position starting from the center tile, then north and then clockwise
 	 * @param pos center position
+	 * @param unit
 	 * @return the first empty and occupiable tile
 	 *         or null if none is present
 	 */
-	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos){
+	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos, String unitType){
+		UnitImpl unit = new UnitImpl(unitType, null);
+
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			// Find possible position for the unit to spawn at
 			Position unitPos = new Position(pos.getRow()    + deltaPos[0],
 			                                pos.getColumn() + deltaPos[1]);
 
 			// Check whether there isn't a unit on the tile and the tile is occupiable
-			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos)) {
+			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos, unit)) {
 				// An empty tile has been found, so we are finished
 				return unitPos;
 			}

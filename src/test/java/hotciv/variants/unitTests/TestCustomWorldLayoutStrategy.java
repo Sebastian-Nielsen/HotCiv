@@ -73,7 +73,7 @@ class TestCustomWorldLayoutStrategy {
         // Assert that the world was correctly generated
         assertThat(world.getTileAt(new Position(0, 0)).getTypeString(), is("ocean"));
         assertThat(world.getTileAt(new Position(3, 1)).getTypeString(), is("plains"));
-        assertThat(world.getTileAt(new Position(3, 3)).getTypeString(), is("mountain"));
+        assertThat(world.getTileAt(new Position(3, 3)).getTypeString(), is("mountains"));
         assertThat(world.getTileAt(new Position(9, 1)).getTypeString(), is("forest"));
         assertThat(world.getTileAt(new Position(14, 5)).getTypeString(), is("hills"));
 

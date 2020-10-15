@@ -57,13 +57,20 @@ public class ThetaCiv {
         // Init posToUnits
 		Map<Position, Unit> posToUnits = new HashMap<>();
 		posToUnits.put(new Position(10, 1), new UnitImpl(ARCHER, RED));
-		posToUnits.put(new Position(9, 1), new UnitImpl(LEGION, BLUE));
+		posToUnits.put(new Position(9, 1), new UnitImpl(LEGION, RED));
 		posToUnits.put(new Position(9, 2), new UnitImpl(SETTLER, RED));
+		posToUnits.put(new Position(11, 2), new UnitImpl(CARAVAN, RED));
 
 		// Init game
 		game = new GameImpl(new ThetaCivFactory(layout, posToCities, posToUnits));
 	}
 
+	@Test
+	public void caravanUnitCanTraverseDesertTiles() {
+		Position caravanPos = new Position(11, 2);
+		Position desertTilePos = new Position(10, 2);
+		assertTrue(game.moveUnit(caravanPos, desertTilePos));
+	}
 
 	@Test
 	public void ordinaryUnitsCannotTraverseDesertTileS() {

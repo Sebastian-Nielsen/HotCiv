@@ -1,6 +1,7 @@
 package hotciv.common;
 
 import hotciv.framework.Player;
+import hotciv.framework.Tile;
 import hotciv.framework.Unit;
 
 import static hotciv.framework.GameConstants.*;
@@ -12,12 +13,22 @@ public class UnitImpl implements Unit {
 	private boolean isFortified;
 	private int attackingStrength;
 	protected int defensiveStrength;
-	private int movesLeft = 1;
+	private int movesLeft;
+	private final int moveCount;
 
 	public UnitImpl(String type, Player owner) {
 		this.type = type;
 		this.owner = owner;
-		
+
+		// Int move count
+		if (type.equals(CARAVAN))
+			moveCount = 2;
+		else
+			moveCount = 1;
+
+		// Init moves left
+		movesLeft = getMoveCount();
+
 		// Set defensiveStrength and attackStrength
 		switch (type) {
 			case SETTLER:
@@ -31,6 +42,10 @@ public class UnitImpl implements Unit {
 			case LEGION:
 				this.defensiveStrength = LEGION_DEFENSIVE_STRENGTH;
 				this.attackingStrength = LEGION_ATTACK_STRENGTH;
+				break;
+			case CARAVAN:
+				this.defensiveStrength = CARAVAN_DEFENSIVE_STRENGTH;
+				this.attackingStrength = CARAVAN_ATTACK_STRENGTH;
 				break;
 		}
 	}
@@ -55,7 +70,17 @@ public class UnitImpl implements Unit {
 
 	@Override
 	public int getMoveCount() {
-		return 1;
+		return moveCount;
+	}
+
+	public boolean canTraverse(Tile tile) {
+		String tileType = tile.getTypeString();
+		if (tileType.equals(OCEANS) || tileType.equals(MOUNTAINS))
+			return false;
+		if (tileType.equals(DESERT))
+			return type.equals(CARAVAN);
+
+		return true; // Every other tile is walkable by all unit types
 	}
 
 	@Override
@@ -81,6 +106,6 @@ public class UnitImpl implements Unit {
 	}
 
 	public void resetMovesLeft() {
-		movesLeft = 1;
+		movesLeft = getMoveCount();
 	}
 }

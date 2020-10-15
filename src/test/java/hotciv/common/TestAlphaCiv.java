@@ -106,7 +106,7 @@ public class TestAlphaCiv {
 
 	@Test
 	public void mountainTileAtPos2_2() {
-		assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountain"));
+		assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountains"));
 	}
 
 	@Test
