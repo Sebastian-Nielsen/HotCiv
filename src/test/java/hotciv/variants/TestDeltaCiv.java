@@ -2,9 +2,15 @@ package hotciv.variants;
 
 import hotciv.common.*;
 import hotciv.common.GameFactories.DeltaCivFactory;
+import hotciv.framework.City;
 import hotciv.framework.Position;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static hotciv.framework.Player.BLUE;
+import static hotciv.framework.Player.RED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -16,7 +22,7 @@ public class TestDeltaCiv {
     /* TestIntegrated WorldLayoutStrategy */
 
     /**
-     * Test: DeltaCivWorldLayoutStrategy
+     * Test: CustomWorldLayoutStrategy
      */
     @Test
     public void shouldGenerateTilesAccordingToSuppliedLayout() {
@@ -40,8 +46,15 @@ public class TestDeltaCiv {
                         "..ooohhoo.......",
                         ".....ooooooooo..",
                 };
+        // Init posToCities
+        Map<Position, City> posToCities = new HashMap<>();
+        posToCities.put(new Position(8, 12), new CityImpl(RED));
+        posToCities.put(new Position(4,  5), new CityImpl(BLUE));
 
-        game = new GameImpl(new DeltaCivFactory(layout));
+        // Init game
+        game = new GameImpl(
+                new DeltaCivFactory(layout, posToCities)
+        );
 
         // Assert that the world was correctly generated
         assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is("ocean"));

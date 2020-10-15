@@ -5,14 +5,18 @@ import hotciv.common.archerActionStrategies.NoArcherActionStrategy;
 import hotciv.common.attackStrategies.AttackerAlwaysWinsAttackStrategy;
 import hotciv.common.settlerActionStrategies.NoSettlerActionStrategy;
 import hotciv.common.winnerStrategies.DeterminedWinnerStrategy;
-import hotciv.common.worldLayoutStrategies.DeltaCivWorldLayoutStrategy;
+import hotciv.common.worldLayoutStrategies.CustomWorldLayoutStrategy;
 import hotciv.framework.*;
 
+import java.util.Map;
+
 public class DeltaCivFactory implements GameFactory {
+	private Map<Position, City> posToCities;
 	private String[] layout;
 
-	public DeltaCivFactory(String[] layout) {
+	public DeltaCivFactory(String[] layout, Map<Position, City> posToCities) {
 		this.layout = layout;
+		this.posToCities = posToCities;
 	}
 
 	@Override
@@ -32,7 +36,7 @@ public class DeltaCivFactory implements GameFactory {
 
 	@Override
 	public WorldLayoutStrategy createWorldLayoutStrategy() {
-		return new DeltaCivWorldLayoutStrategy(layout);
+		return new CustomWorldLayoutStrategy(layout, posToCities);
 	}
 
 	@Override

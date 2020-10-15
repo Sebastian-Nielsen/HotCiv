@@ -3,19 +3,25 @@ package hotciv.common.worldLayoutStrategies;
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
 import hotciv.common.World;
+import hotciv.framework.City;
 import hotciv.framework.GameConstants;
 import hotciv.framework.Position;
 import hotciv.framework.WorldLayoutStrategy;
 
+import java.util.Map;
+import java.util.Set;
+
 import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
 
-public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
+public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
 
+    private Map<Position, City> posToCities;
     private String[] layout;
 
-    public DeltaCivWorldLayoutStrategy(String[] layout) {
+    public CustomWorldLayoutStrategy(String[] layout, Map posToCities) {
         this.layout = layout;
+        this.posToCities = posToCities;
     }
 
     /**
@@ -32,8 +38,12 @@ public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     }
 
     private void generateCities(World world) {
-        world.createCityAtPos(new Position(8, 12), new CityImpl(RED));
-        world.createCityAtPos(new Position(4,  5), new CityImpl(BLUE));
+        for (Map.Entry<Position, City> e : posToCities.entrySet()) {
+            Position pos  =            e.getKey();
+            CityImpl city = (CityImpl) e.getValue();
+
+            world.createCityAtPos(pos, city);
+        }
     }
 
     private void generateTiles(World world, String[] layout) {
