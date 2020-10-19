@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ThetaCiv {
+public class TestThetaCiv {
 
 	private GameImpl game;
 
@@ -89,6 +89,44 @@ public class ThetaCiv {
 		assertFalse(game.moveUnit(archerPos,  desertTilePos));
 		assertFalse(game.moveUnit(legionPos,  desertTilePos));
 		assertFalse(game.moveUnit(settlerPos, desertTilePos));
+	}
+
+	@Test
+	public void caravanInCityShouldIncreasePopulationBy2AndDisappear() {
+		Position redCityPos = new Position(8, 12);
+		CityImpl redCity = (CityImpl) game.getCityAt(redCityPos);
+		redCity.setProduction(CARAVAN); // CARAVAN_COST = 30
+		endRound(game); // Red treasury is 6
+		endRound(game); // Red treasury is 12
+		endRound(game); // Red treasury is 18
+		endRound(game); // Red treasury is 24
+		endRound(game); // Red treasury is 0 and caravan is spawned in red city
+		UnitImpl redCaravan = (UnitImpl) game.getUnitAt(redCityPos);
+		assertThat(redCaravan.getTypeString(), is(CARAVAN));
+		int preActionSize = redCity.getSize(); // Red city's size before the caravan action
+		game.performUnitActionAt(redCityPos); // Caravan performs action and increases city size and disappears
+		assertNull(game.getUnitAt(redCityPos)); // The caravan is gone
+		assertThat(redCity.getSize(), is(preActionSize + 2)); // Red city's size has increased by 2
+	}
+
+	@Test
+	public void caravanOutsideCityShouldDoNothing() {
+		Position redCityPos = new Position(8, 12);
+		CityImpl redCity = (CityImpl) game.getCityAt(redCityPos);
+		redCity.setProduction(CARAVAN); // CARAVAN_COST = 30
+		endRound(game); // Red treasury is 6
+		endRound(game); // Red treasury is 12
+		endRound(game); // Red treasury is 18
+		endRound(game); // Red treasury is 24
+		endRound(game); // Red treasury is 0 and caravan is spawned in red city
+		UnitImpl redCaravan = (UnitImpl) game.getUnitAt(redCityPos);
+		assertThat(redCaravan.getTypeString(), is(CARAVAN));
+		Position caravanNewPos = new Position(8, 11);
+		game.moveUnit(redCityPos, caravanNewPos);
+		int preActionSize = redCity.getSize(); // Red city's size before the caravan action
+		game.performUnitActionAt(caravanNewPos); // caravan performs action, but nothing happens
+		assertThat(game.getUnitAt(caravanNewPos).getTypeString(), is(CARAVAN)); // The caravan still exists
+		assertThat(redCity.getSize(), is(preActionSize)); // Red city's size is still the default of 1
 	}
 
 }

@@ -46,4 +46,5 @@ public class GameConstants {
   public static final String foodFocus = "apple";
   // How much the city's production should incremnt at the end of each round
   public static final int CITY_PRODUCTION_INCREMENT_RATE = 6;
+  public static final int CARAVAN_SIZE_ACTION_INCREASE = 2;
 }

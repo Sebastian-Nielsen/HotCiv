@@ -394,6 +394,7 @@ public class GameImpl implements Game {
 			case ARCHER: return ARCHER_COST;
 			case LEGION: return LEGION_COST;
 			case SETTLER: return SETTLER_COST;
+			case CARAVAN: return CARAVAN_COST;
 		}
 		throw new RuntimeException("Unrecognized unitType " + unitType);
 	}
@@ -426,21 +427,37 @@ public class GameImpl implements Game {
 	public void changeProductionInCityAt( Position p, String unitType ) {
 		CityImpl city = (CityImpl) getCityAt(p);
 		city.setProduction(unitType);
+
 	}
 	public void performUnitActionAt( Position pos ) {
 
-		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals("settler");
+		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
 		if (isSettlerAtPos) {
 			settlerActionStrategy.performAction(this, pos);
 			return;
 		}
 
-		boolean isArcherAtPos = getTypeOfUnitAt(pos).equals("archer");
+		boolean isArcherAtPos = getTypeOfUnitAt(pos).equals(ARCHER);
 		if (isArcherAtPos) {
 			UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
-			archerActionStrategy.performAction( archerUnit);
+			archerActionStrategy.performAction(archerUnit);
+			return;
 		}
 
+		boolean isCaravanAtPos = getTypeOfUnitAt(pos).equals(CARAVAN);
+		if (isCaravanAtPos) {
+			performCaravanAction(pos);
+			return;
+		}
+	}
+
+	private void performCaravanAction(Position pos) {
+		CityImpl city = (CityImpl) getCityAt(pos);
+		boolean isCaravanInCity = city != null;
+		if (isCaravanInCity) {
+			city.setSize(city.getSize() + CARAVAN_SIZE_ACTION_INCREASE);
+			popUnitAt(pos);
+		}
 	}
 
 	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
