@@ -1,6 +1,7 @@
 package hotciv.common;
 
 import hotciv.framework.Player;
+import hotciv.framework.Position;
 import hotciv.framework.Tile;
 import hotciv.framework.Unit;
 
@@ -107,5 +108,15 @@ public class UnitImpl implements Unit {
 
 	public void resetMovesLeft() {
 		movesLeft = getMoveCount();
+	}
+
+	public void performCaravanAction(GameImpl game, Position pos) {
+		CityImpl city = (CityImpl) game.getCityAt(pos);
+		boolean isCaravanInCity = city != null;
+		if (isCaravanInCity) {
+			city.setSize(city.getSize() + CARAVAN_SIZE_ACTION_INCREASE);
+			game.popUnitAt(pos);
+		}
+
 	}
 }

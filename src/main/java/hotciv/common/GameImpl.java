@@ -430,7 +430,6 @@ public class GameImpl implements Game {
 
 	}
 	public void performUnitActionAt( Position pos ) {
-
 		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
 		if (isSettlerAtPos) {
 			settlerActionStrategy.performAction(this, pos);
@@ -446,19 +445,12 @@ public class GameImpl implements Game {
 
 		boolean isCaravanAtPos = getTypeOfUnitAt(pos).equals(CARAVAN);
 		if (isCaravanAtPos) {
-			performCaravanAction(pos);
+			UnitImpl caravanUnit = (UnitImpl) getUnitAt(pos);
+			caravanUnit.performCaravanAction(this, pos);
 			return;
 		}
 	}
 
-	private void performCaravanAction(Position pos) {
-		CityImpl city = (CityImpl) getCityAt(pos);
-		boolean isCaravanInCity = city != null;
-		if (isCaravanInCity) {
-			city.setSize(city.getSize() + CARAVAN_SIZE_ACTION_INCREASE);
-			popUnitAt(pos);
-		}
-	}
 
 	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
 
