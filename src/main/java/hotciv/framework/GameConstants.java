@@ -22,7 +22,7 @@ public class GameConstants {
   public static final int ARCHER_TRAVEL_DISTANCE = 1;
   public static final int LEGION_TRAVEL_DISTANCE = 1;
   public static final int SETTLER_TRAVEL_DISTANCE = 1;
-  public static final int caravan_TRAVEL_DISTANCE = 2;
+  public static final int CARAVAN_TRAVEL_DISTANCE = 2;
   // Attack strength
   public static final int ARCHER_ATTACK_STRENGTH = 2;
   public static final int LEGION_ATTACK_STRENGTH = 4;

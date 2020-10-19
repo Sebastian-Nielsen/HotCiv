@@ -368,7 +368,7 @@ public class GameImpl implements Game {
 	 * occupiable (tile is walkable) adjacent to, or on, the given
 	 * position starting from the center tile, then north and then clockwise
 	 * @param pos center position
-	 * @param unit
+	 * @param unitType
 	 * @return the first empty and occupiable tile
 	 *         or null if none is present
 	 */
@@ -423,7 +423,10 @@ public class GameImpl implements Game {
 	}
 
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-	public void changeProductionInCityAt( Position p, String unitType ) {}
+	public void changeProductionInCityAt( Position p, String unitType ) {
+		CityImpl city = (CityImpl) getCityAt(p);
+		city.setProduction(unitType);
+	}
 	public void performUnitActionAt( Position pos ) {
 
 		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals("settler");

@@ -6,6 +6,8 @@ import hotciv.framework.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
+import static hotciv.framework.GameConstants.ARCHER;
+import static hotciv.framework.GameConstants.LEGION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +17,7 @@ import static hotciv.common.TestHelperMethods.*;
  */
 public class TestAlphaCiv {
 	private GameImpl game;
+	private Position redCityPos;
 	private City redCity;
 	private City blueCity;
 
@@ -22,7 +25,8 @@ public class TestAlphaCiv {
 	@BeforeEach
 	public void setUp() {
 		game = new GameImpl(new AlphaCivFactory());
-		redCity = game.getCityAt(new Position(1, 1));
+		redCityPos = new Position(1, 1);
+		redCity = game.getCityAt(redCityPos);
 		blueCity = game.getCityAt(new Position(4, 1));
 	}
 
@@ -441,6 +445,27 @@ public class TestAlphaCiv {
 	public void redArcherShouldHave3DefensiveStrength() {
 		int redArcherDef = game.getUnitAt(new Position(2, 0)).getDefensiveStrength();
 		assertThat(redArcherDef, is(3));
+	}
+
+
+	@Test
+	public void cityShouldChangeProduction() {
+		assertThat(redCity.getProduction(), is(ARCHER));
+		game.changeProductionInCityAt(redCityPos, LEGION);
+		assertThat(redCity.getProduction(), is(LEGION));
+	}
+
+
+	@Test
+	public void cityShouldSpawnCitysCurrentProduction() {
+		endRound(game); // Red's treasury is 6
+		endRound(game); // Red's treasury is 12-10=2 and archer is spawned
+		assertThat(game.getUnitAt(redCityPos).getTypeString(), is(ARCHER));
+		game.changeProductionInCityAt(redCityPos, LEGION);
+		endRound(game); // Red's treasury is 8
+		endRound(game); // Red's treasury is 14
+		endRound(game); // Red's treasury is 20-15=5 and Legion is spawned
+		assertThat(game.getUnitAt(new Position(0, 1)).getTypeString(), is(LEGION));
 	}
 
 }
