@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.*;
+import static org.junit.Assert.assertNotNull;
 
 
 /** Skeleton implementation of HotCiv.
@@ -16,7 +17,6 @@ public class GameImpl implements Game {
 	private Player playerInTurn = RED;
 	private int age = -4000;
 
-	private final Map<Unit, Integer> unitToMovesLeft = new HashMap<>();
 	private int successfulAttacksThisTurn = 0; // reset at the end of each turn
 
 	private final int[][] adjacentDeltaPositions = {{0,0}, {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1}}; // includes the center
@@ -45,18 +45,6 @@ public class GameImpl implements Game {
 		world = new World();
 		// Initialize tiles and cities
 		this.worldLayoutStrategy.generateWorld(world);
-		// Initialize units
-		Unit redArcher = new UnitImpl("archer", RED);
-		Unit blueLegion = new UnitImpl("legion", BLUE);
-		Unit redSettler = new UnitImpl("settler", RED);
-		// Initialize units' positions
-		world.createUnitAt(new Position(2, 0), redArcher);
-		world.createUnitAt(new Position(3, 2), blueLegion);
-		world.createUnitAt(new Position(4, 3), redSettler);
-		// Initialize units' moves left
-		unitToMovesLeft.put(redArcher, redArcher.getMoveCount());
-		unitToMovesLeft.put(blueLegion, blueLegion.getMoveCount());
-		unitToMovesLeft.put(redSettler, redSettler.getMoveCount());
 	}
 
 	public int getRoundNumber() {
@@ -68,7 +56,9 @@ public class GameImpl implements Game {
 	public Unit getUnitAt( Position p ) { return world.getUnitAt(p); }
 	public City getCityAt( Position p ) { return world.getCityAt(p); }
 	public Player getPlayerInTurn() { return playerInTurn; }
-	public Player getWinner() { return winnerStrategy.determineWinner(this); }
+	public Player getWinner() {
+		return winnerStrategy.determineWinner(this);
+	}
 	public int getAge() { return age; }
 	public Collection<City> getAllCities(){
 		return world.getAllCities();
@@ -82,12 +72,14 @@ public class GameImpl implements Game {
 	 * @return whether the move is valid
 	 */
 	private boolean isValidUnitMove( Position from, Position to ) {
-		Unit fromUnit = getUnitAt(from);
-		Unit toUnit   = getUnitAt(to);
+		UnitImpl fromUnit = (UnitImpl) getUnitAt(from);
+		UnitImpl toUnit   = (UnitImpl) getUnitAt(to);
 
-		// If unit has less than 0 moves left
-		boolean hasLessThanZeroMoves = unitToMovesLeft.get(fromUnit) < calcDistance(from, to);
-		if (hasLessThanZeroMoves)
+		// A unit should only be able to move 1 tile at a time
+		boolean moveIsFurtherThan1Tile = calcDistance(from, to) > 1;
+		// If unit has less than 1 moves left
+		boolean hasTooFewMovesLeft = fromUnit.getMovesLeft() < 1;
+		if (moveIsFurtherThan1Tile || hasTooFewMovesLeft)
 			return false;
 
 		// If the unit at to-position is an ally-unit
@@ -96,7 +88,7 @@ public class GameImpl implements Game {
 		if (isAllyUnitAtToPos)
 			return false;
 
-		if (! isOccupiableTile(to))
+		if (! isOccupiableTile(to, fromUnit))
 			return false;
 
 		// If the unit at from-position is not an ally unit
@@ -155,10 +147,11 @@ public class GameImpl implements Game {
 	}
 
 	public void postMoveUnitSideEffects(Position to) {
-		Unit unitGettingMoved = getUnitAt(to);
+		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(to);
 
-		// Reset moves left of the unit getting moved
-		resetMovesLeft(unitGettingMoved);
+		// Update moves left of the unit getting moved by decreasing its movecount by 1
+		updateMovesLeft(unitGettingMoved, unitGettingMoved.getMovesLeft() - 1);
+
 		// Conquer city if city present at to-pos
 		Player newOwner = unitGettingMoved.getOwner();
 		conquerCity(to, newOwner);
@@ -184,13 +177,9 @@ public class GameImpl implements Game {
 		cityImpl.setOwner(newOwner);
 	}
 
-	private void resetMovesLeft(Unit unit) {
-		updateMovesLeft(unit, 0);
-	}
-
-	private void updateMovesLeft(Unit u, int amount) {
+	private void updateMovesLeft(Unit u, int value) {
 		UnitImpl unit = (UnitImpl) u;
-		unitToMovesLeft.put(unit, amount);
+		unit.setMovesLeft(value);
 	}
 
 
@@ -200,13 +189,10 @@ public class GameImpl implements Game {
 
 	/**
 	 * Removes and returns the unit at the give pos from the world
-	 * and from unitToMovesLeft hashmap
 	 * @param pos unit's position
 	 * @return The unit that is removed
 	 */
 	public Unit popUnitAt(Position pos) {
-		// Remove its movesLeft entry
-		unitToMovesLeft.remove(getUnitAt(pos));
 		return world.popUnitAt(pos);
 	}
 
@@ -281,10 +267,12 @@ public class GameImpl implements Game {
 	 * @param cityPos Position of the city
 	 */
 	private void spawnUnitForCity(City city, Position cityPos) {
+		String unitType = city.getProduction();
+		Player owner = city.getOwner();
+
 		spawnUnitAtPos(
-				getFirstEmptyAndOccupiableAdjacentTile(cityPos),
-				city.getProduction(),
-				city.getOwner()
+				getFirstEmptyAndOccupiableAdjacentTile(cityPos, unitType),
+				unitType, owner
 		);
 	}
 
@@ -315,7 +303,7 @@ public class GameImpl implements Game {
 		if (! hasAccumulatedEnoughTreasury)
 			return false;
 
-		if (! isEmptyAndOccupiableAdjacentTile(cityPos))
+		if (! isEmptyAndOccupiableAdjacentTile(cityPos, city.getProduction()))
 			// No empty and occupiable tile to spawn unit at
 			return false;
 
@@ -327,16 +315,17 @@ public class GameImpl implements Game {
 	 * @return Whether there is an empty and occupiable adjacent tile,
 	 * or the center tile of the given position is empty and occupiable.
 	 */
-	private boolean isEmptyAndOccupiableAdjacentTile(Position pos) {
-		return getFirstEmptyAndOccupiableAdjacentTile(pos) != null;
+	private boolean isEmptyAndOccupiableAdjacentTile(Position pos, String unitType) {
+		return getFirstEmptyAndOccupiableAdjacentTile(pos, unitType) != null;
 	}
 
 	/**
 	 * Resets the moves left count for each unit
 	 */
 	private void resetMovesLeftOfAllUnits() {
-		for (Unit unit : world.getAllUnits()){
-			unitToMovesLeft.put(unit, unit.getMoveCount());
+		for (Unit u : world.getAllUnits()){
+			UnitImpl unit = (UnitImpl) u;
+			unit.resetMovesLeft();
 		}
 	}
 
@@ -364,31 +353,33 @@ public class GameImpl implements Game {
 		world.spawnUnitAtPos(pos, unitType, owner);
 	}
 
-
 	/**
-	 * @param pos The position of the tile
-	 * @return Whether the tile is occupiable by unit
+	 * @param unit A unit
+	 * @param pos  The position of the tile
+	 * @return Whether the tile is occupiable by the given unit
 	 */
-	private Boolean isOccupiableTile(Position pos) {
-		return !(getTileAt(pos).getTypeString().equals("ocean") ||
-			 	getTileAt(pos).getTypeString().equals("mountain"));
+	private Boolean isOccupiableTile(Position pos, UnitImpl unit) {
+		return unit.canTraverse(getTileAt(pos));
 	}
 
 	/** Returns the first empty (no other unit standing on it) AND
 	 * occupiable (tile is walkable) adjacent to, or on, the given
 	 * position starting from the center tile, then north and then clockwise
 	 * @param pos center position
+	 * @param unitType
 	 * @return the first empty and occupiable tile
 	 *         or null if none is present
 	 */
-	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos){
+	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos, String unitType){
+		UnitImpl unit = new UnitImpl(unitType, null);
+
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			// Find possible position for the unit to spawn at
 			Position unitPos = new Position(pos.getRow()    + deltaPos[0],
 			                                pos.getColumn() + deltaPos[1]);
 
 			// Check whether there isn't a unit on the tile and the tile is occupiable
-			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos)) {
+			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos, unit)) {
 				// An empty tile has been found, so we are finished
 				return unitPos;
 			}
@@ -401,6 +392,7 @@ public class GameImpl implements Game {
 			case ARCHER: return ARCHER_COST;
 			case LEGION: return LEGION_COST;
 			case SETTLER: return SETTLER_COST;
+			case CARAVAN: return CARAVAN_COST;
 		}
 		throw new RuntimeException("Unrecognized unitType " + unitType);
 	}
@@ -430,22 +422,33 @@ public class GameImpl implements Game {
 	}
 
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-	public void changeProductionInCityAt( Position p, String unitType ) {}
-	public void performUnitActionAt( Position pos ) {
+	public void changeProductionInCityAt( Position p, String unitType ) {
+		CityImpl city = (CityImpl) getCityAt(p);
+		city.setProduction(unitType);
 
-		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals("settler");
+	}
+	public void performUnitActionAt( Position pos ) {
+		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
 		if (isSettlerAtPos) {
 			settlerActionStrategy.performAction(this, pos);
 			return;
 		}
 
-		boolean isArcherAtPos = getTypeOfUnitAt(pos).equals("archer");
+		boolean isArcherAtPos = getTypeOfUnitAt(pos).equals(ARCHER);
 		if (isArcherAtPos) {
 			UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
-			archerActionStrategy.performAction( archerUnit);
+			archerActionStrategy.performAction(archerUnit);
+			return;
 		}
 
+		boolean isCaravanAtPos = getTypeOfUnitAt(pos).equals(CARAVAN);
+		if (isCaravanAtPos) {
+			UnitImpl caravanUnit = (UnitImpl) getUnitAt(pos);
+			caravanUnit.performCaravanAction(this, pos);
+			return;
+		}
 	}
+
 
 	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
 

@@ -3,9 +3,13 @@ package hotciv.common;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
+import static hotciv.framework.GameConstants.ARCHER;
+
 public class CityImpl implements City {
     private Player owner;
     private int treasury = 0;
+    private String currentProduction = ARCHER;
+    private int currentSize = 1;
 
     public CityImpl(Player owner) {
         this.owner = owner;
@@ -16,15 +20,17 @@ public class CityImpl implements City {
     }
 
     public int getSize() {
-        return 1;
+        return currentSize;
     }
+
+    public void setSize(int n) { currentSize = n; }
 
     public int getTreasury() {
         return treasury;
     }
 
     public String getProduction() {
-        return "archer";
+        return currentProduction;
     }
 
     public String getWorkforceFocus() {
@@ -37,4 +43,5 @@ public class CityImpl implements City {
 
     public void setOwner(Player newOwner) { owner = newOwner; }
 
+    public void setProduction(String newProduction) { currentProduction = newProduction; }
 }

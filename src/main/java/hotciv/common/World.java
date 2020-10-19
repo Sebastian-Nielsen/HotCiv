@@ -13,6 +13,7 @@ import java.util.Set;
  *      (1) What tile each position is associated with
  *      (2) What City each position is associated with
  *      (3) What Unit each position is assoicated with
+ *          (1)
  */
 public class World {
     private final Map<Position, City> posToCity = new HashMap<>();
@@ -36,7 +37,8 @@ public class World {
         if ( tileChar == 'M' ) return GameConstants.MOUNTAINS;
         if ( tileChar == 'f' ) return GameConstants.FOREST;
         if ( tileChar == 'h' ) return GameConstants.HILLS;
-        else return "error"; // Failed to convert tileChar
+        if ( tileChar == 'd' ) return GameConstants.DESERT;
+        else throw new RuntimeException("Failed to convert tileChar");
     }
 
     /* SETTER METHODS */

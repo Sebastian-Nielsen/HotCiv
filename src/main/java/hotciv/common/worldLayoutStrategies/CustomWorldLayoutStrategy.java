@@ -2,20 +2,26 @@ package hotciv.common.worldLayoutStrategies;
 
 import hotciv.common.CityImpl;
 import hotciv.common.TileImpl;
+import hotciv.common.UnitImpl;
 import hotciv.common.World;
-import hotciv.framework.GameConstants;
-import hotciv.framework.Position;
-import hotciv.framework.WorldLayoutStrategy;
+import hotciv.framework.*;
+
+import java.util.Map;
+import java.util.Set;
 
 import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
 
-public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
+public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
 
+    private Map<Position, Unit> posToUnits;
+    private Map<Position, City> posToCities;
     private String[] layout;
 
-    public DeltaCivWorldLayoutStrategy(String[] layout) {
+    public CustomWorldLayoutStrategy(String[] layout, Map<Position, City> posToCities, Map<Position, Unit> posToUnits) {
         this.layout = layout;
+        this.posToCities = posToCities;
+        this.posToUnits = posToUnits;
     }
 
     /**
@@ -24,7 +30,17 @@ public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     @Override
     public void generateWorld(World world) {
         generateCities(world);
+        spawnUnits(world);
         generateTiles(world, layout);
+    }
+
+    private void spawnUnits(World world) {
+        for (Map.Entry<Position, Unit> e : posToUnits.entrySet()) {
+            Position pos  =            e.getKey();
+            UnitImpl unit = (UnitImpl) e.getValue();
+
+            world.createUnitAt(pos, unit);
+        }
     }
 
     public void setLayout(String[] newLayout) {
@@ -32,8 +48,12 @@ public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
     }
 
     private void generateCities(World world) {
-        world.createCityAtPos(new Position(8, 12), new CityImpl(RED));
-        world.createCityAtPos(new Position(4,  5), new CityImpl(BLUE));
+        for (Map.Entry<Position, City> e : posToCities.entrySet()) {
+            Position pos  =            e.getKey();
+            CityImpl city = (CityImpl) e.getValue();
+
+            world.createCityAtPos(pos, city);
+        }
     }
 
     private void generateTiles(World world, String[] layout) {
