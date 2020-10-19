@@ -1,8 +1,10 @@
 package hotciv.common.GameFactories;
 
 import hotciv.common.agingStrategies.LinearAgingStrategy;
+import hotciv.common.archerActionStrategies.FortifyArcherActionStrategy;
 import hotciv.common.archerActionStrategies.NoArcherActionStrategy;
 import hotciv.common.attackStrategies.AttackerAlwaysWinsAttackStrategy;
+import hotciv.common.settlerActionStrategies.BuildCitySettlerActionStrategy;
 import hotciv.common.settlerActionStrategies.NoSettlerActionStrategy;
 import hotciv.common.winnerStrategies.AlternatingWinnerStrategy;
 import hotciv.common.worldLayoutStrategies.AlphaCivWorldLayoutStrategy;
@@ -44,11 +46,11 @@ public class ThetaCivFactory implements GameFactory {
 
 	@Override
 	public ArcherActionStrategy createArcherActionStrategy() {
-		return new NoArcherActionStrategy();
+		return new FortifyArcherActionStrategy();
 	}
 
 	@Override
 	public SettlerActionStrategy createSettlerActionStrategy() {
-		return new NoSettlerActionStrategy();
+		return new BuildCitySettlerActionStrategy();
 	}
 }
