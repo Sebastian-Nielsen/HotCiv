@@ -15,40 +15,38 @@ public class UnitImpl implements Unit {
 	private int attackingStrength;
 	protected int defensiveStrength;
 	private int movesLeft;
-	private final int moveCount;
+	private int moveCount;
 
 	public UnitImpl(String type, Player owner) {
 		this.type = type;
 		this.owner = owner;
 
-		// Int move count
-		if (type.equals(CARAVAN))
-			moveCount = 2;
-		else
-			moveCount = 1;
-
-		// Init moves left
-		movesLeft = getMoveCount();
-
-		// Set defensiveStrength and attackStrength
+		// Set defensiveStrength, attackStrength and moveCount
 		switch (type) {
 			case SETTLER:
 				this.defensiveStrength = SETTLER_DEFENSIVE_STRENGTH;
 				this.attackingStrength = SETTLER_ATTACK_STRENGTH;
+				this.moveCount = SETTLER_TRAVEL_DISTANCE;
 				break;
 			case ARCHER:
 				this.defensiveStrength = ARCHER_DEFENSIVE_STRENGTH;
 				this.attackingStrength = ARCHER_ATTACK_STRENGTH;
+				this.moveCount = ARCHER_TRAVEL_DISTANCE;
 				break;
 			case LEGION:
 				this.defensiveStrength = LEGION_DEFENSIVE_STRENGTH;
 				this.attackingStrength = LEGION_ATTACK_STRENGTH;
+				this.moveCount = LEGION_TRAVEL_DISTANCE;
 				break;
 			case CARAVAN:
 				this.defensiveStrength = CARAVAN_DEFENSIVE_STRENGTH;
 				this.attackingStrength = CARAVAN_ATTACK_STRENGTH;
+				this.moveCount = CARAVAN_TRAVEL_DISTANCE;
 				break;
 		}
+
+		// Init moves left
+		movesLeft = getMoveCount();
 	}
 
 	public void setMovesLeft(int value) {

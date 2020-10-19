@@ -129,4 +129,15 @@ public class TestThetaCiv {
 		assertThat(redCity.getSize(), is(preActionSize)); // Red city's size is still the default of 1
 	}
 
+
+	@Test
+	public void caravanShouldBeAbleToMove2Times() {
+		Position redCaravanStartPos = new Position(11, 2); // The starting position of the caravan
+		Position redCaravanIntermediatePos = new Position(10, 2); // Position above the caravan
+		Position redCaravanFinalPos = new Position(10, 3); // Position to the right of the caravan
+		assertTrue(game.moveUnit(redCaravanStartPos, redCaravanIntermediatePos));
+		assertTrue(game.moveUnit(redCaravanIntermediatePos, redCaravanFinalPos));
+		assertFalse(game.moveUnit(redCaravanFinalPos, redCaravanIntermediatePos));
+	}
+
 }

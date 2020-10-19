@@ -75,9 +75,11 @@ public class GameImpl implements Game {
 		UnitImpl fromUnit = (UnitImpl) getUnitAt(from);
 		UnitImpl toUnit   = (UnitImpl) getUnitAt(to);
 
-		// If unit has less than 0 moves left
-		boolean hasLessThanZeroMoves = fromUnit.getMovesLeft() < calcDistance(from, to);
-		if (hasLessThanZeroMoves)
+		// A unit should only be able to move 1 tile at a time
+		boolean moveIsFurtherThan1Tile = calcDistance(from, to) > 1;
+		// If unit has less than 1 moves left
+		boolean hasTooFewMovesLeft = fromUnit.getMovesLeft() < 1;
+		if (moveIsFurtherThan1Tile || hasTooFewMovesLeft)
 			return false;
 
 		// If the unit at to-position is an ally-unit
@@ -145,10 +147,10 @@ public class GameImpl implements Game {
 	}
 
 	public void postMoveUnitSideEffects(Position to) {
-		Unit unitGettingMoved = getUnitAt(to);
+		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(to);
 
-		// Reset moves left of the unit getting moved
-		resetMovesLeft(unitGettingMoved);
+		// Update moves left of the unit getting moved by decreasing its movecount by 1
+		updateMovesLeft(unitGettingMoved, unitGettingMoved.getMovesLeft() - 1);
 
 		// Conquer city if city present at to-pos
 		Player newOwner = unitGettingMoved.getOwner();
@@ -173,10 +175,6 @@ public class GameImpl implements Game {
 	private void updateCityOwnership(City city, Player newOwner) {
 		CityImpl cityImpl = (CityImpl) city;
 		cityImpl.setOwner(newOwner);
-	}
-
-	private void resetMovesLeft(Unit unit) {
-		updateMovesLeft(unit, 0);
 	}
 
 	private void updateMovesLeft(Unit u, int value) {
