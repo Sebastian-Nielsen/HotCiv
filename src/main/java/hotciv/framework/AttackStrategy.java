@@ -4,5 +4,5 @@ import hotciv.common.GameImpl;
 
 public interface AttackStrategy {
 
-	boolean attackUnit(Position from, Position to, Game game);
+	boolean attackUnit(Position from, Position to, GameImpl game);
 }
