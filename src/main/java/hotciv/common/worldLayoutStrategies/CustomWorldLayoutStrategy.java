@@ -5,6 +5,7 @@ import hotciv.common.TileImpl;
 import hotciv.common.UnitImpl;
 import hotciv.common.World;
 import hotciv.framework.*;
+import thirdparty.ThirdPartyFractalGenerator;
 
 import java.util.Map;
 import java.util.Set;
