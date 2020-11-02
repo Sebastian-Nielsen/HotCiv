@@ -24,10 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestThetaCiv {
 
 	private GameImpl game;
+	private CityImpl redCity;
+	private Position redCityPos;
 
 	@BeforeEach
 	public void SetUp() {
-
 		String[] layout = new String[]{
 				"...ooModdoo.....",
 				"..ohhoooofffoo..",
@@ -61,6 +62,9 @@ public class TestThetaCiv {
 
 		// Init game
 		game = new GameImpl(new ThetaCivFactory(layout, posToCities, posToUnits));
+
+		redCityPos = new Position(8, 12);
+		redCity = (CityImpl) game.getCityAt(redCityPos);
 	}
 
 	@Test
@@ -80,9 +84,9 @@ public class TestThetaCiv {
 
 		Position desertTilePos = new Position(10, 2);
 
-//		UnitImpl archer  = (UnitImpl) game.getUnitAt(new Position(10, 1));
-//		UnitImpl legion  = (UnitImpl) game.getUnitAt(new Position(9, 1));
-//		UnitImpl settler = (UnitImpl) game.getUnitAt(new Position(9, 2));
+		// UnitImpl archer  = (UnitImpl) game.getUnitAt(new Position(10, 1));
+		// UnitImpl legion  = (UnitImpl) game.getUnitAt(new Position(9, 1));
+		// UnitImpl settler = (UnitImpl) game.getUnitAt(new Position(9, 2));
 
 		assertFalse(game.moveUnit(archerPos,  desertTilePos));
 		assertFalse(game.moveUnit(legionPos,  desertTilePos));
@@ -109,8 +113,6 @@ public class TestThetaCiv {
 
 	@Test
 	public void caravanOutsideCityShouldDoNothing() {
-		Position redCityPos = new Position(8, 12);
-		CityImpl redCity = (CityImpl) game.getCityAt(redCityPos);
 		redCity.setProduction(CARAVAN); // CARAVAN_COST = 30
 		endRound(game); // Red treasury is 6
 		endRound(game); // Red treasury is 12
@@ -136,6 +138,17 @@ public class TestThetaCiv {
 		assertTrue(game.moveUnit(redCaravanStartPos, redCaravanIntermediatePos));
 		assertTrue(game.moveUnit(redCaravanIntermediatePos, redCaravanFinalPos));
 		assertFalse(game.moveUnit(redCaravanFinalPos, redCaravanIntermediatePos));
+	}
+
+	@Test
+	public void cityShouldProduceCaravanUnit() {
+		redCity.setProduction(CARAVAN);     // Caravan cost = 30
+		endRound(game); // Red treasury is 6
+		endRound(game); // Red treasury is 12
+		endRound(game); // Red treasury is 18
+		endRound(game); // Red treasury is 24
+		endRound(game); // Red treasury is 0 and a caravan unit is spawned in red city
+		assertThat(game.getUnitAt(redCityPos).getTypeString(), is(CARAVAN));
 	}
 
 }
