@@ -1,5 +1,7 @@
 package hotciv.common;
 
+import hotciv.common.concreteUnits.ArcherUnit;
+import hotciv.common.concreteUnits.CaravanUnit;
 import hotciv.framework.*;
 
 import java.util.*;
@@ -88,7 +90,7 @@ public class GameImpl implements Game {
 		if (isAllyUnitAtToPos)
 			return false;
 
-		if (! isOccupiableTile(to, fromUnit))
+		if (! isOccupiableTile(to, fromUnit.getTypeString()))
 			return false;
 
 		// If the unit at from-position is not an ally unit
@@ -354,12 +356,12 @@ public class GameImpl implements Game {
 	}
 
 	/**
-	 * @param unit A unit
+	 * @param unitType The type of the unit
 	 * @param pos  The position of the tile
 	 * @return Whether the tile is occupiable by the given unit
 	 */
-	private Boolean isOccupiableTile(Position pos, UnitImpl unit) {
-		return unit.canTraverse(getTileAt(pos));
+	private Boolean isOccupiableTile(Position pos, String unitType) {
+		return ((TileImpl) getTileAt(pos)).canUnitTraverse(unitType);
 	}
 
 	/** Returns the first empty (no other unit standing on it) AND
@@ -371,15 +373,13 @@ public class GameImpl implements Game {
 	 *         or null if none is present
 	 */
 	private Position getFirstEmptyAndOccupiableAdjacentTile(Position pos, String unitType){
-		UnitImpl unit = new UnitImpl(unitType, null);
-
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			// Find possible position for the unit to spawn at
 			Position unitPos = new Position(pos.getRow()    + deltaPos[0],
 			                                pos.getColumn() + deltaPos[1]);
 
 			// Check whether there isn't a unit on the tile and the tile is occupiable
-			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos, unit)) {
+			if (!world.isUnitAtPos(unitPos) && isOccupiableTile(unitPos, unitType)) {
 				// An empty tile has been found, so we are finished
 				return unitPos;
 			}
@@ -436,17 +436,12 @@ public class GameImpl implements Game {
 
 		boolean isArcherAtPos = getTypeOfUnitAt(pos).equals(ARCHER);
 		if (isArcherAtPos) {
-			UnitImpl archerUnit = (UnitImpl) getUnitAt(pos);
-			archerActionStrategy.performAction(archerUnit);
+			archerActionStrategy.performAction((ArcherUnit) getUnitAt(pos));
 			return;
 		}
 
-		boolean isCaravanAtPos = getTypeOfUnitAt(pos).equals(CARAVAN);
-		if (isCaravanAtPos) {
-			UnitImpl caravanUnit = (UnitImpl) getUnitAt(pos);
-			caravanUnit.performCaravanAction(this, pos);
-			return;
-		}
+		((UnitImpl) getUnitAt(pos)).performAction(this, pos);
+
 	}
 
 

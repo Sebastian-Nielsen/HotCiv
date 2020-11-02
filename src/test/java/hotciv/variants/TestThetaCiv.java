@@ -2,13 +2,12 @@ package hotciv.variants;
 
 import hotciv.common.CityImpl;
 import hotciv.common.GameFactories.ThetaCivFactory;
-import hotciv.common.GameFactories.ZetaCivFactory;
 import hotciv.common.GameImpl;
 import hotciv.common.UnitImpl;
+import hotciv.common.concreteUnits.*;
 import hotciv.framework.City;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +16,7 @@ import java.util.Map;
 
 import static hotciv.common.TestHelperMethods.*;
 import static hotciv.framework.GameConstants.*;
-import static hotciv.framework.Player.BLUE;
-import static hotciv.framework.Player.RED;
+import static hotciv.framework.Player.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,10 +54,10 @@ public class TestThetaCiv {
 
         // Init posToUnits
 		Map<Position, Unit> posToUnits = new HashMap<>();
-		posToUnits.put(new Position(10, 1), new UnitImpl(ARCHER, RED));
-		posToUnits.put(new Position(9, 1), new UnitImpl(LEGION, RED));
-		posToUnits.put(new Position(9, 2), new UnitImpl(SETTLER, RED));
-		posToUnits.put(new Position(11, 2), new UnitImpl(CARAVAN, RED));
+		posToUnits.put(new Position(10, 1), new ArcherUnit(RED));
+		posToUnits.put(new Position(9, 1), new LegionUnit(RED));
+		posToUnits.put(new Position(9, 2), new SettlerUnit(RED));
+		posToUnits.put(new Position(11, 2), new CaravanUnit(RED));
 
 		// Init game
 		game = new GameImpl(new ThetaCivFactory(layout, posToCities, posToUnits));
