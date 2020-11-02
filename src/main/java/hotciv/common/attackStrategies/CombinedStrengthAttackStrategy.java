@@ -1,5 +1,6 @@
 package hotciv.common.attackStrategies;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.*;
 
 public class CombinedStrengthAttackStrategy implements AttackStrategy {
@@ -11,7 +12,7 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 	}
 
 	@Override
-	public boolean attackUnit(Position from, Position to, Game game) {
+	public boolean attackUnit(Position from, Position to, GameImpl game) {
 		if (hasAttackerWon(from, to, game)) {
 			game.popUnitAt(to);
 			game.updateUnitPos(from, to);
@@ -22,7 +23,7 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 		}
 	}
 
-	private boolean hasAttackerWon(Position from, Position to, Game game) {
+	private boolean hasAttackerWon(Position from, Position to, GameImpl game) {
 		int attackerStrength = getAttackerStrength(from, game);
 		int defenderStrength = getDefenderStrength(to,   game);
 
@@ -34,20 +35,20 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 
 	}
 
-	private int getAttackerStrength(Position pos, Game game) {
+	private int getAttackerStrength(Position pos, GameImpl game) {
 		return game.getUnitAt(pos).getAttackingStrength();
 	}
 
-	private int getDefenderStrength(Position pos, Game game) {
+	private int getDefenderStrength(Position pos, GameImpl game) {
 		return game.getUnitAt(pos).getDefensiveStrength();
 	}
 
-	private int calcCombinedStrength(int baseStrength, Position pos, Game game) {
+	private int calcCombinedStrength(int baseStrength, Position pos, GameImpl game) {
 		return (baseStrength + getFriendlySupport(pos, game)) * getTerrainFactor(pos, game);
 	}
 
 
-	public int getTerrainFactor(Position pos, Game game) {
+	public int getTerrainFactor(Position pos, GameImpl game) {
 		if (game.getTileAt(pos).getTypeString().equals("hills"))
 			return 2;
 		if (game.getTileAt(pos).getTypeString().equals("forest"))
@@ -57,7 +58,7 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 		return 1;
 	}
 
-	public int getFriendlySupport(Position pos, Game game) {
+	public int getFriendlySupport(Position pos, GameImpl game) {
 		int supportingUnits = 0;
 		for (int[] deltaPos : adjacentDeltaPositions) {
 			Position adjacentPos = new Position(pos.getRow() + deltaPos[0],
@@ -71,7 +72,7 @@ public class CombinedStrengthAttackStrategy implements AttackStrategy {
 		return supportingUnits;
 	}
 
-	private boolean isAllyUnitAtPos(Position pos, Player owner, Game game) {
+	private boolean isAllyUnitAtPos(Position pos, Player owner, GameImpl game) {
 		Unit adjacentUnit = game.getUnitAt(pos);
 		return game.isUnitAtPos(pos) && adjacentUnit.getOwner() == owner;
 	}

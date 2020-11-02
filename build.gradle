@@ -49,6 +49,11 @@ apply plugin: 'jacoco'
 
 repositories {
     jcenter()
+    // the fractal library is NOT in the official JCenter
+    // repository, only in Bærbak's public repository.
+    maven {
+       url 'https://dl.bintray.com/henrikbaerbak/maven'
+    }
 }
     
 dependencies {
@@ -63,6 +68,7 @@ dependencies {
         name: 'hamcrest-library', version: '2.2'
     implementation 'junit:junit:4.12'
     implementation 'org.jetbrains:annotations:15.0'
+    compile 'com.baerbak.maven:hotciv-fractal:1.0'
 }
 
 // Tell to use JUnit as testing platform

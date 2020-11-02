@@ -1,6 +1,7 @@
 package hotciv.common.archerActionStrategies;
 
 import hotciv.common.UnitImpl;
+import hotciv.common.concreteUnits.ArcherUnit;
 import hotciv.framework.ArcherActionStrategy;
 
 public class FortifyArcherActionStrategy implements ArcherActionStrategy {
@@ -10,7 +11,7 @@ public class FortifyArcherActionStrategy implements ArcherActionStrategy {
 	 * @param unit Unit to perform the action of
 	 */
 	@Override
-	public void performAction(UnitImpl unit) {
+	public void performAction(ArcherUnit unit) {
 		if (unit.isFortified()) {
 			unit.setDefensiveStrength(unit.getDefensiveStrength() / 2);
 			unit.setFortified(false);

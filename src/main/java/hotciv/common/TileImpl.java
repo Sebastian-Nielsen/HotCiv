@@ -2,15 +2,10 @@ package hotciv.common;
 
 import hotciv.framework.Tile;
 
-public class TileImpl implements Tile {
-    private final String type;
+public abstract class TileImpl implements Tile {
 
-    public TileImpl(String type) {
-        this.type = type;
-    }
+    public abstract String getTypeString();
 
-    @Override
-    public String getTypeString() {
-        return type;
-    }
+    public abstract boolean canUnitTraverse(String unitType);
+
 }

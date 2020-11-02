@@ -2,6 +2,7 @@ package hotciv.variants.unitTests;
 
 import hotciv.common.archerActionStrategies.FortifyArcherActionStrategy;
 import hotciv.common.UnitImpl;
+import hotciv.common.concreteUnits.ArcherUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestFortifyArcherActionStrategy {
 
     private FortifyArcherActionStrategy strategy;
-    private UnitImpl archerUnit;
+    private ArcherUnit archerUnit;
 
     @BeforeEach
     void setUp() {
         strategy =  new FortifyArcherActionStrategy();
-        archerUnit = new UnitImpl("archer", RED);
+        archerUnit = new ArcherUnit(RED);
     }
 
 

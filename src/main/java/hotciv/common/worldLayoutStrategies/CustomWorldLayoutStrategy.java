@@ -5,6 +5,7 @@ import hotciv.common.TileImpl;
 import hotciv.common.UnitImpl;
 import hotciv.common.World;
 import hotciv.framework.*;
+import thirdparty.ThirdPartyFractalGenerator;
 
 import java.util.Map;
 import java.util.Set;
@@ -69,11 +70,12 @@ public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
                 // Get tileChar at the given column
                 char tileChar = line.charAt(c);
 
-                // Convert tileChar to typeName
-                String type = world.convertTileCharToTileTypeName(tileChar);
+                // Convert tileChar to tile object
+                TileImpl tile = world.convertTileCharToTile(tileChar);
 
-                // Create tile at the given row and column of the given type
-                world.createTileAtPos( new Position(r, c), new TileImpl(type));
+
+                // Create tile at the given row and column of the given tile
+                world.createTileAtPos( new Position(r, c), tile );
             }
         }
     }

@@ -1,11 +1,11 @@
 package hotciv.common.archerActionStrategies;
 
-import hotciv.common.UnitImpl;
+import hotciv.common.concreteUnits.ArcherUnit;
 import hotciv.framework.ArcherActionStrategy;
 
 public class NoArcherActionStrategy implements ArcherActionStrategy {
     @Override
-    public void performAction(UnitImpl unit) {
+    public void performAction(ArcherUnit unit) {
 
     }
 }
