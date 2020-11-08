@@ -1,15 +1,17 @@
 package hotciv.view;
 
 import hotciv.framework.*;
-
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-
 import hotciv.view.figure.HotCivFigure;
 import hotciv.view.figure.UnitFigure;
 import minidraw.framework.*;
-import minidraw.standard.*;
+import minidraw.standard.ImageFigure;
+import minidraw.standard.StandardDrawing;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** CivDrawing is a specialized Drawing (MVC model component) from
  * MiniDraw that dynamically builds the list of Figures for MiniDraw
@@ -51,8 +53,7 @@ public class CivDrawing
   /** store all moveable figures visible in this drawing = units */
   protected Map<Unit, UnitFigure> unitFigureMap;
 
-  /** the Game instance that this CivDrawing is going to render units
-   * from */
+  /** the Game instance that this CivDrawing is going to render units from */
   protected Game game;
   
   public CivDrawing( DrawingEditor editor, Game game ) {
@@ -61,8 +62,7 @@ public class CivDrawing
     this.game = game;
     this.unitFigureMap = new HashMap<>();
 
-    // register this unit drawing as listener to any game state
-    // changes...
+    // register this unit drawing as listener to any game state changes...
     game.addObserver(this);
     // ... and build up the set of figures associated with
     // units in the game.

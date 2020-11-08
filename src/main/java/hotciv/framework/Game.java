@@ -128,9 +128,11 @@ public interface Game {
    * has focus.
    */
   public void setTileFocus(Position position);
-  /** Sets the age
-   * @param newAge the new age
-   */
+
+
+//  /** Sets the age
+//   * @param newAge the new age
+//   */
 //  public void setAge(int newAge);
 //
 //  void updateUnitPos(Position from, Position to);

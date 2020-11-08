@@ -13,8 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static hotciv.common.TestHelperMethods.*;
 
-/** Skeleton class for AlphaCiv test cases
- */
+/** Skeleton class for AlphaCiv test cases */
 public class TestAlphaCiv {
 	private GameImpl game;
 	private Position redCityPos;
@@ -466,6 +465,17 @@ public class TestAlphaCiv {
 		endRound(game); // Red's treasury is 14
 		endRound(game); // Red's treasury is 20-15=5 and Legion is spawned
 		assertThat(game.getUnitAt(new Position(0, 1)).getTypeString(), is(LEGION));
+	}
+
+
+	@Test
+	public void shouldAddObserverAndInvokeUpdates() {
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+		Position pos = new Position(1, 1);
+		assertNull(civDrawing.getTileFocus());
+		game.setTileFocus(pos);
+		assertThat(civDrawing.getTileFocus(), is(pos));
 	}
 
 }

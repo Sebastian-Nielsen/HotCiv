@@ -443,14 +443,16 @@ public class GameImpl implements Game {
 
 	}
 
+	private GameObserver gameObserver;
 	@Override
 	public void addObserver(GameObserver observer) {
-
+		gameObserver = observer;
 	}
+
 
 	@Override
 	public void setTileFocus(Position position) {
-
+		gameObserver.tileFocusChangedAt(position);
 	}
 
 
