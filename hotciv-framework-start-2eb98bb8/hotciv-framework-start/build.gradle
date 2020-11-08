@@ -1,33 +1,16 @@
-/* Build file HotCiv mandatory project in SWEA.
-
-  Code **cannot** compile and test using Gradle prior to 4.6, so
-  you need to use the gradle wrapper! And there is a bootstrap
-  issue, as the useJunitPlatform() call in this build file will
-  generate a build failure for gradle 4.4 which is the default
-  on Linux 20.04.
-
-  So - start the project by COMMENTING OUT THE useJUnitPlatform() call
-  in the build file below, and next issuing the following commands in
-  your shell
-
-    gradle wrapper
-
-  Next, remove the comment so the useJUnitPlatform() again becomes
-  active, and all following gradle command must then have the format
-  ala
-
-    ./gradlew test 
+/* Build file for HotCiv Framework exercises.
 
   History:
 
-  Converted to Gradle 6.5, Jacoco 0.8.5, and JUnit 5, Aug 2020
+   Updated to provide more partial solution code, Sep 2020
 
-  Converted to Gradle build system, Mar 2018
+   Converted to Gradle 6.5, Jacoco 0.8.5, and JUnit 5, Aug 2020
 
-   Adapted for the SWEA course, 
-     added the 'review' target, Jun 2017
+   Converted to Gradle build system, Mar 2018
 
-   Updated for hamcrest libraries, Oct 2015
+   Adapted for the SWEA course, Oct 2017
+
+   Updated for newer libraries, Oct 2015
 
    This source code is from the book 
      "Flexible, Reliable Software:
@@ -42,18 +25,13 @@
    expressed or implied. You may study, use, modify, and 
    distribute it for non-commercial purposes. For any 
    commercial use, see http://www.baerbak.com/
-   */
+*/
 
 apply plugin: 'java'
 apply plugin: 'jacoco'
 
 repositories {
     jcenter()
-    // the fractal library is NOT in the official JCenter
-    // repository, only in Bærbak's public repository.
-    maven {
-       url 'https://dl.bintray.com/henrikbaerbak/maven'
-    }
 }
     
 dependencies {
@@ -69,14 +47,11 @@ dependencies {
     // Use the Hamcrest matcher library
     testCompile group: 'org.hamcrest',
         name: 'hamcrest-library', version: '2.2'
-    implementation 'junit:junit:4.12'
-    implementation 'org.jetbrains:annotations:15.0'
-    compile 'com.baerbak.maven:hotciv-fractal:1.0'
 }
 
 // Tell to use JUnit as testing platform
 test {
-    useJUnitPlatform()
+    //useJUnitPlatform()
 }
 
 // Sigh, JUnit 5 only works with JUnit 4.6+, so upgrade gradle
@@ -88,9 +63,6 @@ wrapper {
 jacoco {
   toolVersion = "0.8.5"
 }
-
-
-
 
 
 // === Execution tasks - for running the various integration tests

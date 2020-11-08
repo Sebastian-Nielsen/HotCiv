@@ -1,15 +1,14 @@
 package hotciv.common;
 
 import hotciv.common.concreteUnits.ArcherUnit;
-import hotciv.common.concreteUnits.CaravanUnit;
 import hotciv.framework.*;
 
-import java.util.*;
+import java.util.Collection;
 import java.util.Map.Entry;
 
 import static hotciv.framework.GameConstants.*;
-import static hotciv.framework.Player.*;
-import static org.junit.Assert.assertNotNull;
+import static hotciv.framework.Player.BLUE;
+import static hotciv.framework.Player.RED;
 
 
 /** Skeleton implementation of HotCiv.
@@ -441,6 +440,16 @@ public class GameImpl implements Game {
 		}
 
 		((UnitImpl) getUnitAt(pos)).performAction(this, pos);
+
+	}
+
+	@Override
+	public void addObserver(GameObserver observer) {
+
+	}
+
+	@Override
+	public void setTileFocus(Position position) {
 
 	}
 
