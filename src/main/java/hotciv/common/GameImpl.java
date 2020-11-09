@@ -33,6 +33,7 @@ public class GameImpl implements Game {
 
 	private int roundNumber = 1;
 
+	private ArrayList<GameObserver> gameObserver;
 
 	public GameImpl(GameFactory gameFactory) {
 		// Initialize strategies
@@ -109,7 +110,7 @@ public class GameImpl implements Game {
 		if (! didAttack)
 			updateUnitPos(from, to);
 
-		postMoveUnitSideEffects(to);
+		postMoveUnitSideEffects(from, to);
 		return true;
 	}
 
@@ -147,7 +148,7 @@ public class GameImpl implements Game {
 		popUnitAt(to);
 	}
 
-	public void postMoveUnitSideEffects(Position to) {
+	public void postMoveUnitSideEffects(Position from, Position to) {
 		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(to);
 
 		// Update moves left of the unit getting moved by decreasing its movecount by 1
@@ -156,6 +157,10 @@ public class GameImpl implements Game {
 		// Conquer city if city present at to-pos
 		Player newOwner = unitGettingMoved.getOwner();
 		conquerCity(to, newOwner);
+
+		// Render unit placement changes
+		gameObserver.worldChangedAt(from);
+		gameObserver.worldChangedAt(to);
 	}
 
 	/**
@@ -193,9 +198,7 @@ public class GameImpl implements Game {
 	 * @param pos unit's position
 	 * @return The unit that is removed
 	 */
-	public Unit popUnitAt(Position pos) {
-		return world.popUnitAt(pos);
-	}
+	public Unit popUnitAt(Position pos) { return world.popUnitAt(pos); }
 
 
 
@@ -341,7 +344,11 @@ public class GameImpl implements Game {
 	 * Increments the age in accordance to the given aging strategy
 	 */
 	private void incrementAge() {
-		setAge(agingStrategy.incrementAge(age));
+		int newAge = agingStrategy.incrementAge(age);
+		// Update age variable
+		setAge(newAge);
+		// Render updated age
+		gameObserver.turnEnds(getPlayerInTurn(), newAge);
 	}
 
 	/**
@@ -352,6 +359,7 @@ public class GameImpl implements Game {
 	 */
 	private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
 		world.spawnUnitAtPos(pos, unitType, owner);
+		gameObserver.worldChangedAt(pos); // Render changes in GUI
 	}
 
 	/**
@@ -421,10 +429,12 @@ public class GameImpl implements Game {
 	}
 
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
+
 	public void changeProductionInCityAt( Position p, String unitType ) {
 		CityImpl city = (CityImpl) getCityAt(p);
 		city.setProduction(unitType);
-
+		// Render change
+		gameObserver.tileFocusChangedAt(p);
 	}
 	public void performUnitActionAt( Position pos ) {
 		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
@@ -440,10 +450,8 @@ public class GameImpl implements Game {
 		}
 
 		((UnitImpl) getUnitAt(pos)).performAction(this, pos);
-
 	}
 
-	private GameObserver gameObserver;
 	@Override
 	public void addObserver(GameObserver observer) {
 		gameObserver = observer; // only one possible observer for now
@@ -472,8 +480,14 @@ public class GameImpl implements Game {
 		age = newAge;
 	}
 
+	/**
+	 * Create a city at the given position
+	 * @param pos Position to create city at
+	 * @param city City to create
+	 */
 	public void createCityAt(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
+		gameObserver.worldChangedAt(pos); // Render new city
 	}
 
 
@@ -484,15 +498,7 @@ public class GameImpl implements Game {
 	 */
 	public void createTileAtPos(Position pos, TileImpl tile) {
 		world.createTileAtPos(pos, tile);
-	}
-
-	/**
-	 * Create a city at the given position
-	 * @param pos Position to create city at
-	 * @param city City to create
-	 */
-	public void createCityAtPos(Position pos, CityImpl city) {
-		world.createCityAt(pos, city);
+		gameObserver.worldChangedAt(pos); // Render new tile
 	}
 
 	public int getSuccessfulAttacksThisTurn() {

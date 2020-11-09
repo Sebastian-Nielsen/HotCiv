@@ -1,17 +1,22 @@
 package hotciv.common;
 
 import hotciv.common.GameFactories.AlphaCivFactory;
-import hotciv.framework.*;
-
+import hotciv.framework.City;
+import hotciv.framework.Player;
+import hotciv.framework.Position;
+import hotciv.framework.Unit;
 import org.junit.Assert;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
+import static hotciv.common.TestHelperMethods.*;
 import static hotciv.framework.GameConstants.ARCHER;
 import static hotciv.framework.GameConstants.LEGION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static hotciv.common.TestHelperMethods.*;
 
 /** Skeleton class for AlphaCiv test cases */
 public class TestAlphaCiv {
@@ -470,12 +475,87 @@ public class TestAlphaCiv {
 
 	@Test
 	public void shouldAddObserverAndInvokeUpdateOnSetTileFocus() {
+		// Add the CivDrawingSpy as an observer to GameImpl
 		CivDrawingSpy civDrawing = new CivDrawingSpy();
 		game.addObserver(civDrawing);
-		Position pos = new Position(1, 1);
+
+		// There shouldn't be any calls to change the tile focus yet
 		assertNull(civDrawing.getTileFocus());
+
+		// Set new tile focus
+		Position pos = new Position(1, 1);
 		game.setTileFocus(pos);
+
+		// Should be new focus
 		assertThat(civDrawing.getTileFocus(), is(pos));
 	}
+
+	@Test
+	public void shouldMoveUnitGraphically() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// ... we expect the Spy to return:
+		ArrayList<Position> expectedCallsToWorldChanged = new ArrayList<>();
+		Position from = new Position(2, 0);
+		Position to = new Position(1, 1);
+		expectedCallsToWorldChanged.add(from);
+		expectedCallsToWorldChanged.add(to);
+
+		// We haven't called moveUnit yet, so assert no world changes
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+
+		// Call moveUnit
+		game.moveUnit(from, to);
+
+		// Assert that the spy returns what we expect
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(expectedCallsToWorldChanged));
+	}
+
+
+	@Test
+	public void shouldUpdateAgeAndPlayerInTurnGraphically() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+		int startingAge = -4000;
+		int ageIncrement = 100;
+
+		// Age and player in turn should be the default
+		assertThat(civDrawing.getCurrentAge(), is(startingAge));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(0));
+
+		game.endOfTurn();
+
+		// Should be new age and player in turn
+		assertThat(civDrawing.getCurrentAge(), is(startingAge + ageIncrement));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.BLUE));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(1));
+	}
+
+
+	@Test
+	public void shouldUpdateWhenNewCityIsCreated() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// Should be no calls to 'worldChangedAt' yet
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+
+		// Create new city
+		Position newCityPos = new Position(3, 3);
+		CityImpl newCity = new CityImpl(Player.BLUE);
+		game.createCityAt(newCityPos, newCity);
+
+		// Assert a single call have been made to 'worldChangedAt'
+		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(newCityPos));
+		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
+	}
+
+
+
 
 }

@@ -7,22 +7,8 @@ import minidraw.framework.*;
 import hotciv.framework.*;
 import hotciv.stub.*;
 
-/** Template code for exercise FRS 36.42.
+/** Template code for exercise FRS 36.42. */
 
-   This source code is from the book 
-     "Flexible, Reliable Software:
-       Using Patterns and Agile Development"
-     published 2010 by CRC Press.
-   Author: 
-     Henrik B Christensen 
-     Computer Science Department
-     Aarhus University
-   
-   This source code is provided WITHOUT ANY WARRANTY either 
-   expressed or implied. You may study, use, modify, and 
-   distribute it for non-commercial purposes. For any 
-   commercial use, see http://www.baerbak.com/
- */
 public class ShowEndOfTurn {
   
   public static void main(String[] args) {

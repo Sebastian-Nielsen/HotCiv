@@ -55,6 +55,7 @@ public class GfxConstants {
   public static final String CITY_TYPE_STRING = "CITY_TYPE";
   public static final String TURN_SHIELD_TYPE_STRING = "TURNSHIELD_TYPE";
   public static final String UNIT_SHIELD_TYPE_STRING = "UNITSHIELD_TYPE";
+  public static final String WORKFORCE_TYPE_STRING = "WORKFORCE_TYPE";
 
   /** return the x pixel position on the graphical display
    * for a tile's column position

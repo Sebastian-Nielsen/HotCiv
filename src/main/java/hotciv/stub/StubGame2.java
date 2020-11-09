@@ -1,9 +1,11 @@
 package hotciv.stub;
 
 import hotciv.common.CityImpl;
+import hotciv.common.UnitImpl;
 import hotciv.framework.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Test stub for game for visual testing of
  * minidraw based graphics.
@@ -15,12 +17,12 @@ public class StubGame2 implements Game {
 	// === Unit handling ===
 	private Position pos_archer_red;
 	private Position pos_legion_blue;
-	private Position pos_settler_red;
+	private Position pos_settler_blue;
 	private Position pos_thetaciv_unit;
 	private Position pos_city_red;
 
 	private City red_city;
-	private City red_city_created_by_settler;
+	private City blue_city_created_by_settler;
 
 	private Unit red_archer;
 
@@ -28,7 +30,7 @@ public class StubGame2 implements Game {
 		if ( p.equals(pos_archer_red) ) {
 			return red_archer;
 		}
-		if ( p.equals(pos_settler_red) ) {
+		if ( p.equals(pos_settler_blue) ) {
 			return new StubUnit( GameConstants.SETTLER, Player.RED );
 		}
 		if ( p.equals(pos_legion_blue) ) {
@@ -77,13 +79,12 @@ public class StubGame2 implements Game {
 		// AlphaCiv configuration
 		pos_archer_red = new Position( 2, 0);
 		pos_legion_blue = new Position( 3, 2);
-		pos_settler_red = new Position( 4, 3);
+		pos_settler_blue = new Position( 4, 3);
 		pos_thetaciv_unit = new Position( 6, 4);
 		pos_city_red = new Position(1, 1);
 
 		// Cities
 		red_city = new CityImpl(Player.RED);
-
 
 		// the only one I need to store for this stub
 		red_archer = new StubUnit( GameConstants.ARCHER, Player.RED );
@@ -117,9 +118,9 @@ public class StubGame2 implements Game {
 		if ( p.equals(pos_city_red) ) {
 			return red_city;
 		}
-		if (red_city_created_by_settler != null &&
-			p.equals(pos_settler_red)) {
-			return red_city_created_by_settler;
+		if (blue_city_created_by_settler != null &&
+			p.equals(pos_settler_blue)) {
+			return blue_city_created_by_settler;
 		}
 		return null;
 	}
@@ -128,8 +129,8 @@ public class StubGame2 implements Game {
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
 	public void changeProductionInCityAt( Position p, String unitType ) {}
 	public void performUnitActionAt( Position p ) {
-		if (p.equals(pos_settler_red)) {
-			red_city_created_by_settler = new CityImpl(Player.RED);
+		if (p.equals(pos_settler_blue)) {
+			blue_city_created_by_settler = new CityImpl(Player.BLUE);
 			gameObserver.worldChangedAt(p);
 		}
 	}
@@ -140,19 +141,24 @@ public class StubGame2 implements Game {
 		System.out.println("-- StubGame2 / setTileFocus called.");
 		System.out.println(" *** IMPLEMENTATION PENDING ***");
 	}
-
 }
 
-class StubUnit implements Unit {
+class StubUnit extends UnitImpl {
 	private String type;
 	private Player owner;
 	public StubUnit(String type, Player owner) {
+		super(owner);
 		this.type = type;
 		this.owner = owner;
 	}
+	@Override
 	public String getTypeString() { return type; }
+	@Override
 	public Player getOwner() { return owner; }
+	@Override
 	public int getMoveCount() { return 1; }
+	@Override
 	public int getDefensiveStrength() { return 0; }
+	@Override
 	public int getAttackingStrength() { return 0; }
 }
