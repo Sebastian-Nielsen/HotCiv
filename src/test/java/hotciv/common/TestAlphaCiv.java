@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static hotciv.common.TestHelperMethods.*;
-import static hotciv.framework.GameConstants.ARCHER;
-import static hotciv.framework.GameConstants.LEGION;
+import static hotciv.framework.GameConstants.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestAlphaCiv {
 	private GameImpl game;
 	private Position redCityPos;
+	private Position blueCityPos;
 	private City redCity;
 	private City blueCity;
 
@@ -31,7 +31,8 @@ public class TestAlphaCiv {
 		game = new GameImpl(new AlphaCivFactory());
 		redCityPos = new Position(1, 1);
 		redCity = game.getCityAt(redCityPos);
-		blueCity = game.getCityAt(new Position(4, 1));
+		blueCityPos = new Position(4, 1);
+		blueCity = game.getCityAt(blueCityPos);
 	}
 
 
@@ -491,7 +492,7 @@ public class TestAlphaCiv {
 	}
 
 	@Test
-	public void shouldMoveUnitGraphically() {
+	public void shouldRenderMoveUnit() {
 		// Add the CivDrawingSpy as an observer to GameImpl
 		CivDrawingSpy civDrawing = new CivDrawingSpy();
 		game.addObserver(civDrawing);
@@ -515,7 +516,7 @@ public class TestAlphaCiv {
 
 
 	@Test
-	public void shouldUpdateAgeAndPlayerInTurnGraphically() {
+	public void shouldRenderAgeAndPlayerInTurn() {
 		// Add the CivDrawingSpy as an observer to GameImpl
 		CivDrawingSpy civDrawing = new CivDrawingSpy();
 		game.addObserver(civDrawing);
@@ -544,7 +545,7 @@ public class TestAlphaCiv {
 
 
 	@Test
-	public void shouldUpdateWhenNewCityIsCreated() {
+	public void shouldRenderNewlyCreatedCity() {
 		// Add the CivDrawingSpy as an observer to GameImpl
 		CivDrawingSpy civDrawing = new CivDrawingSpy();
 		game.addObserver(civDrawing);
@@ -562,7 +563,25 @@ public class TestAlphaCiv {
 		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
 	}
 
+	@Test
+	public void shouldRenderNewlySpawnedUnit() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
 
+		// Should be no calls to 'worldChangedAt' yet
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
 
+		// Change Blue's production to avoid it interfering with Red
+		game.changeProductionInCityAt(blueCityPos, SETTLER);
+
+		endRound(game);  // Red's treasury is 6
+		endRound(game);  // Red's treasury is 12-10=2
+						 // because an archer is produced
+
+		// Assert the call made to 'worldChangedAt' is spawning the red archer
+		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(redCityPos));
+		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
+	}
 
 }

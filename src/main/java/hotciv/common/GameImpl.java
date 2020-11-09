@@ -143,14 +143,8 @@ public class GameImpl implements Game {
 		return true;
 	}
 
-
 	public void updateUnitPos(Position from, Position to) {
 		world.createUnitAt(to, popUnitAt(from));
-	}
-
-	public void preMoveUnitSideEffects(Position to) {
-		// Remove enemy unit (if any)
-		popUnitAt(to);
 	}
 
 	public void postMoveUnitSideEffects(Position from, Position to) {
@@ -499,17 +493,6 @@ public class GameImpl implements Game {
 	public void createCityAt(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
 		notifyObservers((o -> o.worldChangedAt(pos))); // Render new city
-	}
-
-
-	/**
-	 * Create a tile at the given position
-	 * @param pos Position to create tile at
-	 * @param tile Tile to create
-	 */
-	public void createTileAtPos(Position pos, TileImpl tile) {
-		world.createTileAtPos(pos, tile);
-		notifyObservers(o -> o.worldChangedAt(pos)); // Render new tile
 	}
 
 	public int getSuccessfulAttacksThisTurn() {
