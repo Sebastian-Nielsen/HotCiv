@@ -529,10 +529,17 @@ public class TestAlphaCiv {
 
 		game.endOfTurn();
 
-		// Should be new age and player in turn
-		assertThat(civDrawing.getCurrentAge(), is(startingAge + ageIncrement));
+		// Should be same age but new player in turn
+		assertThat(civDrawing.getCurrentAge(), is(startingAge));
 		assertThat(civDrawing.getCurrentPlayer(), is(Player.BLUE));
 		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(1));
+
+		game.endOfTurn();
+
+		// Should be new age and player in turn
+		assertThat(civDrawing.getCurrentAge(), is(startingAge + ageIncrement));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(2));
 	}
 
 

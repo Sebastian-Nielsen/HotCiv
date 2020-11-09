@@ -7,6 +7,8 @@ import hotciv.framework.Position;
 import java.util.ArrayList;
 import java.util.List;
 
+import static hotciv.framework.Player.RED;
+
 public class CivDrawingSpy implements GameObserver {
 
 	private Position tileFocus;
@@ -24,8 +26,8 @@ public class CivDrawingSpy implements GameObserver {
 
 
 
-	private Player currentPlayer;
-	private int currentAge;
+	private Player currentPlayer = RED;
+	private int currentAge = -4000;
 	private int numberOfCallsToTurnEnds = 0;
 	@Override
 	public void turnEnds(Player nextPlayer, int age) {

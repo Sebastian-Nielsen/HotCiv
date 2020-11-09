@@ -3,8 +3,11 @@ package hotciv.common;
 import hotciv.common.concreteUnits.ArcherUnit;
 import hotciv.framework.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import static hotciv.framework.GameConstants.*;
 import static hotciv.framework.Player.BLUE;
@@ -33,7 +36,7 @@ public class GameImpl implements Game {
 
 	private int roundNumber = 1;
 
-	private ArrayList<GameObserver> gameObserver;
+	private List<GameObserver> gameObservers;
 
 	public GameImpl(GameFactory gameFactory) {
 		// Initialize strategies
@@ -47,6 +50,8 @@ public class GameImpl implements Game {
 		world = new World();
 		// Initialize tiles and cities
 		this.worldLayoutStrategy.generateWorld(world);
+		// Initialize observer list
+		gameObservers = new ArrayList<>();
 	}
 
 	public int getRoundNumber() {
@@ -159,8 +164,10 @@ public class GameImpl implements Game {
 		conquerCity(to, newOwner);
 
 		// Render unit placement changes
-		gameObserver.worldChangedAt(from);
-		gameObserver.worldChangedAt(to);
+		notifyObservers(o -> {
+			o.worldChangedAt(from);
+			o.worldChangedAt(to);
+		});
 	}
 
 	/**
@@ -347,8 +354,6 @@ public class GameImpl implements Game {
 		int newAge = agingStrategy.incrementAge(age);
 		// Update age variable
 		setAge(newAge);
-		// Render updated age
-		gameObserver.turnEnds(getPlayerInTurn(), newAge);
 	}
 
 	/**
@@ -359,7 +364,7 @@ public class GameImpl implements Game {
 	 */
 	private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
 		world.spawnUnitAtPos(pos, unitType, owner);
-		gameObserver.worldChangedAt(pos); // Render changes in GUI
+		notifyObservers((o -> o.worldChangedAt(pos))); // Render changes in GUI
 	}
 
 	/**
@@ -415,6 +420,12 @@ public class GameImpl implements Game {
 				endOfRoundEffects();
 				break;
 		}
+		startOfTurnEffects();
+	}
+
+	private void startOfTurnEffects() {
+		// Render updated age
+		notifyObservers((o -> o.turnEnds(getPlayerInTurn(), age)));
 	}
 
 	private void endOfTurnEffects() {
@@ -434,7 +445,7 @@ public class GameImpl implements Game {
 		CityImpl city = (CityImpl) getCityAt(p);
 		city.setProduction(unitType);
 		// Render change
-		gameObserver.tileFocusChangedAt(p);
+		setTileFocus(p);
 	}
 	public void performUnitActionAt( Position pos ) {
 		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
@@ -454,18 +465,18 @@ public class GameImpl implements Game {
 
 	@Override
 	public void addObserver(GameObserver observer) {
-		gameObserver = observer; // only one possible observer for now
+		gameObservers.add(observer);
 	}
-
 
 	@Override
 	public void setTileFocus(Position position) {
-		System.out.println("Called as expected");
-		gameObserver.tileFocusChangedAt(position);
+		notifyObservers(o -> o.tileFocusChangedAt(position));
 	}
 
+	private void notifyObservers(Consumer<GameObserver> c) { gameObservers.forEach(c); }
 
-	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
+
+	public boolean isUnitAtPos(Position pos) { return world.isUnitAtPos(pos); }
 
 	/**
 	 * Get type of unit at the given position
@@ -487,7 +498,7 @@ public class GameImpl implements Game {
 	 */
 	public void createCityAt(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
-		gameObserver.worldChangedAt(pos); // Render new city
+		notifyObservers((o -> o.worldChangedAt(pos))); // Render new city
 	}
 
 
@@ -498,7 +509,7 @@ public class GameImpl implements Game {
 	 */
 	public void createTileAtPos(Position pos, TileImpl tile) {
 		world.createTileAtPos(pos, tile);
-		gameObserver.worldChangedAt(pos); // Render new tile
+		notifyObservers(o -> o.worldChangedAt(pos)); // Render new tile
 	}
 
 	public int getSuccessfulAttacksThisTurn() {
