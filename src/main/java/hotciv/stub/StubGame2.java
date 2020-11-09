@@ -31,7 +31,7 @@ public class StubGame2 implements Game {
 			return red_archer;
 		}
 		if ( p.equals(pos_settler_blue) ) {
-			return new StubUnit( GameConstants.SETTLER, Player.RED );
+			return new StubUnit( GameConstants.SETTLER, Player.BLUE );
 		}
 		if ( p.equals(pos_legion_blue) ) {
 			return new StubUnit( GameConstants.LEGION, Player.BLUE );
@@ -129,6 +129,7 @@ public class StubGame2 implements Game {
 	public int getAge() { return -5000; }
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
 	public void changeProductionInCityAt( Position p, String unitType ) {}
+
 	public void performUnitActionAt( Position p ) {
 		if (p.equals(pos_settler_blue)) {
 			blue_city_created_by_settler = new CityImpl(Player.BLUE);

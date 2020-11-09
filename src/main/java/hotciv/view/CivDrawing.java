@@ -287,12 +287,6 @@ public class CivDrawing
 
 		if (isCityAtPos)
 			createCitySectionInPanel(cityAtPos);
-
-
-
-
-		// TODONE: Implementation pending
-		// System.out.println( "Fake it: tileFocusChangedAt "+position );
 	}
 
 	private void createCitySectionInPanel(CityImpl cityAtPos) {

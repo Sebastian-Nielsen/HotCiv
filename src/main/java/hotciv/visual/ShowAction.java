@@ -1,15 +1,10 @@
 package hotciv.visual;
 
-import minidraw.standard.*;
-import minidraw.framework.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
-import hotciv.framework.*;
-import hotciv.view.*;
-import hotciv.stub.*;
+import hotciv.framework.Game;
+import hotciv.stub.StubGame2;
+import hotciv.view.tool.ShowActionTool;
+import minidraw.framework.DrawingEditor;
+import minidraw.standard.MiniDrawApplication;
 
 /** Template code for exercise FRS 36.43.
 
@@ -38,7 +33,7 @@ public class ShowAction {
     editor.open();
     editor.showStatus("Shift-Click on unit to see Game's performAction method being called.");
 
-    // TODO: Replace the setting of the tool with your ActionTool implementation.
-    editor.setTool( new NullTool() );
+    // TODONE: Replace the setting of the tool with your ActionTool implementation.
+    editor.setTool( new ShowActionTool(game) );
   }
 }
