@@ -2,15 +2,12 @@ package hotciv.visual;
 
 import hotciv.framework.Game;
 import hotciv.stub.StubGame2;
+import hotciv.view.tool.SetFocusTool;
 import minidraw.framework.DrawingEditor;
 import minidraw.standard.MiniDrawApplication;
-import minidraw.standard.SelectionTool;
 
-/** Template code for exercise FRS 36.40.
- *
- *
- *
- */
+/** Template code for exercise FRS 36.40. */
+
 public class ShowSetFocus {
   
   public static void main(String[] args) {
@@ -23,6 +20,6 @@ public class ShowSetFocus {
     editor.showStatus("Click a tile to see Game's setFocus method being called.");
 
     // TODO: Replace the setting of the tool with your SetFocusTool implementation.
-    editor.setTool( new SelectionTool(editor) );
+    editor.setTool( new SetFocusTool(editor, game) );
   }
 }

@@ -90,6 +90,7 @@ public class StubGame2 implements Game {
 		red_archer = new StubUnit( GameConstants.ARCHER, Player.RED );
 
 		inTurn = Player.RED;
+
 	}
 
 	// A simple implementation to draw the map of DeltaCiv

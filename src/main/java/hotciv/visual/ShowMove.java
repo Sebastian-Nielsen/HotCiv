@@ -19,9 +19,9 @@ public class ShowMove {
     editor.open();
     editor.showStatus("Move units to see Game's moveUnit method being called.");
 
-    // TODO: Replace the setting of the tool with your UnitMoveTool implementation.
-//    editor.setTool( new SelectionTool(editor) );
+    // TODONE: Replace the setting of the tool with your UnitMoveTool implementation.
+    // editor.setTool( new SelectionTool(editor) );
     editor.setTool( new UnitMoveTool(editor, game) );
-//    editor.setTool( new UnitMoveTool(editor, new GameImpl(new AlphaCivFactory())) );
+    // editor.setTool( new UnitMoveTool(editor, new GameImpl(new AlphaCivFactory())) );
   }
 }

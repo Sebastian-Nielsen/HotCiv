@@ -52,6 +52,8 @@ public class CivDrawing
 		// ... and build up the set of figures associated with
 		// units in the game.
 		defineUnitMap();
+		// And also cities
+		defineCityMap();
 		// and the set of 'icons' in the status panel
 		defineIcons();
 	}
