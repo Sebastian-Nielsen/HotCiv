@@ -4,6 +4,7 @@ package hotciv.view.tool;
 import hotciv.framework.Game;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
+import hotciv.view.CivDrawing;
 import minidraw.framework.Drawing;
 import minidraw.framework.DrawingEditor;
 import minidraw.framework.Figure;
@@ -22,10 +23,12 @@ public class UnitMoveTool extends NullTool {
 	 * dragging a figure (or a set of figures)
 	 */
 	private Figure draggedFigure;
-	private Figure figure;
 	private int fLastX;
 	private int fLastY;
 	private Position unitFromPos;
+
+	private int mouseDownX;
+	private int mouseDownY;
 
 
 	public UnitMoveTool(DrawingEditor editor, Game game) {
@@ -38,9 +41,12 @@ public class UnitMoveTool extends NullTool {
 	public void mouseDown(MouseEvent e, int x, int y) {
 		Drawing model = editor.drawing();
 
+		mouseDownX = x;
+		mouseDownY = y;
+
 		model.lock();
 
-		figure = model.findFigure(x, y);
+		Figure figure = model.findFigure(x, y);
 
 		if (figure == null) { return; }
 
@@ -69,14 +75,30 @@ public class UnitMoveTool extends NullTool {
 	public void mouseUp(MouseEvent e, int x, int y) {
 		editor.drawing().unlock();
 
-
 		Position unitToPos = getPositionFromXY(x, y);
 		boolean moveSuccess = game.moveUnit(unitFromPos, unitToPos);
 
-		if (moveSuccess)
-			draggedFigure.moveBy(getXFromColumn(unitToPos.getColumn()), getYFromRow(unitToPos.getRow()));
-		else
-			draggedFigure.moveBy(getXFromColumn(unitFromPos.getColumn()), getYFromRow(unitFromPos.getRow()));
+		if (!moveSuccess)
+			((CivDrawing) editor.drawing()).worldChangedAt(unitFromPos);
+
+//			draggedFigure.moveBy(getXFromColumn(unitToPos.getColumn()), getYFromRow(unitToPos.getRow()));
+
+
+//		else {
+//			System.out.println(x + " " + y);
+//			System.out.println(unitFromPos);
+//			System.out.println(getXFromColumn(unitFromPos.getColumn()));
+//			System.out.println(getYFromRow(unitFromPos.getRow()));
+//			draggedFigure.moveBy(getXFromColumn(unitFromPos.getColumn()), getYFromRow(unitFromPos.getRow()));
+//			draggedFigure.moveBy(
+//					x - getXFromColumn(unitFromPos.getColumn()),
+//					getXFromColumn(unitFromPos.getColumn()) - (getXFromColumn(unitToPos.getColumn()) - x),
+//					getYFromRow(unitFromPos.getRow()) - (getYFromRow(unitToPos.getRow()) - y)
+//					getXFromColumn(unitFromPos.getColumn()) - getXFromColumn(unitToPos.getColumn()),
+//					getYFromRow(unitFromPos.getRow()) - getYFromRow(unitToPos.getRow())
+//			);
+
+//		}
 
 		draggedFigure = null;
 	}

@@ -108,8 +108,13 @@ public class GameImpl implements Game {
 
 	public boolean moveUnit( Position from, Position to ) {
 
-		if (! isValidUnitMove(from, to))
+		if (!isValidUnitMove(from, to)) {
+//			notifyObservers(o -> {
+//				o.worldChangedAt(from);
+//				o.worldChangedAt(to);
+//			});
 			return false;
+		}
 
 		boolean didAttack = attackUnit(from, to);
 		if (! didAttack)
@@ -158,10 +163,7 @@ public class GameImpl implements Game {
 		conquerCity(to, newOwner);
 
 		// Render unit placement changes
-		notifyObservers(o -> {
-			o.worldChangedAt(from);
-			o.worldChangedAt(to);
-		});
+		notifyObservers(o -> o.worldChangedAt(to));
 	}
 
 	/**
@@ -358,7 +360,7 @@ public class GameImpl implements Game {
 	 */
 	private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
 		world.spawnUnitAtPos(pos, unitType, owner);
-		notifyObservers((o -> o.worldChangedAt(pos))); // Render changes in GUI
+		notifyObservers((o -> o.worldChangedAt(pos))); // Render newly spawned unit
 	}
 
 	/**

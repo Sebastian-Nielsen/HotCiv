@@ -205,15 +205,14 @@ public class CivDrawing
 	// === Observer Methods ===
 
 	public void worldChangedAt(Position pos) {
-		// TODONE: Remove system.out debugging output
-		// System.out.println( "CivDrawing: world changes at "+pos);
+		 System.out.println( "CivDrawing: world changes at "+pos);
 
 		// this is a really brute-force algorithm: destroy
 		// all known units and build up the entire set again
 		defineUnitMap();
 		defineCityMap();
+		tileFocusChangedAt(pos);
 
-		// TODONE: Cities may change on position as well
 	}
 
 	@Override
@@ -224,8 +223,6 @@ public class CivDrawing
 		defineUnitMap();
 		defineCityMap();
 		defineIcons();
-
-		// TODONE: Cities pending
 	}
 
 	public void turnEnds(Player nextPlayer, int age) {
@@ -301,11 +298,15 @@ public class CivDrawing
 	}
 
 	private void createUnitMovesLeftText(UnitImpl unitAtPos) {
-		unitMovesLeftText = new TextFigure("0",
+		System.out.println("----------asdfaslkjfdasdf");
+		unitMovesLeftText = new TextFigure("999",
 				new Point(GfxConstants.UNIT_COUNT_X,
 						GfxConstants.UNIT_COUNT_Y) );
-		updateAgeText(unitAtPos.getMovesLeft());
+		System.out.println(unitAtPos);
+		System.out.println(unitAtPos.getMovesLeft());
+		unitMovesLeftText.setText("" + unitAtPos.getMovesLeft());
 		delegate.add(unitMovesLeftText);
+
 	}
 
 	private void createCityWorkforceIcon(CityImpl cityAtPos) {

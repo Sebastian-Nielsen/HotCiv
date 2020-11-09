@@ -53,6 +53,49 @@ public class StubGame2 implements Game {
 		gameObserver.worldChangedAt(to);
 		return true;
 	}
+//
+//		private boolean isValidUnitMove( Position from, Position to ) {
+//		UnitImpl fromUnit = (UnitImpl) getUnitAt(from);
+//		UnitImpl toUnit   = (UnitImpl) getUnitAt(to);
+//
+//		// A unit should only be able to move 1 tile at a time
+//		boolean moveIsFurtherThan1Tile = calcDistance(from, to) > 1;
+//		// If unit has less than 1 moves left
+//		boolean hasTooFewMovesLeft = fromUnit.getMovesLeft() < 1;
+//		if (moveIsFurtherThan1Tile || hasTooFewMovesLeft)
+//			return false;
+//
+//		// If the unit at to-position is an ally-unit
+//		boolean isAllyUnitAtToPos = toUnit != null &&
+//									toUnit.getOwner() == fromUnit.getOwner();
+//		if (isAllyUnitAtToPos)
+//			return false;
+//
+//		if (! isOccupiableTile(to, fromUnit.getTypeString()))
+//			return false;
+//
+//		// If the unit at from-position is not an ally unit
+//		boolean isFromUnitAnEnemyUnit = fromUnit.getOwner() != playerInTurn;
+//		if (isFromUnitAnEnemyUnit)
+//			return false;
+//
+//		return true;
+//	}
+//
+//	public boolean moveUnit( Position from, Position to ) {
+//
+//		if (! isValidUnitMove(from, to))
+//			return false;
+//
+//		if (! didAttack)
+//			updateUnitPos(from, to);
+//
+//		notifyObservers(o -> {
+//			o.worldChangedAt(from);
+//			o.worldChangedAt(to);
+//		});
+//		return true;
+//	}
 
 	// === Turn handling ===
 	private Player inTurn;

@@ -1,11 +1,11 @@
 package hotciv.visual;
 
+import hotciv.common.GameFactories.AlphaCivFactory;
+import hotciv.common.GameImpl;
+import hotciv.framework.Game;
 import hotciv.view.tool.CompositionTool;
-import minidraw.standard.*;
-import minidraw.framework.*;
-
-import hotciv.framework.*;
-import hotciv.stub.*;
+import minidraw.framework.DrawingEditor;
+import minidraw.standard.MiniDrawApplication;
 
 /** Template code for exercise FRS 36.44.
 
@@ -26,7 +26,8 @@ import hotciv.stub.*;
 public class ShowComposition {
   
   public static void main(String[] args) {
-    Game game = new StubGame2();
+//    Game game = new StubGame2();
+    Game game = new GameImpl(new AlphaCivFactory());
 
     DrawingEditor editor = 
       new MiniDrawApplication( "Click and/or drag any item to see all game actions",  
