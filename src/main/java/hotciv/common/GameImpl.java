@@ -446,12 +446,13 @@ public class GameImpl implements Game {
 	private GameObserver gameObserver;
 	@Override
 	public void addObserver(GameObserver observer) {
-		gameObserver = observer;
+		gameObserver = observer; // only one possible observer for now
 	}
 
 
 	@Override
 	public void setTileFocus(Position position) {
+		System.out.println("Called as expected");
 		gameObserver.tileFocusChangedAt(position);
 	}
 

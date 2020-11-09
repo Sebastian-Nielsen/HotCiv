@@ -1,29 +1,17 @@
 package hotciv.visual;
 
-import minidraw.standard.*;
-import minidraw.framework.*;
+import hotciv.framework.Game;
+import hotciv.framework.Position;
+import hotciv.stub.StubGame2;
+import minidraw.framework.DrawingEditor;
+import minidraw.standard.MiniDrawApplication;
+import minidraw.standard.NullTool;
 
-import java.awt.event.*;
-
-import hotciv.framework.*;
-import hotciv.stub.*;
+import java.awt.event.MouseEvent;
 
 /** Show how GUI changes can be induced by making
     updates in the underlying domain model.
 
-   This source code is from the book 
-     "Flexible, Reliable Software:
-       Using Patterns and Agile Development"
-     published 2010 by CRC Press.
-   Author: 
-     Henrik B Christensen 
-     Computer Science Department
-     Aarhus University
-   
-   This source code is provided WITHOUT ANY WARRANTY either 
-   expressed or implied. You may study, use, modify, and 
-   distribute it for non-commercial purposes. For any 
-   commercial use, see http://www.baerbak.com/
  */
 public class ShowUpdating {
   
@@ -81,6 +69,16 @@ class UpdateTool extends NullTool {
     case 4: {
       editor.showStatus( "State change: Inspect Unit at (4,3)" );
       game.setTileFocus(new Position(4,3));
+      break;
+    }
+    case 5: {
+      editor.showStatus( "State change: Inspect City at (1,1)" );
+      game.setTileFocus(new Position(1,1));
+      break;
+    }
+    case 6: {
+      editor.showStatus( "State change: Perform settler action at (4,3)" );
+      game.performUnitActionAt(new Position(4,3));
       break;
     }
       // TODO: Add more state changes for other things to test

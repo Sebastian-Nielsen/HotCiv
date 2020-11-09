@@ -1,32 +1,19 @@
 package hotciv.visual;
 
+import hotciv.framework.Game;
+import hotciv.stub.StubGame1;
+import hotciv.view.GfxConstants;
 import hotciv.view.figure.TextFigure;
-import minidraw.standard.*;
-import minidraw.framework.*;
+import minidraw.framework.DrawingEditor;
+import minidraw.standard.MiniDrawApplication;
+import minidraw.standard.NullTool;
 
 import java.awt.*;
-import java.awt.event.*;
-
-import hotciv.framework.*;
-import hotciv.view.*;
-import hotciv.stub.*;
+import java.awt.event.MouseEvent;
 
 /** Test the TextFigure to display age in
  * the status panel.
- * 
-   This source code is from the book 
-     "Flexible, Reliable Software:
-       Using Patterns and Agile Development"
-     published 2010 by CRC Press.
-   Author: 
-     Henrik B Christensen 
-     Computer Science Department
-     Aarhus University
-   
-   This source code is provided WITHOUT ANY WARRANTY either 
-   expressed or implied. You may study, use, modify, and 
-   distribute it for non-commercial purposes. For any 
-   commercial use, see http://www.baerbak.com/
+
  */
 public class ShowText {
   

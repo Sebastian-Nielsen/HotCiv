@@ -469,7 +469,7 @@ public class TestAlphaCiv {
 
 
 	@Test
-	public void shouldAddObserverAndInvokeUpdates() {
+	public void shouldAddObserverAndInvokeUpdateOnSetTileFocus() {
 		CivDrawingSpy civDrawing = new CivDrawingSpy();
 		game.addObserver(civDrawing);
 		Position pos = new Position(1, 1);
