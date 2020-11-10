@@ -2,7 +2,9 @@ package hotciv.view.tool;
 
 import hotciv.framework.Game;
 import hotciv.view.figure.HotCivFigure;
+import hotciv.view.figure.TextFigure;
 import minidraw.framework.DrawingEditor;
+import minidraw.framework.Figure;
 import minidraw.framework.Tool;
 import minidraw.standard.NullTool;
 
@@ -24,7 +26,7 @@ import static hotciv.view.GfxConstants.UNIT_TYPE_STRING;
 public class CompositionTool extends NullTool {
 	private final DrawingEditor editor;
 	private final Game game;
-	private HotCivFigure figureBelowClickPoint;
+	private Figure figureBelowClickPoint;
 
 	private Tool state;
 
@@ -50,17 +52,16 @@ public class CompositionTool extends NullTool {
 	@Override
 	public void mouseDown(MouseEvent e, int x, int y) {
 		// Find the figure (if any) just below the mouse click position
-		figureBelowClickPoint = (HotCivFigure) editor.drawing().findFigure(x, y);
+		figureBelowClickPoint = editor.drawing().findFigure(x, y);
 
+		// Don't do anything if we click a textFigure
 		// Next determine the state of tool to use
-		if (figureBelowClickPoint == null) {
-			System.out.println("setfocustool is called <--");
+		if (figureBelowClickPoint == null || figureBelowClickPoint instanceof TextFigure) {
 			setFocusTool.mouseDown(e, x, y);
 			return;
 		}
 
-		String typeOfClicked = figureBelowClickPoint.getTypeString();
-		System.out.println("The type asdfasdf: " + typeOfClicked);
+		String typeOfClicked = ((HotCivFigure) figureBelowClickPoint).getTypeString();
 
 		if (typeOfClicked.equals(TURN_SHIELD_TYPE_STRING)) {
 			state = endOfTurnTool;

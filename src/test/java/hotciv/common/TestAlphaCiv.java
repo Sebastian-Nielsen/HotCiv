@@ -499,16 +499,14 @@ public class TestAlphaCiv {
 
 		// ... we expect the Spy to return:
 		ArrayList<Position> expectedCallsToWorldChanged = new ArrayList<>();
-		Position from = new Position(2, 0);
 		Position to = new Position(1, 1);
-		expectedCallsToWorldChanged.add(from);
 		expectedCallsToWorldChanged.add(to);
 
 		// We haven't called moveUnit yet, so assert no world changes
 		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
 
 		// Call moveUnit
-		game.moveUnit(from, to);
+		game.moveUnit(new Position(2, 0), to);
 
 		// Assert that the spy returns what we expect
 		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(expectedCallsToWorldChanged));

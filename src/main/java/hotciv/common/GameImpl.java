@@ -107,20 +107,16 @@ public class GameImpl implements Game {
 	}
 
 	public boolean moveUnit( Position from, Position to ) {
+		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(from);
 
-		if (!isValidUnitMove(from, to)) {
-//			notifyObservers(o -> {
-//				o.worldChangedAt(from);
-//				o.worldChangedAt(to);
-//			});
+		if (!isValidUnitMove(from, to))
 			return false;
-		}
 
 		boolean didAttack = attackUnit(from, to);
 		if (! didAttack)
 			updateUnitPos(from, to);
 
-		postMoveUnitSideEffects(from, to);
+		postMoveUnitSideEffects(unitGettingMoved, to);
 		return true;
 	}
 
@@ -152,9 +148,7 @@ public class GameImpl implements Game {
 		world.createUnitAt(to, popUnitAt(from));
 	}
 
-	public void postMoveUnitSideEffects(Position from, Position to) {
-		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(to);
-
+	public void postMoveUnitSideEffects(UnitImpl unitGettingMoved, Position to) {
 		// Update moves left of the unit getting moved by decreasing its movecount by 1
 		updateMovesLeft(unitGettingMoved, unitGettingMoved.getMovesLeft() - 1);
 

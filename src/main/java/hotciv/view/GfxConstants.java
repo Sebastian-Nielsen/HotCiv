@@ -52,6 +52,7 @@ public class GfxConstants {
 
   // === Type strings for the various types of HotCivFigures used in HotCiv
   public static final String UNIT_TYPE_STRING = "UNIT_TYPE";
+  public static final String PRODUCTION_TYPE_STRING = "PRODUCTION_TYPE";
   public static final String CITY_TYPE_STRING = "CITY_TYPE";
   public static final String TURN_SHIELD_TYPE_STRING = "TURNSHIELD_TYPE";
   public static final String UNIT_SHIELD_TYPE_STRING = "UNITSHIELD_TYPE";

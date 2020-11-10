@@ -50,10 +50,10 @@ public class CivDrawing
 		// register this unit drawing as listener to any game state changes...
 		game.addObserver(this);
 		// ... and build up the set of figures associated with
-		// units in the game.
-		defineUnitMap();
-		// And also cities
+		// cities in the game.
 		defineCityMap();
+		// And also units  (units last! so they are drawn over cities)
+		defineUnitMap();
 		// and the set of 'icons' in the status panel
 		defineIcons();
 	}
@@ -205,12 +205,12 @@ public class CivDrawing
 	// === Observer Methods ===
 
 	public void worldChangedAt(Position pos) {
-		 System.out.println( "CivDrawing: world changes at "+pos);
+//		 System.out.println( "CivDrawing: world changes at "+pos);
 
 		// this is a really brute-force algorithm: destroy
 		// all known units and build up the entire set again
-		defineUnitMap();
 		defineCityMap();
+		defineUnitMap();
 		tileFocusChangedAt(pos);
 
 	}
@@ -220,8 +220,8 @@ public class CivDrawing
 		// A request has been issued to repaint
 		// everything. We simply rebuild the
 		// entire Drawing.
-		defineUnitMap();
 		defineCityMap();
+		defineUnitMap();
 		defineIcons();
 	}
 
@@ -256,8 +256,8 @@ public class CivDrawing
 	}
 
 	public void clearPanel() {
-		clearUnitSectionInPanel();
 		clearCitySectionInPanel();
+		clearUnitSectionInPanel();
 	}
 
 	public void clearCitySectionInPanel() {
@@ -298,12 +298,9 @@ public class CivDrawing
 	}
 
 	private void createUnitMovesLeftText(UnitImpl unitAtPos) {
-		System.out.println("----------asdfaslkjfdasdf");
 		unitMovesLeftText = new TextFigure("999",
 				new Point(GfxConstants.UNIT_COUNT_X,
 						GfxConstants.UNIT_COUNT_Y) );
-		System.out.println(unitAtPos);
-		System.out.println(unitAtPos.getMovesLeft());
 		unitMovesLeftText.setText("" + unitAtPos.getMovesLeft());
 		delegate.add(unitMovesLeftText);
 
@@ -332,7 +329,7 @@ public class CivDrawing
 				new HotCivFigure( cityAtPos.getProduction() ,
 						new Point( GfxConstants.CITY_PRODUCTION_X,
 								GfxConstants.CITY_PRODUCTION_Y ),
-						GfxConstants.UNIT_TYPE_STRING);
+						GfxConstants.PRODUCTION_TYPE_STRING);
 		delegate.add(cityProductionIcon);
 	}
 
