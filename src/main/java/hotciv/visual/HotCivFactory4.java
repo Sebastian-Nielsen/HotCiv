@@ -1,11 +1,14 @@
 package hotciv.visual;
 
-import minidraw.framework.*;
+import hotciv.framework.Game;
+import hotciv.view.CivDrawing;
+import hotciv.view.MapView;
+import minidraw.framework.Drawing;
+import minidraw.framework.DrawingEditor;
+import minidraw.framework.DrawingView;
+import minidraw.framework.Factory;
 
 import javax.swing.*;
-
-import hotciv.framework.*;
-import hotciv.view.*;
 
 /** Factory for visual testing of various SWEA template code */
 class HotCivFactory4 implements Factory {

@@ -75,32 +75,19 @@ public class UnitMoveTool extends NullTool {
 	public void mouseUp(MouseEvent e, int x, int y) {
 		editor.drawing().unlock();
 
+		if (unitFromPos == null) { return; }
+
 		Position unitToPos = getPositionFromXY(x, y);
+		System.out.print(unitFromPos + " -> " + unitToPos + "  movesLeft: " + game.getUnitAt(unitFromPos));
 		boolean moveSuccess = game.moveUnit(unitFromPos, unitToPos);
+		System.out.print(" - moveSuccess:" + moveSuccess);
+		System.out.print("\n");
 
 		if (!moveSuccess)
 			((CivDrawing) editor.drawing()).worldChangedAt(unitFromPos);
 
-//			draggedFigure.moveBy(getXFromColumn(unitToPos.getColumn()), getYFromRow(unitToPos.getRow()));
-
-
-//		else {
-//			System.out.println(x + " " + y);
-//			System.out.println(unitFromPos);
-//			System.out.println(getXFromColumn(unitFromPos.getColumn()));
-//			System.out.println(getYFromRow(unitFromPos.getRow()));
-//			draggedFigure.moveBy(getXFromColumn(unitFromPos.getColumn()), getYFromRow(unitFromPos.getRow()));
-//			draggedFigure.moveBy(
-//					x - getXFromColumn(unitFromPos.getColumn()),
-//					getXFromColumn(unitFromPos.getColumn()) - (getXFromColumn(unitToPos.getColumn()) - x),
-//					getYFromRow(unitFromPos.getRow()) - (getYFromRow(unitToPos.getRow()) - y)
-//					getXFromColumn(unitFromPos.getColumn()) - getXFromColumn(unitToPos.getColumn()),
-//					getYFromRow(unitFromPos.getRow()) - getYFromRow(unitToPos.getRow())
-//			);
-
-//		}
-
 		draggedFigure = null;
+		unitFromPos = null;
 	}
 
 }
