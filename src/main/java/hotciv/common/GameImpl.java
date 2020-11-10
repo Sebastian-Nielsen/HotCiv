@@ -1,15 +1,17 @@
 package hotciv.common;
 
 import hotciv.common.concreteUnits.ArcherUnit;
-import hotciv.common.concreteUnits.CaravanUnit;
 import hotciv.framework.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import static hotciv.framework.GameConstants.*;
-import static hotciv.framework.Player.*;
-import static org.junit.Assert.assertNotNull;
+import static hotciv.framework.Player.BLUE;
+import static hotciv.framework.Player.RED;
 
 
 /** Skeleton implementation of HotCiv.
@@ -34,6 +36,7 @@ public class GameImpl implements Game {
 
 	private int roundNumber = 1;
 
+	private List<GameObserver> gameObservers;
 
 	public GameImpl(GameFactory gameFactory) {
 		// Initialize strategies
@@ -47,6 +50,8 @@ public class GameImpl implements Game {
 		world = new World();
 		// Initialize tiles and cities
 		this.worldLayoutStrategy.generateWorld(world);
+		// Initialize observer list
+		gameObservers = new ArrayList<>();
 	}
 
 	public int getRoundNumber() {
@@ -102,15 +107,16 @@ public class GameImpl implements Game {
 	}
 
 	public boolean moveUnit( Position from, Position to ) {
+		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(from);
 
-		if (! isValidUnitMove(from, to))
+		if (!isValidUnitMove(from, to))
 			return false;
 
 		boolean didAttack = attackUnit(from, to);
 		if (! didAttack)
 			updateUnitPos(from, to);
 
-		postMoveUnitSideEffects(to);
+		postMoveUnitSideEffects(unitGettingMoved, to);
 		return true;
 	}
 
@@ -138,25 +144,20 @@ public class GameImpl implements Game {
 		return true;
 	}
 
-
 	public void updateUnitPos(Position from, Position to) {
 		world.createUnitAt(to, popUnitAt(from));
 	}
 
-	public void preMoveUnitSideEffects(Position to) {
-		// Remove enemy unit (if any)
-		popUnitAt(to);
-	}
-
-	public void postMoveUnitSideEffects(Position to) {
-		UnitImpl unitGettingMoved = (UnitImpl) getUnitAt(to);
-
+	public void postMoveUnitSideEffects(UnitImpl unitGettingMoved, Position to) {
 		// Update moves left of the unit getting moved by decreasing its movecount by 1
 		updateMovesLeft(unitGettingMoved, unitGettingMoved.getMovesLeft() - 1);
 
 		// Conquer city if city present at to-pos
 		Player newOwner = unitGettingMoved.getOwner();
 		conquerCity(to, newOwner);
+
+		// Render unit placement changes
+		notifyObservers(o -> o.worldChangedAt(to));
 	}
 
 	/**
@@ -194,9 +195,7 @@ public class GameImpl implements Game {
 	 * @param pos unit's position
 	 * @return The unit that is removed
 	 */
-	public Unit popUnitAt(Position pos) {
-		return world.popUnitAt(pos);
-	}
+	public Unit popUnitAt(Position pos) { return world.popUnitAt(pos); }
 
 
 
@@ -342,7 +341,9 @@ public class GameImpl implements Game {
 	 * Increments the age in accordance to the given aging strategy
 	 */
 	private void incrementAge() {
-		setAge(agingStrategy.incrementAge(age));
+		int newAge = agingStrategy.incrementAge(age);
+		// Update age variable
+		setAge(newAge);
 	}
 
 	/**
@@ -353,6 +354,7 @@ public class GameImpl implements Game {
 	 */
 	private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
 		world.spawnUnitAtPos(pos, unitType, owner);
+		notifyObservers((o -> o.worldChangedAt(pos))); // Render newly spawned unit
 	}
 
 	/**
@@ -408,6 +410,12 @@ public class GameImpl implements Game {
 				endOfRoundEffects();
 				break;
 		}
+		startOfTurnEffects();
+	}
+
+	private void startOfTurnEffects() {
+		// Render updated age
+		notifyObservers((o -> o.turnEnds(getPlayerInTurn(), age)));
 	}
 
 	private void endOfTurnEffects() {
@@ -422,10 +430,12 @@ public class GameImpl implements Game {
 	}
 
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
+
 	public void changeProductionInCityAt( Position p, String unitType ) {
 		CityImpl city = (CityImpl) getCityAt(p);
 		city.setProduction(unitType);
-
+		// Render change
+		setTileFocus(p);
 	}
 	public void performUnitActionAt( Position pos ) {
 		boolean isSettlerAtPos = getTypeOfUnitAt(pos).equals(SETTLER);
@@ -441,11 +451,22 @@ public class GameImpl implements Game {
 		}
 
 		((UnitImpl) getUnitAt(pos)).performAction(this, pos);
-
 	}
 
+	@Override
+	public void addObserver(GameObserver observer) {
+		gameObservers.add(observer);
+	}
 
-	public boolean isUnitAtPos(Position pos) {return world.isUnitAtPos(pos);}
+	@Override
+	public void setTileFocus(Position position) {
+		notifyObservers(o -> o.tileFocusChangedAt(position));
+	}
+
+	private void notifyObservers(Consumer<GameObserver> c) { gameObservers.forEach(c); }
+
+
+	public boolean isUnitAtPos(Position pos) { return world.isUnitAtPos(pos); }
 
 	/**
 	 * Get type of unit at the given position
@@ -460,27 +481,14 @@ public class GameImpl implements Game {
 		age = newAge;
 	}
 
-	public void createCityAt(Position pos, CityImpl city) {
-		world.createCityAt(pos, city);
-	}
-
-
-	/**
-	 * Create a tile at the given position
-	 * @param pos Position to create tile at
-	 * @param tile Tile to create
-	 */
-	public void createTileAtPos(Position pos, TileImpl tile) {
-		world.createTileAtPos(pos, tile);
-	}
-
 	/**
 	 * Create a city at the given position
 	 * @param pos Position to create city at
 	 * @param city City to create
 	 */
-	public void createCityAtPos(Position pos, CityImpl city) {
+	public void createCityAt(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
+		notifyObservers((o -> o.worldChangedAt(pos))); // Render new city
 	}
 
 	public int getSuccessfulAttacksThisTurn() {

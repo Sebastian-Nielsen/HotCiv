@@ -1,8 +1,5 @@
 package hotciv.framework;
 
-import hotciv.common.GameImpl;
-import hotciv.common.World;
-
 public class GameImplTranscriptDecorator implements Game {
 	private final Game game;
 	private StringBuilder transcript;
@@ -124,6 +121,16 @@ public class GameImplTranscriptDecorator implements Game {
 				.append(p)
 				.append(".\n");
 		game.performUnitActionAt(p);
+	}
+
+	@Override
+	public void addObserver(GameObserver observer) {
+
+	}
+
+	@Override
+	public void setTileFocus(Position position) {
+
 	}
 //
 //	@Override

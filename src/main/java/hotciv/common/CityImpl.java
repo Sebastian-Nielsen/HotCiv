@@ -4,6 +4,7 @@ import hotciv.framework.City;
 import hotciv.framework.Player;
 
 import static hotciv.framework.GameConstants.ARCHER;
+import static hotciv.framework.GameConstants.foodFocus;
 
 public class CityImpl implements City {
     private Player owner;
@@ -34,7 +35,7 @@ public class CityImpl implements City {
     }
 
     public String getWorkforceFocus() {
-        return null;
+        return foodFocus;
     }
 
     public void setTreasury(int p) {

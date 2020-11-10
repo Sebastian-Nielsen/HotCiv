@@ -112,9 +112,27 @@ public interface Game {
    */
   public void performUnitActionAt( Position p );
 
-  /** Sets the age
-   * @param newAge the new age
+  /** add an observer on this game instance. The game
+   * instance acts as 'subject' in the pattern.
+   * @param observer the observer to notify in case of
+   * state changes.
    */
+  public void addObserver(GameObserver observer);
+
+  /** set the focus on a specific tile. This will
+   * result in an event being broadcast to all
+   * observers that focus has been changed to
+   * this tile. Precondition: the position
+   * is within the limits of the game world.
+   * @param position the position of the tile that
+   * has focus.
+   */
+  public void setTileFocus(Position position);
+
+
+//  /** Sets the age
+//   * @param newAge the new age
+//   */
 //  public void setAge(int newAge);
 //
 //  void updateUnitPos(Position from, Position to);

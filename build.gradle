@@ -57,6 +57,9 @@ repositories {
 }
     
 dependencies {
+    // Depend on the MiniDraw library
+    implementation 'com.baerbak.maven:minidraw:1.13'
+
     // Depend on JUnit 5. Require both API and Engine
     testImplementation group: 'org.junit.jupiter',
        name: 'junit-jupiter-api', version: '5.6.2'
@@ -84,4 +87,95 @@ wrapper {
 // Use latest Jacoco test coverage tool
 jacoco {
   toolVersion = "0.8.5"
+}
+
+
+
+
+
+// === Execution tasks - for running the various integration tests
+//     for manual test-driving the MiniDraw framework customization.
+
+// === Demonstrate specialized MiniDraw implementations
+
+task show(type: JavaExec) {
+  group 'SWEA HotCiv Demonstration'
+  description 'Demonstrate MapView'
+
+  main = 'hotciv.visual.ShowWorld'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task text(type: JavaExec) {
+  group 'SWEA HotCiv Demonstration'
+  description 'Demonstrate TextFigure'
+
+  main = 'hotciv.visual.ShowText'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task city(type: JavaExec) {
+  group 'SWEA HotCiv Demonstration'
+  description 'Demonstrate CityFigure'
+
+  main = 'hotciv.visual.ShowCity'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+// === Placeholders for YOUR work on solving SWEA exercises
+
+task update(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test CivDrawing, FRAS 36.38 (partially solved)'
+
+  main = 'hotciv.visual.ShowUpdating'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task move(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test UnitMoveTool, FRS 36.39'
+
+  main = 'hotciv.visual.ShowMove'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task setfocus(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test SetFocusTool, FRS 36.40'
+
+  main = 'hotciv.visual.ShowSetFocus'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task turn(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test EndOfTurnTool, FRS 36.42 (partially solved)'
+
+  main = 'hotciv.visual.ShowEndOfTurn'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task action(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test ActionTool, FRS 36.43'
+
+  main = 'hotciv.visual.ShowAction'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task comp(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description 'Test CompositionTool, FRS 36.44 (partially solved)'
+
+  main = 'hotciv.visual.ShowComposition'
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+task semi(type: JavaExec) {
+  group 'SWEA Mandatory'
+  description ' Play SemiCiv using the GUI :-)'
+
+  main = 'hotciv.visual.ShowSemi'
+  classpath = sourceSets.main.runtimeClasspath
 }

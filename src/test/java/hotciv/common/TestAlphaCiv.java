@@ -1,23 +1,27 @@
 package hotciv.common;
 
 import hotciv.common.GameFactories.AlphaCivFactory;
-import hotciv.framework.*;
-
+import hotciv.framework.City;
+import hotciv.framework.Player;
+import hotciv.framework.Position;
+import hotciv.framework.Unit;
 import org.junit.Assert;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static hotciv.framework.GameConstants.ARCHER;
-import static hotciv.framework.GameConstants.LEGION;
+import java.util.ArrayList;
+
+import static hotciv.common.TestHelperMethods.*;
+import static hotciv.framework.GameConstants.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static hotciv.common.TestHelperMethods.*;
 
-/** Skeleton class for AlphaCiv test cases
- */
+/** Skeleton class for AlphaCiv test cases */
 public class TestAlphaCiv {
 	private GameImpl game;
 	private Position redCityPos;
+	private Position blueCityPos;
 	private City redCity;
 	private City blueCity;
 
@@ -27,7 +31,8 @@ public class TestAlphaCiv {
 		game = new GameImpl(new AlphaCivFactory());
 		redCityPos = new Position(1, 1);
 		redCity = game.getCityAt(redCityPos);
-		blueCity = game.getCityAt(new Position(4, 1));
+		blueCityPos = new Position(4, 1);
+		blueCity = game.getCityAt(blueCityPos);
 	}
 
 
@@ -110,7 +115,7 @@ public class TestAlphaCiv {
 
 	@Test
 	public void mountainTileAtPos2_2() {
-		assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountains"));
+		assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is("mountain"));
 	}
 
 	@Test
@@ -466,6 +471,115 @@ public class TestAlphaCiv {
 		endRound(game); // Red's treasury is 14
 		endRound(game); // Red's treasury is 20-15=5 and Legion is spawned
 		assertThat(game.getUnitAt(new Position(0, 1)).getTypeString(), is(LEGION));
+	}
+
+
+	@Test
+	public void shouldAddObserverAndInvokeUpdateOnSetTileFocus() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// There shouldn't be any calls to change the tile focus yet
+		assertNull(civDrawing.getTileFocus());
+
+		// Set new tile focus
+		Position pos = new Position(1, 1);
+		game.setTileFocus(pos);
+
+		// Should be new focus
+		assertThat(civDrawing.getTileFocus(), is(pos));
+	}
+
+	@Test
+	public void shouldRenderMoveUnit() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// ... we expect the Spy to return:
+		ArrayList<Position> expectedCallsToWorldChanged = new ArrayList<>();
+		Position to = new Position(1, 1);
+		expectedCallsToWorldChanged.add(to);
+
+		// We haven't called moveUnit yet, so assert no world changes
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+
+		// Call moveUnit
+		game.moveUnit(new Position(2, 0), to);
+
+		// Assert that the spy returns what we expect
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(expectedCallsToWorldChanged));
+	}
+
+
+	@Test
+	public void shouldRenderAgeAndPlayerInTurn() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+		int startingAge = -4000;
+		int ageIncrement = 100;
+
+		// Age and player in turn should be the default
+		assertThat(civDrawing.getCurrentAge(), is(startingAge));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(0));
+
+		game.endOfTurn();
+
+		// Should be same age but new player in turn
+		assertThat(civDrawing.getCurrentAge(), is(startingAge));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.BLUE));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(1));
+
+		game.endOfTurn();
+
+		// Should be new age and player in turn
+		assertThat(civDrawing.getCurrentAge(), is(startingAge + ageIncrement));
+		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
+		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(2));
+	}
+
+
+	@Test
+	public void shouldRenderNewlyCreatedCity() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// Should be no calls to 'worldChangedAt' yet
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+
+		// Create new city
+		Position newCityPos = new Position(3, 3);
+		CityImpl newCity = new CityImpl(Player.BLUE);
+		game.createCityAt(newCityPos, newCity);
+
+		// Assert a single call have been made to 'worldChangedAt'
+		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(newCityPos));
+		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
+	}
+
+	@Test
+	public void shouldRenderNewlySpawnedUnit() {
+		// Add the CivDrawingSpy as an observer to GameImpl
+		CivDrawingSpy civDrawing = new CivDrawingSpy();
+		game.addObserver(civDrawing);
+
+		// Should be no calls to 'worldChangedAt' yet
+		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+
+		// Change Blue's production to avoid it interfering with Red
+		game.changeProductionInCityAt(blueCityPos, SETTLER);
+
+		endRound(game);  // Red's treasury is 6
+		endRound(game);  // Red's treasury is 12-10=2
+						 // because an archer is produced
+
+		// Assert the call made to 'worldChangedAt' is spawning the red archer
+		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(redCityPos));
+		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
 	}
 
 }
