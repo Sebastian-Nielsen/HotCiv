@@ -6,7 +6,6 @@ import hotciv.common.distribution.OperationNames;
 import hotciv.framework.*;
 
 
-
 public class GameProxy implements Game, ClientProxy {
 	private final Requestor requestor;
 
@@ -17,18 +16,34 @@ public class GameProxy implements Game, ClientProxy {
 	}
 
 	@Override
-	public Tile getTileAt(Position p) {
-		return null;
+	public Tile getTileAt(Position pos) {
+		String typeString = requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_TILE_AT,
+				String.class, pos);
+
+		return Converter.convertTypestringToTileObject(typeString);
 	}
 
 	@Override
-	public Unit getUnitAt(Position p) {
-		return null;
+	public Unit getUnitAt(Position pos) {
+		Object[] args = requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_UNIT_AT,
+				Object[].class, pos);
+
+		String unitType   = (String) args[0];
+		String typeString = (String) args[1];
+		Player owner =  Player.valueOf(typeString);
+
+		return Converter.convertTypeStringToUnitObject(unitType, owner);
 	}
 
 	@Override
-	public City getCityAt(Position p) {
-		return null;
+	public City getCityAt(Position pos) {
+		City city = requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_CITY_AT,
+				CityImpl.class, pos);
+
+		return city;
 	}
 
 	@Override

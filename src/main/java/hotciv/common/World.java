@@ -1,15 +1,12 @@
 package hotciv.common;
 
-import hotciv.common.concreteTiles.*;
-import hotciv.common.concreteUnits.*;
+import hotciv.common.concreteTiles.PlainsTile;
 import hotciv.framework.*;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import static hotciv.framework.GameConstants.*;
 
 /**
  * Responsibilites:
@@ -30,36 +27,6 @@ public class World {
         return unit != null;
     }
 
-
-    /**
-     * Return the tile object the tile char represents
-     * E.g. tile char 'o' corresponds to a 'plains' object
-     * @return Tile object of the given tile char
-     */
-    public TileImpl convertTileCharToTile(char tileChar) {
-        if ( tileChar == '.' ) return new OceansTile();
-        if ( tileChar == 'o' ) return new PlainsTile();
-        if ( tileChar == 'M' ) return new MountainsTile();
-        if ( tileChar == 'f' ) return new ForestTile();
-        if ( tileChar == 'h' ) return new HillsTile();
-        if ( tileChar == 'd' ) return new DesertTile();
-        else throw new RuntimeException("Failed to convert tileChar");
-    }
-
-
-    /**
-     * Return the unit object the tile type-string represents
-     * E.g. tile unit 'archer' corresponds to a 'ArcherUnit' object
-     * @owner The owner of the unit object
-     * @return Unit object of the given type-string
-     */
-    public UnitImpl getUnitObjectFromTypeString(String unitType, Player owner) {
-        if (unitType.equals(ARCHER)) return new ArcherUnit(owner);
-        if (unitType.equals(SETTLER)) return new SettlerUnit(owner);
-        if (unitType.equals(LEGION)) return new LegionUnit(owner);
-        if (unitType.equals(CARAVAN)) return new CaravanUnit(owner);
-        else throw new RuntimeException("No unit with type-string: " + unitType);
-    }
 
     /* SETTER METHODS */
     public void createCityAt(Position pos, CityImpl city) {
@@ -111,7 +78,7 @@ public class World {
     public void spawnUnitAtPos(Position pos, String unitType, Player owner) {
         posToUnits.put(
             pos,
-            getUnitObjectFromTypeString(unitType, owner)
+            Converter.convertTypeStringToUnitObject(unitType, owner)
         );
     }
 }

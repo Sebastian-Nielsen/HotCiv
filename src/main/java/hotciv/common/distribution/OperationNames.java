@@ -10,6 +10,9 @@ public class OperationNames {
   // inspected.
 
   public static final String GET_WINNER = "hotciv-get-winner";
+  public static final String GET_TILE_AT = "hotciv-get-tile-at";
+  public static final String GET_UNIT_AT = "hotciv-get-unit-at";
+  public static final String GET_CITY_AT = "hotciv-get-city-at";
 
 
 }

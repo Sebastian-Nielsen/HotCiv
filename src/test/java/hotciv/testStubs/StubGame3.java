@@ -2,6 +2,7 @@ package hotciv.testStubs;
 
 import hotciv.common.CityImpl;
 import hotciv.common.UnitImpl;
+import hotciv.common.concreteTiles.MountainsTile;
 import hotciv.framework.*;
 import hotciv.stub.StubTile;
 import hotciv.stub.ThetaConstants;
@@ -99,7 +100,7 @@ public class StubGame3 implements Game {
 
 	// A simple implementation to draw the map of DeltaCiv
 	protected Map<Position,Tile> world;
-	public Tile getTileAt( Position p ) { return world.get(p); }
+	public Tile getTileAt( Position p ) { return new MountainsTile(); }
 
 	/** define the world.
 	 * @param worldType 1 gives one layout while all other
@@ -113,7 +114,7 @@ public class StubGame3 implements Game {
 				world.put( p, new StubTile(GameConstants.PLAINS));
 			}
 		}
-		// Creaate a little area around the theta unit of special terrain
+		// Create a little area around the theta unit of special terrain
 		world.put(new Position(6,4), new StubTile(ThetaConstants.DESERT));
 		world.put(new Position(6,5), new StubTile(ThetaConstants.DESERT));
 		world.put(new Position(7,4), new StubTile(ThetaConstants.DESERT));
