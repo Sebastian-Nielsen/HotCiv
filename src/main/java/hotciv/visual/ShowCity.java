@@ -1,16 +1,23 @@
 package hotciv.visual;
 
+import hotciv.framework.City;
+import hotciv.framework.Game;
+import hotciv.framework.Player;
+import hotciv.stub.StubGame1;
+import hotciv.view.GfxConstants;
+import hotciv.view.MapView;
 import hotciv.view.figure.CityFigure;
-import minidraw.standard.*;
-import minidraw.framework.*;
+import minidraw.framework.Drawing;
+import minidraw.framework.DrawingEditor;
+import minidraw.framework.DrawingView;
+import minidraw.framework.Factory;
+import minidraw.standard.MiniDrawApplication;
+import minidraw.standard.NullTool;
+import minidraw.standard.StandardDrawing;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-
-import hotciv.framework.*;
-import hotciv.view.*;
-import hotciv.stub.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /** Test the CityFigure.
  * 
