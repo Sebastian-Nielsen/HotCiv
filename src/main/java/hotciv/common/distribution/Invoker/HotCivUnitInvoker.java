@@ -40,7 +40,7 @@ public class HotCivUnitInvoker implements Invoker {
 				reply = new ReplyObject(200, gson.toJson(owner));
 
 				break;
-			case GET_TYPESTRING:
+			case GET_UNIT_TYPESTRING:
 				String typestring = unit.getTypeString();
 				reply = new ReplyObject(200, gson.toJson(typestring));
 

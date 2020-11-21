@@ -30,13 +30,14 @@ public class OperationNames {
   public static final String GET_WORKFORCE_FOCUS = "city-get-workforce-focus";
 
   // Unit
-  public static final String GET_TYPESTRING = "unit-get-typestring";
+  public static final String GET_UNIT_TYPESTRING = "unit-get-typestring";
   public static final String GET_UNIT_OWNER = "unit-get-owner";
   public static final String GET_MOVE_COUNT = "unit-get-movecount";
   public static final String GET_DEFENSIVE_STRENGTH = "unit-get-defensive_strength";
   public static final String GET_ATTACKING_STRENGTH = "unit-get-attacking_strength";
 
   // Tile
+  public static final String GET_TILE_TYPESTRING = "unit-get-typestring";
 
 
 

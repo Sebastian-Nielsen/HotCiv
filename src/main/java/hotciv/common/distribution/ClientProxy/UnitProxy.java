@@ -17,7 +17,7 @@ public class UnitProxy implements Unit {
 	@Override
 	public String getTypeString() {
 		return requestor.sendRequestAndAwaitReply(
-				HOTCIV_OBJECTID, OperationNames.GET_TYPESTRING,
+				HOTCIV_OBJECTID, OperationNames.GET_UNIT_TYPESTRING,
 				String.class);
 	}
 
