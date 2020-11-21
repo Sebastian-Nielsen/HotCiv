@@ -20,10 +20,11 @@ public class DistributionTest {
 
 	Game game;
 	Requestor requestor;
+	private StubGame3 servant;
 
 	@BeforeEach
 	public void Setup() {
-		Game servant = new StubGame3();
+		servant = new StubGame3();
 		GameObserver nullObserver = new NullObserver();
 		servant.addObserver(nullObserver);
 
@@ -39,9 +40,22 @@ public class DistributionTest {
 	}
 
 	@Test
-	public void shouldHaveWinner() {
+	public void shouldHaveRedWinner() {
+		servant.setWinner(Player.RED); // method in our StubGame3 for testing
 		Player winner = game.getWinner();
 		assertThat(winner, is(Player.RED));
+
+//		Request "{\"operationName\":\"hotciv-get-winner\",\"payload\":\"[]\",\"objectId\":\"singleton\",\"versionIdentity\":1}"
+//		Reply	"{\"Payload\":\"[RED]\",\"errorDescription\":\"\",\"statusCode\":\"200\",\"versionIdentity\":1}"
+
+
+	}
+
+	@Test
+	public void shouldHaveBlueWinner() {
+		servant.setWinner(Player.BLUE);
+		Player winner = game.getWinner();
+		assertThat(winner, is(Player.BLUE));
 	}
 
 

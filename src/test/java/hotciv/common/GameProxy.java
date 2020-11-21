@@ -1,10 +1,19 @@
 package hotciv.common;
 
+import frds.broker.ClientProxy;
 import frds.broker.Requestor;
+import hotciv.common.distribution.OperationNames;
 import hotciv.framework.*;
 
-public class GameProxy implements Game {
+
+
+public class GameProxy implements Game, ClientProxy {
+	private final Requestor requestor;
+
+	public static final String HOTCIV_OBJECTID = "singleton";
+
 	public GameProxy(Requestor requestor) {
+		this.requestor = requestor;
 	}
 
 	@Override
@@ -29,7 +38,13 @@ public class GameProxy implements Game {
 
 	@Override
 	public Player getWinner() {
-		return Player.RED;
+		// TODO: Add try-with-resource
+
+		Player winner = requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_WINNER,
+				Player.class);
+
+		return winner;
 	}
 
 	@Override

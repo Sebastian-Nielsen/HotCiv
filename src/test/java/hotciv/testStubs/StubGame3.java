@@ -9,6 +9,7 @@ import hotciv.stub.ThetaConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
 
 /** Test stub for Distribution testing
@@ -34,10 +35,10 @@ public class StubGame3 implements Game {
 			return red_archer;
 		}
 		if ( p.equals(pos_settler_blue) ) {
-			return new StubUnit( GameConstants.SETTLER, Player.BLUE );
+			return new StubUnit( GameConstants.SETTLER, BLUE );
 		}
 		if ( p.equals(pos_legion_blue) ) {
-			return new StubUnit( GameConstants.LEGION, Player.BLUE );
+			return new StubUnit( GameConstants.LEGION, BLUE );
 		}
 		if ( p.equals(pos_thetaciv_unit) ) {
 			return new StubUnit( ThetaConstants.CARAVAN, RED );
@@ -62,7 +63,7 @@ public class StubGame3 implements Game {
 	public void endOfTurn() {
 		System.out.println( "-- StubGame3 / endOfTurn called." );
 		inTurn = (getPlayerInTurn() == RED ?
-				Player.BLUE :
+				BLUE :
 				RED );
 		// no age increments
 		gameObserver.turnEnds(inTurn, -4000);
@@ -128,14 +129,23 @@ public class StubGame3 implements Game {
 		}
 		return null;
 	}
-	public Player getWinner() { return RED; }
+
+	private Player winner;
+
+	public void setWinner(Player newWinner) {
+		winner = newWinner;
+	}
+	public Player getWinner() {
+		return winner;
+	}
+
 	public int getAge() { return -5000; }
 	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
 	public void changeProductionInCityAt( Position p, String unitType ) {}
 
 	public void performUnitActionAt( Position p ) {
 		if (p.equals(pos_settler_blue)) {
-			blue_city_created_by_settler = new CityImpl(Player.BLUE);
+			blue_city_created_by_settler = new CityImpl(BLUE);
 			gameObserver.worldChangedAt(p);
 		}
 	}
