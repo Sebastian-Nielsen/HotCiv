@@ -1,4 +1,4 @@
-package hotciv.common.distribution;
+package hotciv.common.distribution.Invoker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

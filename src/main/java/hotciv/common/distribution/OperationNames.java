@@ -9,6 +9,7 @@ public class OperationNames {
   // and is also helpful in case of failure on the server side where log files can be
   // inspected.
 
+  // Game
   public static final String GET_WINNER = "hotciv-get-winner";
   public static final String GET_TILE_AT = "hotciv-get-tile-at";
   public static final String GET_UNIT_AT = "hotciv-get-unit-at";
@@ -21,11 +22,22 @@ public class OperationNames {
   public static final String CHANGE_PRODUCTION_IN_CITY_AT = "hotciv-change-production-in-city-at";
   public static final String PERFORM_UNIT_ACTION_AT = "hotciv-perform-unit-action-at";
 
-  public static final String GET_OWNER = "city-get-owner";
+  // City
+  public static final String GET_CITY_OWNER = "city-get-owner";
   public static final String GET_SIZE = "city-get-size";
   public static final String GET_TREASURY = "city-get-treasury";
   public static final String GET_PRODUCTION = "city-get-production";
   public static final String GET_WORKFORCE_FOCUS = "city-get-workforce-focus";
+
+  // Unit
+  public static final String GET_TYPESTRING = "unit-get-typestring";
+  public static final String GET_UNIT_OWNER = "unit-get-owner";
+  public static final String GET_MOVE_COUNT = "unit-get-movecount";
+  public static final String GET_DEFENSIVE_STRENGTH = "unit-get-defensive_strength";
+  public static final String GET_ATTACKING_STRENGTH = "unit-get-attacking_strength";
+
+  // Tile
+
 
 
 }
