@@ -1,4 +1,4 @@
-package hotciv.variants.unitTests;
+package hotciv.common.unitTests;
 
 import hotciv.common.agingStrategies.LinearAgingStrategy;
 import hotciv.framework.AgingStrategy;

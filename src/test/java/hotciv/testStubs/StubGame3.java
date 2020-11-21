@@ -29,7 +29,7 @@ public class StubGame3 implements Game {
 	private City red_city;
 	private City blue_city_created_by_settler;
 
-	private Unit red_archer;
+	private StubUnit red_archer;
 
 	public Unit getUnitAt(Position p) {
 		if ( p.equals(pos_archer_red) ) {
@@ -54,8 +54,8 @@ public class StubGame3 implements Game {
 			pos_archer_red = to;
 		}
 		// notify our observer(s) about the changes on the tiles
-		gameObserver.worldChangedAt(from);
-		gameObserver.worldChangedAt(to);
+		// gameObserver.worldChangedAt(from);
+		// gameObserver.worldChangedAt(to);
 		return true;
 	}
 
@@ -140,9 +140,9 @@ public class StubGame3 implements Game {
 		return winner;
 	}
 
-	public int getAge() { return -5000; }
-	public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-	public void changeProductionInCityAt( Position p, String unitType ) {}
+	public int getAge() { return -4000; }
+	public void changeWorkForceFocusInCityAt( Position p, String balance ) {  }
+	public void changeProductionInCityAt( Position p, String unitType ) { ((CityImpl) getCityAt(p)).setProduction(unitType); }
 
 	public void performUnitActionAt( Position p ) {
 		if (p.equals(pos_settler_blue)) {
@@ -162,6 +162,7 @@ public class StubGame3 implements Game {
 class StubUnit extends UnitImpl {
 	private String type;
 	private Player owner;
+
 	public StubUnit(String type, Player owner) {
 		super(owner);
 		this.type = type;
@@ -177,4 +178,5 @@ class StubUnit extends UnitImpl {
 	public int getDefensiveStrength() { return 0; }
 	@Override
 	public int getAttackingStrength() { return 0; }
+
 }

@@ -1,8 +1,9 @@
-package hotciv.common;
+package hotciv.common.distribution;
 
 import frds.broker.ClientProxy;
 import frds.broker.Requestor;
-import hotciv.common.distribution.OperationNames;
+import hotciv.common.CityImpl;
+import hotciv.common.Converter;
 import hotciv.framework.*;
 
 
@@ -39,57 +40,67 @@ public class GameProxy implements Game, ClientProxy {
 
 	@Override
 	public City getCityAt(Position pos) {
-		City city = requestor.sendRequestAndAwaitReply(
+		return requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_CITY_AT,
 				CityImpl.class, pos);
-
-		return city;
 	}
 
 	@Override
 	public Player getPlayerInTurn() {
-		return null;
+		return requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_PLAYER_IN_TURN,
+				Player.class);
 	}
 
 	@Override
 	public Player getWinner() {
 		// TODO: Add try-with-resource
 
-		Player winner = requestor.sendRequestAndAwaitReply(
+		return requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_WINNER,
 				Player.class);
-
-		return winner;
 	}
 
 	@Override
 	public int getAge() {
-		return 0;
+		return requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.GET_AGE,
+				Integer.class);
 	}
 
 	@Override
 	public boolean moveUnit(Position from, Position to) {
-		return false;
+		return requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.MOVE_UNIT,
+				Boolean.class, from, to);
 	}
 
 	@Override
 	public void endOfTurn() {
-
+		requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.END_OF_TURN,
+				null);
 	}
 
 	@Override
 	public void changeWorkForceFocusInCityAt(Position p, String balance) {
-
+		requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.CHANGE_WORKFORCE_FOCUS_IN_CITY_AT,
+				null, p, balance);
 	}
 
 	@Override
 	public void changeProductionInCityAt(Position p, String unitType) {
-
+		requestor.sendRequestAndAwaitReply(
+				HOTCIV_OBJECTID, OperationNames.CHANGE_PRODUCTION_IN_CITY_AT,
+				null, p, unitType);
 	}
 
 	@Override
 	public void performUnitActionAt(Position p) {
-
+		requestor.sendRequestAndAwaitReply(
+			HOTCIV_OBJECTID, OperationNames.PERFORM_UNIT_ACTION_AT,
+			null, p);
 	}
 
 	@Override

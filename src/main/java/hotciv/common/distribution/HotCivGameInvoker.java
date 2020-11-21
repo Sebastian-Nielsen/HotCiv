@@ -28,10 +28,45 @@ public class HotCivGameInvoker implements Invoker {
 		RequestObject requestObject = gson.fromJson(request, RequestObject.class);
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply;
+		ReplyObject reply = new ReplyObject(200, null);;
 		Position pos;
 		String operation = requestObject.getOperationName();
 		switch (operation) {
+			case PERFORM_UNIT_ACTION_AT:
+				// Parameter convention: [0] = Position
+				pos = gson.fromJson(array.get(0), Position.class);
+
+				servant.performUnitActionAt(pos);
+
+				break;
+			case CHANGE_PRODUCTION_IN_CITY_AT:
+				// Parameter convention: [0] = Position
+				// Parameter convention: [1] = untiType
+				pos = gson.fromJson(array.get(0), Position.class);
+				String unitType = gson.fromJson(array.get(1), String.class);
+
+				servant.changeProductionInCityAt(pos, unitType);
+
+				break;
+			case CHANGE_WORKFORCE_FOCUS_IN_CITY_AT:
+				// Parameter convention: [0] = Position
+				// Parameter convention: [1] = Balance
+				pos = gson.fromJson(array.get(0), Position.class);
+				String balance = gson.fromJson(array.get(1), String.class);
+
+				servant.changeWorkForceFocusInCityAt(pos, balance);
+
+				break;
+			case MOVE_UNIT:
+				// Parameter convention: [0] = from-position
+				// Parameter convention: [1] = to-position
+				Position from = gson.fromJson(array.get(0), Position.class);
+				Position to   = gson.fromJson(array.get(1), Position.class);
+
+				boolean isMoveSuccessful = servant.moveUnit(from, to);
+				reply = new ReplyObject(200, gson.toJson(isMoveSuccessful));
+
+				break;
 			case GET_WINNER:
 				Player winner = servant.getWinner();
 				reply = new ReplyObject(200, gson.toJson(winner));
@@ -54,7 +89,6 @@ public class HotCivGameInvoker implements Invoker {
 
 				reply = new ReplyObject(200, gson.toJson(city));
 
-
 				break;
 			case GET_TILE_AT:
 				// Parameter convention: [0] = Position
@@ -63,10 +97,25 @@ public class HotCivGameInvoker implements Invoker {
 				reply = new ReplyObject(200, gson.toJson(tile.getTypeString()));
 
 				break;
+			case GET_AGE:
+				int age = servant.getAge();
+				reply = new ReplyObject(200, gson.toJson(age));
+
+				break;
+			case GET_PLAYER_IN_TURN:
+				Player playerInTurn = servant.getPlayerInTurn();
+				reply = new ReplyObject(200, gson.toJson(playerInTurn));
+
+				break;
+			case END_OF_TURN:
+				servant.endOfTurn();
+				reply = new ReplyObject(200, null);
+
+				break;
 			default:
 				// Unknown operation
 				// TODO: Handle this case
-				throw new RuntimeException("Unknown operation");
+				throw new RuntimeException("Unknown operation: " + operation);
 		}
 
 		// marshall the reply object
