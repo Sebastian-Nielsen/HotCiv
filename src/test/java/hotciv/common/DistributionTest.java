@@ -31,7 +31,7 @@ public class DistributionTest {
 		Invoker invoker = new HotCivGameInvoker(servant);
 
 		ClientRequestHandler crh =
-				new LocalMethodClientRequestHandler(invoker);
+				new ClientRequestHandlerStub(invoker);
 
 		Requestor requestor = new StandardJSONRequestor(crh);
 
