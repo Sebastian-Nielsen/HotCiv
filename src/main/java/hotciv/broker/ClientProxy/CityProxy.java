@@ -1,7 +1,7 @@
-package hotciv.common.distribution.ClientProxy;
+package hotciv.broker.ClientProxy;
 
 import frds.broker.Requestor;
-import hotciv.common.distribution.OperationNames;
+import hotciv.broker.OperationNames;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
@@ -17,7 +17,7 @@ public class CityProxy implements City {
 	@Override
 	public Player getOwner() {
 		return requestor.sendRequestAndAwaitReply(
-				HOTCIV_OBJECTID, OperationNames.GET_UNIT_OWNER,
+				HOTCIV_OBJECTID, OperationNames.GET_CITY_OWNER,
 				Player.class);
 	}
 

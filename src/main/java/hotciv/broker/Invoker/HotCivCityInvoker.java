@@ -1,4 +1,4 @@
-package hotciv.common.distribution.Invoker;
+package hotciv.broker.Invoker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -10,7 +10,7 @@ import hotciv.common.CityImpl;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
-import static hotciv.common.distribution.OperationNames.*;
+import static hotciv.broker.OperationNames.*;
 
 public class HotCivCityInvoker implements Invoker {
 	private final Gson gson;

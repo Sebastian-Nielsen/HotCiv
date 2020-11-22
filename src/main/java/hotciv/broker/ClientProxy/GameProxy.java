@@ -1,10 +1,10 @@
-package hotciv.common.distribution.ClientProxy;
+package hotciv.broker.ClientProxy;
 
 import frds.broker.ClientProxy;
 import frds.broker.Requestor;
 import hotciv.common.CityImpl;
 import hotciv.common.Converter;
-import hotciv.common.distribution.OperationNames;
+import hotciv.broker.OperationNames;
 import hotciv.framework.*;
 
 

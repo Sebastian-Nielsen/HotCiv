@@ -1,4 +1,4 @@
-package hotciv.common.distribution.Invoker;
+package hotciv.broker.Invoker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -8,7 +8,7 @@ import frds.broker.RequestObject;
 import hotciv.common.concreteTiles.PlainsTile;
 import hotciv.framework.Tile;
 
-import static hotciv.common.distribution.OperationNames.GET_TILE_TYPESTRING;
+import static hotciv.broker.OperationNames.GET_TILE_TYPESTRING;
 
 public class HotCivTileInvoker implements Invoker {
 	private final Gson gson;

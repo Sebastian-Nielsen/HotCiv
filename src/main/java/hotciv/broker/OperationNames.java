@@ -1,4 +1,4 @@
-package hotciv.common.distribution;
+package hotciv.broker;
 
 /**
  * The names of the valid operations (i.e. method calls) in the HotCiv system.

@@ -1,4 +1,4 @@
-package hotciv.common.distribution.Invoker;
+package hotciv.broker.Invoker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -10,7 +10,7 @@ import hotciv.common.concreteUnits.ArcherUnit;
 import hotciv.framework.Player;
 import hotciv.framework.Unit;
 
-import static hotciv.common.distribution.OperationNames.*;
+import static hotciv.broker.OperationNames.*;
 import static hotciv.framework.Player.RED;
 
 public class HotCivUnitInvoker implements Invoker {

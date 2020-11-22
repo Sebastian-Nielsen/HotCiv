@@ -1,4 +1,4 @@
-package hotciv.common.distribution.Invoker;
+package hotciv.broker.Invoker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -8,7 +8,7 @@ import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
 import hotciv.framework.*;
 
-import static hotciv.common.distribution.OperationNames.*;
+import static hotciv.broker.OperationNames.*;
 
 public class HotCivGameInvoker implements Invoker {
 	private final Game servant;
