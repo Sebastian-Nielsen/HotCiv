@@ -1,7 +1,6 @@
 package hotciv.view.tool;
 
 import hotciv.framework.Game;
-import hotciv.view.figure.HotCivFigure;
 import hotciv.view.figure.TextFigure;
 import minidraw.framework.DrawingEditor;
 import minidraw.framework.Figure;
@@ -9,9 +8,6 @@ import minidraw.framework.Tool;
 import minidraw.standard.NullTool;
 
 import java.awt.event.MouseEvent;
-
-import static hotciv.view.GfxConstants.TURN_SHIELD_TYPE_STRING;
-import static hotciv.view.GfxConstants.UNIT_TYPE_STRING;
 
 /**
  * Template for the CompositionTool exercise (FRS 36.44).
@@ -55,40 +51,51 @@ public class CompositionTool extends NullTool {
 		figureBelowClickPoint = editor.drawing().findFigure(x, y);
 
 		// Don't do anything if we click a textFigure
-		// Next determine the state of tool to use
+
 		if (figureBelowClickPoint == null || figureBelowClickPoint instanceof TextFigure) {
 			setFocusTool.mouseDown(e, x, y);
 			return;
 		}
 
-		String typeOfClicked = ((HotCivFigure) figureBelowClickPoint).getTypeString();
 
-		if (typeOfClicked.equals(TURN_SHIELD_TYPE_STRING)) {
-			state = endOfTurnTool;
-		} else if (e.isShiftDown() && typeOfClicked.equals(UNIT_TYPE_STRING)) {
-			state = showActionTool;
-		} else if (typeOfClicked.equals(UNIT_TYPE_STRING)) {
-			setFocusTool.mouseDown(e, x, y);
-			state = unitMoveTool;
-		} else {
-			state = setFocusTool;
-		}
+		// Next determine the state of tool to used
+//		String typeOfClicked = ((HotCivFigure) figureBelowClickPoint).getTypeString();
+
+//		if (typeOfClicked.equals(TURN_SHIELD_TYPE_STRING)) {
+//			state = endOfTurnTool;
+//		} else if (e.isShiftDown() && typeOfClicked.equals(UNIT_TYPE_STRING)) {
+//			state = showActionTool;
+//		} else if (typeOfClicked.equals(UNIT_TYPE_STRING)) {
+//			setFocusTool.mouseDown(e, x, y);
+//			state = unitMoveTool;
+//		} else {
+//			state = setFocusTool;
+//		}
+
 
 //		 Finally, delegate to the selected state
-		state.mouseDown(e, x, y);
+//		state.mouseDown(e, x, y);
+
+
+		setFocusTool.mouseDown(e, x, y);
+		endOfTurnTool.mouseDown(e, x, y);
+		showActionTool.mouseDown(e, x, y);
+		unitMoveTool.mouseDown(e, x, y);
+
+
 
 	}
 
 	@Override
 	public void mouseDrag(MouseEvent e, int x, int y) {
-		if (state instanceof UnitMoveTool)
-			unitMoveTool.mouseDrag(e, x, y);
+		//if (state instanceof UnitMoveTool)
+		unitMoveTool.mouseDrag(e, x, y);
 	}
 
 	@Override
 	public void mouseUp(MouseEvent e, int x, int y) {
-		if (state instanceof UnitMoveTool)
-			unitMoveTool.mouseUp(e, x, y);
+		//if (state instanceof UnitMoveTool)
+		unitMoveTool.mouseUp(e, x, y);
 	}
 
 }

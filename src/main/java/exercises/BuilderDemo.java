@@ -1,4 +1,4 @@
-package hotciv.common.exercises;
+package exercises;
 
 public class BuilderDemo {
   public static void main(String[] args) {

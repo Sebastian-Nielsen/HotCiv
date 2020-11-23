@@ -75,7 +75,7 @@ public class UnitMoveTool extends NullTool {
 	public void mouseUp(MouseEvent e, int x, int y) {
 		editor.drawing().unlock();
 
-		if (unitFromPos == null) { return; }
+		if (draggedFigure == null) { return; }
 
 		Position unitToPos = getPositionFromXY(x, y);
 		System.out.print(unitFromPos + " -> " + unitToPos + "  movesLeft: " + game.getUnitAt(unitFromPos));

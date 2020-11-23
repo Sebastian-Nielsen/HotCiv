@@ -1,7 +1,6 @@
 package hotciv.variants;
 
 import hotciv.common.CityImpl;
-import hotciv.common.FractalMapAdapter;
 import hotciv.common.GameFactories.DeltaCivFactory;
 import hotciv.common.GameImpl;
 import hotciv.framework.City;
@@ -9,15 +8,12 @@ import hotciv.framework.Position;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static hotciv.framework.Player.BLUE;
 import static hotciv.framework.Player.RED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TestDeltaCiv {
 
@@ -67,27 +63,6 @@ public class TestDeltaCiv {
 		assertThat(game.getTileAt(new Position(3, 3)).getTypeString(), is("mountain"));
 		assertThat(game.getTileAt(new Position(9, 1)).getTypeString(), is("forest"));
 		assertThat(game.getTileAt(new Position(14, 5)).getTypeString(), is("hills"));
-	}
-
-	@Test
-	public void shouldGenerateFractalMaps() {
-		Set<String> set = new HashSet<>();
-
-		for (int i=0; i<25; i++) {
-			// generate a new fractal layout
-			String[] layout = FractalMapAdapter.makeFractalLandscape();
-
-			// Init game
-			game = new GameImpl(
-					new DeltaCivFactory(layout, new HashMap<>(), new HashMap<>())
-			);
-
-			// Add the tile at pos (0,0) to the set
-			String tileType = game.getTileAt(new Position(0,0)).getTypeString();
-			set.add(tileType);
-		}
-
-		assertNotEquals(set.size(), 1);
 	}
 
 

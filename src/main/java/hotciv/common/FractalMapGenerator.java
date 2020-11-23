@@ -2,7 +2,7 @@ package hotciv.common;
 
 import thirdparty.ThirdPartyFractalGenerator;
 
-public class FractalMapAdapter {
+public class FractalMapGenerator {
 
 	public static String[] makeFractalLandscape() {
 		ThirdPartyFractalGenerator generator =
@@ -19,4 +19,5 @@ public class FractalMapAdapter {
 	    }
 	    return layout;
 	}
+
 }
