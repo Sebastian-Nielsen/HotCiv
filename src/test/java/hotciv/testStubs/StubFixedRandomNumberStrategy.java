@@ -1,4 +1,4 @@
-package hotciv.variants.testStubs;
+package hotciv.testStubs;
 
 import hotciv.framework.RandomNumberStrategy;
 

@@ -121,7 +121,6 @@ public class GameImpl implements Game {
 	}
 
 
-
 	/**
 	 * @param from position
 	 * @param to position
@@ -135,7 +134,6 @@ public class GameImpl implements Game {
 			return false;
 
 		// At this point, we know a unit is attacked for sure
-
 		boolean wasAttackSuccessful = attackStrategy.attackUnit(from, to, this);
 
 		if (wasAttackSuccessful)

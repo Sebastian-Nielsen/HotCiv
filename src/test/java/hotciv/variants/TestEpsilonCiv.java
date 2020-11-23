@@ -4,7 +4,7 @@ import hotciv.common.*;
 import hotciv.common.GameFactories.StubEpsilonCivFactory;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;
-import hotciv.variants.testStubs.StubFixedRandomNumberStrategy;
+import hotciv.testStubs.StubFixedRandomNumberStrategy;
 import org.junit.jupiter.api.Test;
 
 

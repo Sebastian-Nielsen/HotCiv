@@ -1,17 +1,9 @@
 package hotciv.common.worldLayoutStrategies;
 
-import hotciv.common.CityImpl;
-import hotciv.common.TileImpl;
-import hotciv.common.UnitImpl;
-import hotciv.common.World;
+import hotciv.common.*;
 import hotciv.framework.*;
-import thirdparty.ThirdPartyFractalGenerator;
 
 import java.util.Map;
-import java.util.Set;
-
-import static hotciv.framework.Player.BLUE;
-import static hotciv.framework.Player.RED;
 
 public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
 
@@ -71,7 +63,7 @@ public class CustomWorldLayoutStrategy implements WorldLayoutStrategy {
                 char tileChar = line.charAt(c);
 
                 // Convert tileChar to tile object
-                TileImpl tile = world.convertTileCharToTile(tileChar);
+                TileImpl tile = Converter.convertTileCharToTile(tileChar);
 
 
                 // Create tile at the given row and column of the given tile

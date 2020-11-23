@@ -9,7 +9,7 @@ import java.util.List;
 
 import static hotciv.framework.Player.RED;
 
-public class CivDrawingSpy implements GameObserver {
+public class GameObserverSpy implements GameObserver {
 
 	private Position tileFocus;
 	@Override

@@ -72,6 +72,7 @@ dependencies {
     implementation 'junit:junit:4.12'
     implementation 'org.jetbrains:annotations:15.0'
     compile 'com.baerbak.maven:hotciv-fractal:1.0'
+    compile 'com.baerbak.maven:broker:2.0'
 }
 
 // Tell to use JUnit as testing platform
@@ -178,4 +179,22 @@ task semi(type: JavaExec) {
 
   main = 'hotciv.visual.ShowSemi'
   classpath = sourceSets.main.runtimeClasspath
+}
+
+task hotcivServer(type: JavaExec) {
+  group 'SWEA Distribution'
+  description 'Run HotCiv server (Socket)'
+
+  classpath sourceSets.test.runtimeClasspath
+  main = 'hotciv.broker.main.HotCivServer'
+  args port
+}
+
+task hotcivStoryTest(type: JavaExec) {
+  group 'SWEA Distribution'
+  description 'Run HotCiv story as MANUAL TEST client (socket)'
+
+  classpath sourceSets.test.runtimeClasspath
+  main = 'hotciv.broker.main.HotCivManualClientTest'
+  args host, port
 }

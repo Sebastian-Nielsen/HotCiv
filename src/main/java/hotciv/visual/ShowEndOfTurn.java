@@ -1,11 +1,10 @@
 package hotciv.visual;
 
+import hotciv.framework.Game;
+import hotciv.stub.StubGame2;
 import hotciv.view.tool.EndOfTurnTool;
-import minidraw.standard.*;
-import minidraw.framework.*;
-
-import hotciv.framework.*;
-import hotciv.stub.*;
+import minidraw.framework.DrawingEditor;
+import minidraw.standard.MiniDrawApplication;
 
 /** Template code for exercise FRS 36.42. */
 

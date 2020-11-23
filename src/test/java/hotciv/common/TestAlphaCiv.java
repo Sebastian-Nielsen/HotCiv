@@ -463,7 +463,7 @@ public class TestAlphaCiv {
 
 	@Test
 	public void cityShouldSpawnCitysCurrentProduction() {
-		endRound(game); // Red's treasury is 6
+		endRound(game); // Redcomp's treasury is 6
 		endRound(game); // Red's treasury is 12-10=2 and archer is spawned
 		assertThat(game.getUnitAt(redCityPos).getTypeString(), is(ARCHER));
 		game.changeProductionInCityAt(redCityPos, LEGION);
@@ -476,26 +476,26 @@ public class TestAlphaCiv {
 
 	@Test
 	public void shouldAddObserverAndInvokeUpdateOnSetTileFocus() {
-		// Add the CivDrawingSpy as an observer to GameImpl
-		CivDrawingSpy civDrawing = new CivDrawingSpy();
-		game.addObserver(civDrawing);
+		// Add the GameObserverSpy as an observer to GameImpl
+		GameObserverSpy gameObserverSpy = new GameObserverSpy();
+		game.addObserver(gameObserverSpy);
 
 		// There shouldn't be any calls to change the tile focus yet
-		assertNull(civDrawing.getTileFocus());
+		assertNull(gameObserverSpy.getTileFocus());
 
 		// Set new tile focus
 		Position pos = new Position(1, 1);
 		game.setTileFocus(pos);
 
 		// Should be new focus
-		assertThat(civDrawing.getTileFocus(), is(pos));
+		assertThat(gameObserverSpy.getTileFocus(), is(pos));
 	}
 
 	@Test
 	public void shouldRenderMoveUnit() {
-		// Add the CivDrawingSpy as an observer to GameImpl
-		CivDrawingSpy civDrawing = new CivDrawingSpy();
-		game.addObserver(civDrawing);
+		// Add the GameObserverSpy as an observer to GameImpl
+		GameObserverSpy gameObserverSpy = new GameObserverSpy();
+		game.addObserver(gameObserverSpy);
 
 		// ... we expect the Spy to return:
 		ArrayList<Position> expectedCallsToWorldChanged = new ArrayList<>();
@@ -503,53 +503,53 @@ public class TestAlphaCiv {
 		expectedCallsToWorldChanged.add(to);
 
 		// We haven't called moveUnit yet, so assert no world changes
-		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
 
 		// Call moveUnit
 		game.moveUnit(new Position(2, 0), to);
 
 		// Assert that the spy returns what we expect
-		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(expectedCallsToWorldChanged));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt(), is(expectedCallsToWorldChanged));
 	}
 
 
 	@Test
 	public void shouldRenderAgeAndPlayerInTurn() {
-		// Add the CivDrawingSpy as an observer to GameImpl
-		CivDrawingSpy civDrawing = new CivDrawingSpy();
-		game.addObserver(civDrawing);
+		// Add the GameObserverSpy as an observer to GameImpl
+		GameObserverSpy gameObserverSpy = new GameObserverSpy();
+		game.addObserver(gameObserverSpy);
 		int startingAge = -4000;
 		int ageIncrement = 100;
 
 		// Age and player in turn should be the default
-		assertThat(civDrawing.getCurrentAge(), is(startingAge));
-		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
-		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(0));
+		assertThat(gameObserverSpy.getCurrentAge(), is(startingAge));
+		assertThat(gameObserverSpy.getCurrentPlayer(), is(Player.RED));
+		assertThat(gameObserverSpy.getNumberOfCallsToTurnEnds(), is(0));
 
 		game.endOfTurn();
 
 		// Should be same age but new player in turn
-		assertThat(civDrawing.getCurrentAge(), is(startingAge));
-		assertThat(civDrawing.getCurrentPlayer(), is(Player.BLUE));
-		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(1));
+		assertThat(gameObserverSpy.getCurrentAge(), is(startingAge));
+		assertThat(gameObserverSpy.getCurrentPlayer(), is(Player.BLUE));
+		assertThat(gameObserverSpy.getNumberOfCallsToTurnEnds(), is(1));
 
 		game.endOfTurn();
 
 		// Should be new age and player in turn
-		assertThat(civDrawing.getCurrentAge(), is(startingAge + ageIncrement));
-		assertThat(civDrawing.getCurrentPlayer(), is(Player.RED));
-		assertThat(civDrawing.getNumberOfCallsToTurnEnds(), is(2));
+		assertThat(gameObserverSpy.getCurrentAge(), is(startingAge + ageIncrement));
+		assertThat(gameObserverSpy.getCurrentPlayer(), is(Player.RED));
+		assertThat(gameObserverSpy.getNumberOfCallsToTurnEnds(), is(2));
 	}
 
 
 	@Test
 	public void shouldRenderNewlyCreatedCity() {
-		// Add the CivDrawingSpy as an observer to GameImpl
-		CivDrawingSpy civDrawing = new CivDrawingSpy();
-		game.addObserver(civDrawing);
+		// Add the GameObserverSpy as an observer to GameImpl
+		GameObserverSpy gameObserverSpy = new GameObserverSpy();
+		game.addObserver(gameObserverSpy);
 
 		// Should be no calls to 'worldChangedAt' yet
-		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
 
 		// Create new city
 		Position newCityPos = new Position(3, 3);
@@ -557,18 +557,18 @@ public class TestAlphaCiv {
 		game.createCityAt(newCityPos, newCity);
 
 		// Assert a single call have been made to 'worldChangedAt'
-		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(newCityPos));
-		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt().get(0), is(newCityPos));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt().size(), is(1));
 	}
 
 	@Test
 	public void shouldRenderNewlySpawnedUnit() {
-		// Add the CivDrawingSpy as an observer to GameImpl
-		CivDrawingSpy civDrawing = new CivDrawingSpy();
-		game.addObserver(civDrawing);
+		// Add the GameObserverSpy as an observer to GameImpl
+		GameObserverSpy gameObserverSpy = new GameObserverSpy();
+		game.addObserver(gameObserverSpy);
 
 		// Should be no calls to 'worldChangedAt' yet
-		assertThat(civDrawing.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt(), is(new ArrayList<>()));
 
 		// Change Blue's production to avoid it interfering with Red
 		game.changeProductionInCityAt(blueCityPos, SETTLER);
@@ -578,8 +578,8 @@ public class TestAlphaCiv {
 						 // because an archer is produced
 
 		// Assert the call made to 'worldChangedAt' is spawning the red archer
-		assertThat(civDrawing.GetCallsToWorldChangedAt().get(0), is(redCityPos));
-		assertThat(civDrawing.GetCallsToWorldChangedAt().size(), is(1));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt().get(0), is(redCityPos));
+		assertThat(gameObserverSpy.GetCallsToWorldChangedAt().size(), is(1));
 	}
 
 }
