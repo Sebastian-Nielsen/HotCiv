@@ -4,9 +4,8 @@ import frds.broker.ClientRequestHandler;
 import frds.broker.Invoker;
 import frds.broker.Requestor;
 import frds.broker.marshall.json.StandardJSONRequestor;
-import hotciv.common.NullObserver;
 import hotciv.broker.ClientProxy.GameProxy;
-import hotciv.broker.Invoker.HotCivGameInvoker;
+import hotciv.common.NullObserver;
 import hotciv.framework.*;
 import hotciv.testStubs.ClientRequestHandlerStub;
 import hotciv.testStubs.StubGame3;
@@ -30,7 +29,7 @@ public class TestGameProxy {
 		GameObserver nullObserver = new NullObserver();
 		servant.addObserver(nullObserver);
 
-		Invoker invoker = new HotCivGameInvoker(servant);
+		Invoker invoker = new HotCivRootInvoker(servant);
 
 		ClientRequestHandler crh =
 				new ClientRequestHandlerStub(invoker);
@@ -65,10 +64,21 @@ public class TestGameProxy {
 	@Test
 	public void shouldGetRedArcher() {
 		Position pos = new Position(2,0);
-		Unit RedArcher = game.getUnitAt(pos);
-		assertThat(RedArcher.getOwner(), is(Player.RED));
-		assertThat(RedArcher.getTypeString(), is(GameConstants.ARCHER));
+		Unit redArcher = game.getUnitAt(pos);
+
+		assertThat(redArcher.getOwner(), is(Player.RED));
+		assertThat(redArcher.getTypeString(), is(GameConstants.ARCHER));
+		assertThat(redArcher.getId(), is("redArcher"));
 	}
+
+//	@Test
+//	public void shouldGetBlueLegion() {
+//		Position pos = new Position( 3, 2); // Blue legion pos
+//		Unit blueLegion = game.getUnitAt(pos);
+//		assertThat(blueLegion.getOwner(), is(Player.BLUE));
+//		assertThat(blueLegion.getTypeString(), is(GameConstants.LEGION));
+//		assertThat(blueLegion.getId(), is("blueLegion"));
+//	}
 
 
 	@Test

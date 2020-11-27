@@ -36,13 +36,13 @@ public class StubGame3 implements Game {
 			return red_archer;
 		}
 		if ( p.equals(pos_settler_blue) ) {
-			return new StubUnit( GameConstants.SETTLER, BLUE );
+			return new StubUnit( GameConstants.SETTLER, BLUE,"blueSettler");
 		}
 		if ( p.equals(pos_legion_blue) ) {
-			return new StubUnit( GameConstants.LEGION, BLUE );
+			return new StubUnit( GameConstants.LEGION, BLUE, "blueLegion");
 		}
 		if ( p.equals(pos_thetaciv_unit) ) {
-			return new StubUnit( ThetaConstants.CARAVAN, RED );
+			return new StubUnit( ThetaConstants.CARAVAN, RED, "redCaravan");
 		}
 		return null;
 	}
@@ -92,7 +92,7 @@ public class StubGame3 implements Game {
 		red_city = new CityImpl(RED);
 
 		// the only one I need to store for this stub
-		red_archer = new StubUnit( GameConstants.ARCHER, RED );
+		red_archer = new StubUnit( GameConstants.ARCHER, RED, "redArcher" );
 
 		inTurn = RED;
 
@@ -162,11 +162,13 @@ public class StubGame3 implements Game {
 class StubUnit extends UnitImpl {
 	private String type;
 	private Player owner;
+	private String id;
 
-	public StubUnit(String type, Player owner) {
+	public StubUnit(String type, Player owner, String id) {
 		super(owner);
 		this.type = type;
 		this.owner = owner;
+		this.id = id;
 	}
 	@Override
 	public String getTypeString() { return type; }
@@ -178,5 +180,4 @@ class StubUnit extends UnitImpl {
 	public int getDefensiveStrength() { return 0; }
 	@Override
 	public int getAttackingStrength() { return 0; }
-
 }

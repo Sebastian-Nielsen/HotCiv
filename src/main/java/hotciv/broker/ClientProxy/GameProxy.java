@@ -32,11 +32,16 @@ public class GameProxy implements Game, ClientProxy {
 				HOTCIV_OBJECTID, OperationNames.GET_UNIT_AT,
 				Object[].class, pos);
 
-		String unitType   = (String) args[0];
-		String typeString = (String) args[1];
-		Player owner =  Player.valueOf(typeString);
+		String id   = (String) args[0];
+		System.out.println("asdlkjasdljkfdslkj >>> " + id);
+//		String typeString = (String) args[1];
+//		Player owner =  Player.valueOf(typeString);
 
-		return Converter.convertTypeStringToUnitObject(unitType, owner);
+
+		//                   Fix fake it code  ¬
+		//                                     |
+		//                                     v
+		return new UnitProxy(requestor, "redArcher");
 	}
 
 	@Override

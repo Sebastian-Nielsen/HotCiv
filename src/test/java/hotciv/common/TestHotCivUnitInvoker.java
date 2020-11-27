@@ -1,11 +1,14 @@
-package hotciv.common.unitTests;
+package hotciv.common;
 
 import frds.broker.ClientRequestHandler;
 import frds.broker.Invoker;
 import frds.broker.Requestor;
 import frds.broker.marshall.json.StandardJSONRequestor;
-import hotciv.broker.Invoker.HotCivUnitInvoker;
 import hotciv.broker.ClientProxy.UnitProxy;
+import hotciv.broker.Invoker.HotCivUnitInvoker;
+import hotciv.broker.NameServer;
+import hotciv.broker.NameServerImpl;
+import hotciv.common.concreteUnits.ArcherUnit;
 import hotciv.framework.Player;
 import hotciv.framework.Unit;
 import hotciv.testStubs.ClientRequestHandlerStub;
@@ -17,12 +20,19 @@ import static hotciv.framework.Player.RED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class TestUnitProxy {
+public class TestHotCivUnitInvoker {
 
 	private Unit unit;
 
 	@BeforeEach
 	public void Setup() {
+		// Populate nameserver with single unit impl
+		NameServer ns = new NameServerImpl();
+		UnitImpl archer = new ArcherUnit(RED);
+		ns.put(archer.getId(), archer);
+
+
+		// Inject the unitInvoker into our UnitProxy
 		Invoker invoker = new HotCivUnitInvoker();
 
 		ClientRequestHandler crh;
@@ -30,7 +40,7 @@ public class TestUnitProxy {
 
 		Requestor requestor = new StandardJSONRequestor(crh);
 
-		unit = new UnitProxy(requestor);
+		unit = new UnitProxy(requestor, archer.getId());
 	}
 
 	@Test
