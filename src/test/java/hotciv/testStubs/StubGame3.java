@@ -25,8 +25,10 @@ public class StubGame3 implements Game {
 	private Position pos_settler_blue;
 	private Position pos_thetaciv_unit;
 	private Position pos_city_red;
+	private Position pos_city_blue;
 
 	private City red_city;
+	private City blue_city;
 	private City blue_city_created_by_settler;
 
 	private StubUnit red_archer;
@@ -87,12 +89,15 @@ public class StubGame3 implements Game {
 		pos_settler_blue = new Position( 4, 3);
 		pos_thetaciv_unit = new Position( 6, 4);
 		pos_city_red = new Position(1, 1);
+		pos_city_blue = new Position(5, 5);
 
 		// Cities
+		blue_city = new CityImpl(BLUE);
 		red_city = new CityImpl(RED);
 
 		// the only one I need to store for this stub
 		red_archer = new StubUnit( GameConstants.ARCHER, RED, "redArcher" );
+
 
 		inTurn = RED;
 
@@ -123,6 +128,9 @@ public class StubGame3 implements Game {
 	public City getCityAt( Position p ) {
 		if ( p.equals(pos_city_red) ) {
 			return red_city;
+		}
+		if ( p.equals(pos_city_blue) ) {
+			return blue_city;
 		}
 		if (blue_city_created_by_settler != null &&
 			p.equals(pos_settler_blue)) {
@@ -169,6 +177,7 @@ class StubUnit extends UnitImpl {
 		this.type = type;
 		this.owner = owner;
 		this.id = id;
+//		System.out.println("1:" + this.id);
 	}
 	@Override
 	public String getTypeString() { return type; }
@@ -180,4 +189,8 @@ class StubUnit extends UnitImpl {
 	public int getDefensiveStrength() { return 0; }
 	@Override
 	public int getAttackingStrength() { return 0; }
+	@Override
+	public String getId() {
+		return id;
+	}
 }

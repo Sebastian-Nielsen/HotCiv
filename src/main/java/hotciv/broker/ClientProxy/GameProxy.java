@@ -2,9 +2,9 @@ package hotciv.broker.ClientProxy;
 
 import frds.broker.ClientProxy;
 import frds.broker.Requestor;
+import hotciv.broker.OperationNames;
 import hotciv.common.CityImpl;
 import hotciv.common.Converter;
-import hotciv.broker.OperationNames;
 import hotciv.framework.*;
 
 
@@ -28,20 +28,12 @@ public class GameProxy implements Game, ClientProxy {
 
 	@Override
 	public Unit getUnitAt(Position pos) {
-		Object[] args = requestor.sendRequestAndAwaitReply(
+		String id = requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_UNIT_AT,
-				Object[].class, pos);
+				String.class, pos);
 
-		String id   = (String) args[0];
-		System.out.println("asdlkjasdljkfdslkj >>> " + id);
-//		String typeString = (String) args[1];
-//		Player owner =  Player.valueOf(typeString);
-
-
-		//                   Fix fake it code  ¬
-		//                                     |
-		//                                     v
-		return new UnitProxy(requestor, "redArcher");
+		System.out.println("test > " + id);
+		return (id.isEmpty()) ? null : new UnitProxy(requestor, id);
 	}
 
 	@Override
@@ -105,8 +97,8 @@ public class GameProxy implements Game, ClientProxy {
 	@Override
 	public void performUnitActionAt(Position p) {
 		requestor.sendRequestAndAwaitReply(
-			HOTCIV_OBJECTID, OperationNames.PERFORM_UNIT_ACTION_AT,
-			null, p);
+				HOTCIV_OBJECTID, OperationNames.PERFORM_UNIT_ACTION_AT,
+				null, p);
 	}
 
 	@Override

@@ -23,6 +23,9 @@ public abstract class UnitImpl implements Unit {
 	}
 
 
+	public String getId() {
+		return id;
+	}
 
 	public void performAction(GameImpl game, Position pos) {
 		throw new RuntimeException(game.getUnitAt(pos).getTypeString() + "has no 'perform action'.");
@@ -67,7 +70,4 @@ public abstract class UnitImpl implements Unit {
 		movesLeft = moveCount;
 	}
 
-	public String getId() {
-		return id;
-	}
 }

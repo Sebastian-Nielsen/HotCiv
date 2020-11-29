@@ -346,6 +346,8 @@ public class GameImpl implements Game {
 
 	/**
 	 * Spawns a unit at the given position
+	 * Side effects:
+	 *  (1) notify observers
 	 * @param pos Position to spawn unit at
 	 * @param unitType The type of unit to spawn
 	 * @param owner Owner of the unit

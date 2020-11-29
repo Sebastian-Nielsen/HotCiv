@@ -6,18 +6,19 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
-import hotciv.common.concreteUnits.ArcherUnit;
+import hotciv.broker.NameService;
+import hotciv.framework.City;
 import hotciv.framework.Player;
-import hotciv.framework.Unit;
 
 import static hotciv.broker.OperationNames.*;
-import static hotciv.framework.Player.RED;
 
-public class HotCivUnitInvoker implements Invoker {
+public class CityInvoker implements Invoker {
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
-	public HotCivUnitInvoker() {
+	public CityInvoker(NameService ns) {
+		this.nameService = ns;
 		gson = new Gson();
 		jsonParser = new JsonParser();
 	}
@@ -29,48 +30,55 @@ public class HotCivUnitInvoker implements Invoker {
 		String objectId = requestObject.getObjectId();
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, null);
 		String operation = requestObject.getOperationName();
 
-		Unit unit = lookupUnit(objectId);
+		City city = lookupCity(objectId);
+
+		ReplyObject reply;
+		if (city == null)
+			return gson.toJson(new ReplyObject(200, ""));
+
 
 		switch (operation) {
-			case GET_UNIT_OWNER:
-				Player owner = unit.getOwner();
+			case GET_CITY_OWNER:
+				Player owner = city.getOwner();
 				reply = new ReplyObject(200, gson.toJson(owner));
 
 				break;
-			case GET_UNIT_TYPESTRING:
-				String typestring = unit.getTypeString();
-				reply = new ReplyObject(200, gson.toJson(typestring));
+			case GET_SIZE:
+				int size = city.getSize();
+				reply = new ReplyObject(200, gson.toJson(size));
 
 				break;
-			case GET_MOVE_COUNT:
-				int moveCount = unit.getMoveCount();
-				reply = new ReplyObject(200, gson.toJson(moveCount));
+			case GET_TREASURY:
+				int treasury = city.getTreasury();
+
+					reply = new ReplyObject(200, gson.toJson(treasury));
 
 				break;
-			case GET_DEFENSIVE_STRENGTH:
-				int defStrengh = unit.getDefensiveStrength();
-				reply = new ReplyObject(200, gson.toJson(defStrengh));
+			case GET_PRODUCTION:
+				String production = city.getProduction();
+
+				reply = new ReplyObject(200, gson.toJson(production));
 
 				break;
-			case GET_ATTACKING_STRENGTH:
-				int atkStrength = unit.getAttackingStrength();
-				reply = new ReplyObject(200, gson.toJson(atkStrength));
+			case GET_WORKFORCE_FOCUS:
+				String workForceFocus = city.getWorkforceFocus();
+				reply = new ReplyObject(200, gson.toJson(workForceFocus));
 
 				break;
 			default:
 				// Unknown operation
 				// TODO: Handle this case
 				throw new RuntimeException("Unknown operation: " + operation);
+
 		}
 
+		// marshall the reply object
 		return gson.toJson(reply);
-
 	}
 
-	private Unit lookupUnit(String objectId) {
-		return new ArcherUnit(RED);
+	private City lookupCity(String objectId) {
+		return (City) nameService.get(objectId);
 	}
 }

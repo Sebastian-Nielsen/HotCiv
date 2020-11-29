@@ -6,17 +6,19 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
-import hotciv.common.CityImpl;
-import hotciv.framework.City;
+import hotciv.broker.NameService;
 import hotciv.framework.Player;
+import hotciv.framework.Unit;
 
 import static hotciv.broker.OperationNames.*;
 
-public class HotCivCityInvoker implements Invoker {
+public class UnitInvoker implements Invoker {
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
-	public HotCivCityInvoker() {
+	public UnitInvoker(NameService ns) {
+		this.nameService = ns;
 		gson = new Gson();
 		jsonParser = new JsonParser();
 	}
@@ -31,46 +33,46 @@ public class HotCivCityInvoker implements Invoker {
 		ReplyObject reply = new ReplyObject(200, null);
 		String operation = requestObject.getOperationName();
 
-		City city = lookupCity(objectId);
+		Unit unit = lookupUnit(objectId);
 
 		switch (operation) {
-			case GET_CITY_OWNER:
-				Player owner = city.getOwner();
+			case GET_UNIT_OWNER:
+				Player owner = unit.getOwner();
 				reply = new ReplyObject(200, gson.toJson(owner));
 
 				break;
-			case GET_SIZE:
-				int size = city.getSize();
-				reply = new ReplyObject(200, gson.toJson(size));
+			case GET_UNIT_TYPESTRING:
+				String typestring = unit.getTypeString();
+				reply = new ReplyObject(200, gson.toJson(typestring));
 
 				break;
-			case GET_TREASURY:
-				int treasury = city.getTreasury();
-				reply = new ReplyObject(200, gson.toJson(treasury));
+			case GET_MOVE_COUNT:
+				int moveCount = unit.getMoveCount();
+				reply = new ReplyObject(200, gson.toJson(moveCount));
 
 				break;
-			case GET_PRODUCTION:
-				String production = city.getProduction();
-				reply = new ReplyObject(200, gson.toJson(production));
+			case GET_DEFENSIVE_STRENGTH:
+				int defStrengh = unit.getDefensiveStrength();
+				reply = new ReplyObject(200, gson.toJson(defStrengh));
 
 				break;
-			case GET_WORKFORCE_FOCUS:
-				String workForceFocus = city.getWorkforceFocus();
-				reply = new ReplyObject(200, gson.toJson(workForceFocus));
+			case GET_ATTACKING_STRENGTH:
+				int atkStrength = unit.getAttackingStrength();
+				reply = new ReplyObject(200, gson.toJson(atkStrength));
 
 				break;
 			default:
 				// Unknown operation
 				// TODO: Handle this case
 				throw new RuntimeException("Unknown operation: " + operation);
-
 		}
 
-		// marshall the reply object
 		return gson.toJson(reply);
+
 	}
 
-	private City lookupCity(String objectId) {
-		return new CityImpl(Player.RED);
+	private Unit lookupUnit(String objectId) {
+		return (Unit) nameService.get(objectId);
 	}
+
 }

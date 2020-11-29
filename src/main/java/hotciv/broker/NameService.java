@@ -1,13 +1,14 @@
 package hotciv.broker;
 
-import hotciv.framework.Unit;
-
-public interface NameServer {
+public interface NameService {
 
 	public void put(String objectId, Object object);
 
-	public Unit getUnit(String objectId);
+	public Object get(String objectId);
 
-
-
+//	public Unit getUnit(String objectId);
+//
+//	public City getCity(String objectId);
+//
+//	public Tile getTile(String objectId);
 }

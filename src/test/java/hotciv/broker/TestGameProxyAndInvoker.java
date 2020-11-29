@@ -1,10 +1,11 @@
-package hotciv.common.unitTests;
+package hotciv.broker;
 
 import frds.broker.ClientRequestHandler;
 import frds.broker.Invoker;
 import frds.broker.Requestor;
 import frds.broker.marshall.json.StandardJSONRequestor;
 import hotciv.broker.ClientProxy.GameProxy;
+import hotciv.broker.Invoker.RootInvoker;
 import hotciv.common.NullObserver;
 import hotciv.framework.*;
 import hotciv.testStubs.ClientRequestHandlerStub;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class TestGameProxy {
+public class TestGameProxyAndInvoker {
 
 	Game game;
 	private StubGame3 servant;
@@ -29,7 +30,8 @@ public class TestGameProxy {
 		GameObserver nullObserver = new NullObserver();
 		servant.addObserver(nullObserver);
 
-		Invoker invoker = new HotCivRootInvoker(servant);
+		NameService ns = new NameServiceImpl();
+		Invoker invoker = new RootInvoker(servant, ns);
 
 		ClientRequestHandler crh =
 				new ClientRequestHandlerStub(invoker);
@@ -68,17 +70,21 @@ public class TestGameProxy {
 
 		assertThat(redArcher.getOwner(), is(Player.RED));
 		assertThat(redArcher.getTypeString(), is(GameConstants.ARCHER));
+
+		// The unitStub is hardcoded to have "redArcher" as the Id for this unit
 		assertThat(redArcher.getId(), is("redArcher"));
 	}
 
-//	@Test
-//	public void shouldGetBlueLegion() {
-//		Position pos = new Position( 3, 2); // Blue legion pos
-//		Unit blueLegion = game.getUnitAt(pos);
-//		assertThat(blueLegion.getOwner(), is(Player.BLUE));
-//		assertThat(blueLegion.getTypeString(), is(GameConstants.LEGION));
-//		assertThat(blueLegion.getId(), is("blueLegion"));
-//	}
+	@Test
+	public void shouldGetBlueLegion() {
+		Position pos = new Position( 3, 2); // Blue legion pos
+		Unit blueLegion = game.getUnitAt(pos);
+		assertThat(blueLegion.getOwner(), is(Player.BLUE));
+		assertThat(blueLegion.getTypeString(), is(GameConstants.LEGION));
+
+		// The unitStub is hardcoded to have "blueLegion" as the Id for this unit
+		assertThat(blueLegion.getId(), is("blueLegion"));
+	}
 
 
 	@Test
@@ -86,6 +92,13 @@ public class TestGameProxy {
 		Position pos = new Position(1,1);
 		City redCity = game.getCityAt(pos);
 		assertThat(redCity.getOwner(), is(Player.RED));
+	}
+
+	@Test
+	public void shouldGetBlueCity() {
+		Position pos = new Position(5,5);
+		City redCity = game.getCityAt(pos);
+		assertThat(redCity.getOwner(), is(Player.BLUE));
 	}
 
 

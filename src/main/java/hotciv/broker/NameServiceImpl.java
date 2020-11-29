@@ -1,15 +1,13 @@
 package hotciv.broker;
 
-import hotciv.framework.Unit;
-
 import java.util.HashMap;
 
-public class NameServerImpl implements NameServer {
+public class NameServiceImpl implements NameService {
 
 
 	private final HashMap<String, Object> nameServer;
 
-	public NameServerImpl() {
+	public NameServiceImpl() {
 		this.nameServer = new HashMap<>();
 	}
 
@@ -19,8 +17,23 @@ public class NameServerImpl implements NameServer {
 	}
 
 	@Override
-	public Unit getUnit(String objectId) {
-		return (Unit) nameServer.getOrDefault(objectId, null);
+	public Object get(String objectId) {
+		return nameServer.get(objectId);
 	}
+
+//	@Override
+//	public Unit getUnit(String objectId) {
+//		return (Unit) nameServer.getOrDefault(objectId, null);
+//	}
+//
+//	@Override
+//	public City getCity(String objectId) {
+//		return (City) nameServer.getOrDefault(objectId, null);
+//	}
+//
+//	@Override
+//	public Tile getTile(String objectId) {
+//		return (Tile) nameServer.getOrDefault(objectId, null);
+//	}
 
 }

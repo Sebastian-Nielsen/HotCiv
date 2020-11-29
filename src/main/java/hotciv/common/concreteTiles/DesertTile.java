@@ -8,6 +8,7 @@ import static hotciv.framework.GameConstants.DESERT;
 
 public class DesertTile extends TileImpl {
 
+	@Override
 	public String getTypeString() { return DESERT; }
 
 	@Override

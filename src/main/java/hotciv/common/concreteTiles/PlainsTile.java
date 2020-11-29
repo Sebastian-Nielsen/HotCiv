@@ -7,6 +7,7 @@ import static hotciv.framework.GameConstants.PLAINS;
 
 public class PlainsTile extends TileImpl {
 
+	@Override
 	public String getTypeString() { return PLAINS; }
 
 	@Override

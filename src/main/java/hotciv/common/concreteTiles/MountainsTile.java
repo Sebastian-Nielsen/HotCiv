@@ -10,6 +10,7 @@ public class MountainsTile extends TileImpl {
 	@Override
 	public String getTypeString() { return MOUNTAINS; }
 
+	@Override
 	public boolean canUnitTraverse(String unitType) {
 		return false;
 	}

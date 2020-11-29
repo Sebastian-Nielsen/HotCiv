@@ -1,29 +1,26 @@
-package hotciv.common.unitTests;
+package hotciv.broker.Invoker;
 
 import com.google.gson.Gson;
 import frds.broker.Invoker;
 import frds.broker.RequestObject;
-import hotciv.broker.Invoker.HotCivCityInvoker;
-import hotciv.broker.Invoker.HotCivGameInvoker;
-import hotciv.broker.Invoker.HotCivTileInvoker;
-import hotciv.broker.Invoker.HotCivUnitInvoker;
+import hotciv.broker.NameService;
 import hotciv.broker.OperationNames;
 import hotciv.framework.Game;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HotCivRootInvoker implements Invoker {
+public class RootInvoker implements Invoker {
 	private final Map<String, Invoker> invokerMap;
 	private final Gson gson;
 
-	public HotCivRootInvoker(Game servant) {
+	public RootInvoker(Game servant, NameService ns) {
 		this.gson = new Gson();
 		invokerMap = new HashMap<>();
-		invokerMap.put(OperationNames.GAME_PREFIX, new HotCivGameInvoker(servant));
-		invokerMap.put(OperationNames.UNIT_PREFIX, new HotCivUnitInvoker());
-		invokerMap.put(OperationNames.CITY_PREFIX, new HotCivCityInvoker());
-		invokerMap.put(OperationNames.TILE_PREFIX, new HotCivTileInvoker());
+		invokerMap.put(OperationNames.GAME_PREFIX, new HotCivGameInvoker(servant, ns));
+		invokerMap.put(OperationNames.UNIT_PREFIX, new UnitInvoker(ns));
+		invokerMap.put(OperationNames.CITY_PREFIX, new CityInvoker(ns));
+		invokerMap.put(OperationNames.TILE_PREFIX, new TileInvoker(ns));
 	}
 
 	@Override

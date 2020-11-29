@@ -3,10 +3,13 @@ package hotciv.common;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
+import java.util.UUID;
+
 import static hotciv.framework.GameConstants.ARCHER;
 import static hotciv.framework.GameConstants.foodFocus;
 
 public class CityImpl implements City {
+	private final String id;
 	private Player owner;
 	private int treasury = 0;
 	private String currentProduction = ARCHER;
@@ -14,6 +17,9 @@ public class CityImpl implements City {
 
 	public CityImpl(Player owner) {
 		this.owner = owner;
+		// Create the object ID to bind server and client side
+		// Servant-ClientProxy objects together
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Player getOwner() {
@@ -45,4 +51,8 @@ public class CityImpl implements City {
 	public void setOwner(Player newOwner) { owner = newOwner; }
 
 	public void setProduction(String newProduction) { currentProduction = newProduction; }
+
+	public String getId() {
+		return id;
+	}
 }

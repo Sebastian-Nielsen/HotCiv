@@ -5,16 +5,18 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
-import hotciv.common.concreteTiles.PlainsTile;
+import hotciv.broker.NameService;
 import hotciv.framework.Tile;
 
 import static hotciv.broker.OperationNames.GET_TILE_TYPESTRING;
 
-public class HotCivTileInvoker implements Invoker {
+public class TileInvoker implements Invoker {
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
-	public HotCivTileInvoker() {
+	public TileInvoker(NameService ns) {
+		this.nameService = ns;
 		gson = new Gson();
 		jsonParser = new JsonParser();
 	}
@@ -29,14 +31,15 @@ public class HotCivTileInvoker implements Invoker {
 		String operation = requestObject.getOperationName();
 
 		Tile tile = lookupTile(objectId);
+		if (tile == null)
+			return gson.toJson(new ReplyObject(200, gson.toJson("")));
 
 		if (operation.equals(GET_TILE_TYPESTRING)) {
 			String typeString = tile.getTypeString();
 			reply = new ReplyObject(200, gson.toJson(typeString));
 		} else {
-			// Unknown operation
-			// TODO: Handle this case
-			throw new RuntimeException("Unknown operation: " + operation);
+			reply = new ReplyObject(500, gson.toJson("Unknown operation: " + operation));
+			// throw new RuntimeException("Unknown operation: " + operation);
 		}
 
 		return gson.toJson(reply);
@@ -44,6 +47,6 @@ public class HotCivTileInvoker implements Invoker {
 	}
 
 	private Tile lookupTile(String objectId) {
-		return new PlainsTile();
+		return (Tile) nameService.get(objectId);
 	}
 }

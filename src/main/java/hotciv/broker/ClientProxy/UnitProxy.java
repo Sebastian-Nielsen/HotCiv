@@ -50,5 +50,7 @@ public class UnitProxy implements Unit {
 	}
 
 	@Override
-	public String getId() { return id; }
+	public String getId() {
+		return id;
+	}
 }
