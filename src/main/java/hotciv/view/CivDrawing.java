@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 /** CivDrawing is a specialized Drawing (MVC model component) from
  * MiniDraw that dynamically builds the list of Figures for MiniDraw
  * to render the Unit and other information objects that are visible
@@ -35,7 +36,7 @@ public class CivDrawing
 	protected Map<Unit, UnitFigure> unitFigureMap;
 
 	/** store all moveable figures visible in this drawing = cities */
-	private Map<City, CityFigure> cityFigureMap;
+	private final Map<City, CityFigure> cityFigureMap;
 
 	/** the Game instance that this CivDrawing is going to render units from */
 	protected Game game;
@@ -177,42 +178,49 @@ public class CivDrawing
 	protected ImageFigure cityProductionIcon;
 	protected ImageFigure cityWorkforceIcon;
 	protected TextFigure unitMovesLeftText;
+	protected HotCivFigure refreshButton;
 	protected TextFigure ageText;
 
 
 	protected void defineIcons() {
-		// TODONE: Further development to include rest of figures needed
-
+		// === Turnshield icon
 		turnShieldIcon =
-				new HotCivFigure("redshield",
-						new Point( GfxConstants.TURN_SHIELD_X,
-								GfxConstants.TURN_SHIELD_Y ),
-						GfxConstants.TURN_SHIELD_TYPE_STRING);
+				new HotCivFigure(GfxConstants.RED_SHIELD,
+								 new Point( GfxConstants.TURN_SHIELD_X,
+											GfxConstants.TURN_SHIELD_Y ),
+								 GfxConstants.TURN_SHIELD_TYPE_STRING);
 		updateTurnShield(game.getPlayerInTurn());
 		// insert in delegate figure list to ensure graphical
 		// rendering.
 		delegate.add(turnShieldIcon);
 
-
+		// === Age Text
 		ageText = new TextFigure("4000 BC",
-				new Point(GfxConstants.AGE_TEXT_X,
-						GfxConstants.AGE_TEXT_Y) );
+								 new Point(GfxConstants.AGE_TEXT_X,
+										   GfxConstants.AGE_TEXT_Y) );
 		updateAgeText(game.getAge());
 		delegate.add(ageText);
 
+		// === Refresh button
+		refreshButton =
+				new HotCivFigure(GfxConstants.REFRESH_BUTTON,
+								 new Point( GfxConstants.REFRESH_BUTTON_X,
+										    GfxConstants.REFRESH_BUTTON_Y ),
+								 GfxConstants.REFRESH_BUT_TYPE_STRING);
+//		updateRefreshBut();
+		delegate.add(refreshButton);
 	}
+
+
 
 	// === Observer Methods ===
 
 	public void worldChangedAt(Position pos) {
-//		 System.out.println( "CivDrawing: world changes at "+pos);
-
 		// this is a really brute-force algorithm: destroy
 		// all known units and build up the entire set again
 		defineCityMap();
 		defineUnitMap();
 		tileFocusChangedAt(pos);
-
 	}
 
 	@Override
@@ -226,16 +234,10 @@ public class CivDrawing
 	}
 
 	public void turnEnds(Player nextPlayer, int age) {
-		// TODONE: Remove system.out debugging output
-		// System.out.println( "CivDrawing: turnEnds for "+
-		//                    nextPlayer+" at "+age );
-
 		updateTurnShield(nextPlayer);
-
-		// TODONE: Age output pending
 		updateAgeText(age);
-
-
+		defineCityMap();
+		defineUnitMap();
 	}
 
 	private void updateAgeText(int age) {
@@ -252,7 +254,7 @@ public class CivDrawing
 	}
 
 	private String convertToOwnerShield(Player owner) {
-		return owner.toString().toLowerCase() + "shield";
+		return owner.toString().toLowerCase() + GfxConstants.SHIELD_ICON_SUFFIX;
 	}
 
 	public void clearPanel() {
@@ -272,8 +274,8 @@ public class CivDrawing
 	}
 
 	public void tileFocusChangedAt(Position position) {
-		UnitImpl unitAtPos = (UnitImpl) game.getUnitAt(position);
-		CityImpl cityAtPos = (CityImpl) game.getCityAt(position);
+		Unit unitAtPos = game.getUnitAt(position);
+		City cityAtPos = game.getCityAt(position);
 		boolean isUnitAtPos = unitAtPos != null;
 		boolean isCityAtPos = cityAtPos != null;
 
@@ -286,18 +288,18 @@ public class CivDrawing
 			createCitySectionInPanel(cityAtPos);
 	}
 
-	private void createCitySectionInPanel(CityImpl cityAtPos) {
+	private void createCitySectionInPanel(City cityAtPos) {
 		createCityOwnerIcon(cityAtPos);
 		createCityProductionIcon(cityAtPos);
 		createCityWorkforceIcon(cityAtPos);
 	}
 
-	public void createUnitSectionInPanel(UnitImpl unitAtPos) {
+	public void createUnitSectionInPanel(Unit unitAtPos) {
 		createUnitShield(unitAtPos);
 		createUnitMovesLeftText(unitAtPos);
 	}
 
-	private void createUnitMovesLeftText(UnitImpl unitAtPos) {
+	private void createUnitMovesLeftText(Unit unitAtPos) {
 		unitMovesLeftText = new TextFigure("999",
 				new Point(GfxConstants.UNIT_COUNT_X,
 						GfxConstants.UNIT_COUNT_Y) );
@@ -306,7 +308,7 @@ public class CivDrawing
 
 	}
 
-	private void createCityWorkforceIcon(CityImpl cityAtPos) {
+	private void createCityWorkforceIcon(City cityAtPos) {
 		cityWorkforceIcon =
 				new HotCivFigure( cityAtPos.getWorkforceFocus() ,
 						new Point( GfxConstants.WORKFORCEFOCUS_X,

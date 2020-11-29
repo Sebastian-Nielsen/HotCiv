@@ -45,8 +45,9 @@ public class GfxConstants {
   public static final int REFRESH_BUTTON_Y = 472;
 
   // === Names of GIF files loaded by image manager
-  public static final String RED_SHIELD = "redshield";
-  public static final String BLUE_SHIELD = "blueshield";
+  public static final String SHIELD_ICON_SUFFIX = "shield";
+  public static final String RED_SHIELD = "red" + SHIELD_ICON_SUFFIX;
+  public static final String BLUE_SHIELD = "blue" + SHIELD_ICON_SUFFIX;
   public static final String NOTHING = "black";
   public static final String REFRESH_BUTTON = "refresh";
 
@@ -55,6 +56,7 @@ public class GfxConstants {
   public static final String PRODUCTION_TYPE_STRING = "PRODUCTION_TYPE";
   public static final String CITY_TYPE_STRING = "CITY_TYPE";
   public static final String TURN_SHIELD_TYPE_STRING = "TURNSHIELD_TYPE";
+  public static final String REFRESH_BUT_TYPE_STRING = "REFRESHBUT_TYPE";
   public static final String UNIT_SHIELD_TYPE_STRING = "UNITSHIELD_TYPE";
   public static final String WORKFORCE_TYPE_STRING = "WORKFORCE_TYPE";
 

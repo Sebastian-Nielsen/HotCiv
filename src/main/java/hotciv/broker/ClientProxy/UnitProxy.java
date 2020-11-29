@@ -53,4 +53,11 @@ public class UnitProxy implements Unit {
 	public String getId() {
 		return id;
 	}
+
+	@Override
+	public int getMovesLeft() {
+		return requestor.sendRequestAndAwaitReply(
+				id, OperationNames.GET_MOVES_LEFT,
+				Integer.class);
+	}
 }

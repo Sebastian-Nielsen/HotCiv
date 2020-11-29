@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -9,6 +9,7 @@ import hotciv.broker.NameService;
 import hotciv.framework.Tile;
 
 import static hotciv.broker.OperationNames.GET_TILE_TYPESTRING;
+import static hotciv.framework.GameConstants.OCEANS;
 
 public class TileInvoker implements Invoker {
 	private final Gson gson;
@@ -31,15 +32,13 @@ public class TileInvoker implements Invoker {
 		String operation = requestObject.getOperationName();
 
 		Tile tile = lookupTile(objectId);
-		if (tile == null)
-			return gson.toJson(new ReplyObject(200, gson.toJson("")));
 
 		if (operation.equals(GET_TILE_TYPESTRING)) {
-			String typeString = tile.getTypeString();
+			System.out.println("Debug 4873: " + tile);
+			String typeString = (tile == null) ? OCEANS : tile.getTypeString();
 			reply = new ReplyObject(200, gson.toJson(typeString));
 		} else {
 			reply = new ReplyObject(500, gson.toJson("Unknown operation: " + operation));
-			// throw new RuntimeException("Unknown operation: " + operation);
 		}
 
 		return gson.toJson(reply);

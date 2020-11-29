@@ -18,6 +18,7 @@ public class GameObserverSpy implements GameObserver {
 	}
 
 
+
 	private List<Position> CallsToWorldChangedAt = new ArrayList<>();
 	@Override
 	public void worldChangedAt(Position pos) {
@@ -54,4 +55,7 @@ public class GameObserverSpy implements GameObserver {
 		return numberOfCallsToTurnEnds;
 	}
 
+	/* NOT USED */
+	@Override
+	public void requestUpdate() {}
 }

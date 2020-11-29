@@ -41,4 +41,7 @@ public interface Unit {
   public int getAttackingStrength();
 
   public String getId();
+
+  public int getMovesLeft();
+
 }

@@ -65,7 +65,6 @@ public abstract class UnitImpl implements Unit {
 		defensiveStrength = newDef;
 	}
 
-
 	public void resetMovesLeft() {
 		movesLeft = moveCount;
 	}

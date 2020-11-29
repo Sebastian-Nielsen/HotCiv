@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -30,7 +30,7 @@ public class UnitInvoker implements Invoker {
 		String objectId = requestObject.getObjectId();
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, null);
+		ReplyObject reply;
 		String operation = requestObject.getOperationName();
 
 		Unit unit = lookupUnit(objectId);
@@ -59,6 +59,11 @@ public class UnitInvoker implements Invoker {
 			case GET_ATTACKING_STRENGTH:
 				int atkStrength = unit.getAttackingStrength();
 				reply = new ReplyObject(200, gson.toJson(atkStrength));
+
+				break;
+			case GET_MOVES_LEFT:
+				int movesLeft = unit.getMovesLeft();
+				reply = new ReplyObject(200, gson.toJson(movesLeft));
 
 				break;
 			default:

@@ -45,6 +45,7 @@ public class OperationNames {
   public static final String GET_MOVE_COUNT         = UNIT_PREFIX + SEPERATOR + "get-movecount";
   public static final String GET_DEFENSIVE_STRENGTH = UNIT_PREFIX + SEPERATOR + "get-defensive-strength";
   public static final String GET_ATTACKING_STRENGTH = UNIT_PREFIX + SEPERATOR + "get-attacking-strength";
+  public static final String GET_MOVES_LEFT         = UNIT_PREFIX + SEPERATOR + "get-moves-left";
 
   // Tile
   public static final String GET_TILE_TYPESTRING = TILE_PREFIX + SEPERATOR + "get-typestring";

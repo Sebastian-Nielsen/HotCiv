@@ -12,7 +12,7 @@ import minidraw.standard.NullTool;
 
 import java.awt.event.MouseEvent;
 
-import static hotciv.view.GfxConstants.*;
+import static hotciv.view.GfxConstants.getPositionFromXY;
 
 public class UnitMoveTool extends NullTool {
 	private final Game game;

@@ -1,5 +1,6 @@
 package hotciv.view.tool;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.Game;
 import hotciv.framework.Position;
 import hotciv.framework.Unit;

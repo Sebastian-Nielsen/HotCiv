@@ -354,7 +354,7 @@ public class GameImpl implements Game {
 	 */
 	private void spawnUnitAtPos(Position pos, String unitType, Player owner) {
 		world.spawnUnitAtPos(pos, unitType, owner);
-		notifyObservers((o -> o.worldChangedAt(pos))); // Render newly spawned unit
+		notifyObservers(o -> o.worldChangedAt(pos)); // Render newly spawned unit
 	}
 
 	/**
@@ -465,7 +465,6 @@ public class GameImpl implements Game {
 
 	private void notifyObservers(Consumer<GameObserver> c) { gameObservers.forEach(c); }
 
-
 	public boolean isUnitAtPos(Position pos) { return world.isUnitAtPos(pos); }
 
 	/**
@@ -488,7 +487,7 @@ public class GameImpl implements Game {
 	 */
 	public void createCityAt(Position pos, CityImpl city) {
 		world.createCityAt(pos, city);
-		notifyObservers((o -> o.worldChangedAt(pos))); // Render new city
+		notifyObservers(o -> o.worldChangedAt(pos)); // Render new city
 	}
 
 	public int getSuccessfulAttacksThisTurn() {

@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -36,7 +36,7 @@ public class CityInvoker implements Invoker {
 
 		ReplyObject reply;
 		if (city == null)
-			return gson.toJson(new ReplyObject(200, ""));
+			return gson.toJson(new ReplyObject(200, "asdf"));
 
 
 		switch (operation) {

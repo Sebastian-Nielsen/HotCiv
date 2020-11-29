@@ -1,5 +1,6 @@
 package hotciv.view.tool;
 
+import hotciv.common.GameImpl;
 import hotciv.framework.Game;
 import hotciv.view.figure.TextFigure;
 import minidraw.framework.DrawingEditor;
@@ -23,11 +24,12 @@ public class CompositionTool extends NullTool {
 	private final DrawingEditor editor;
 	private final Game game;
 	private Figure figureBelowClickPoint;
-
 	private Tool state;
+
 
 	private final ShowActionTool showActionTool;
 	private final EndOfTurnTool endOfTurnTool;
+	private final RefreshTool refreshTool;
 	private final SetFocusTool setFocusTool;
 	private final UnitMoveTool unitMoveTool;
 	private final NullTool nullTool;
@@ -42,6 +44,7 @@ public class CompositionTool extends NullTool {
 		endOfTurnTool = new EndOfTurnTool(editor, game);
 		setFocusTool = new SetFocusTool(game);
 		unitMoveTool = new UnitMoveTool(editor, game);
+		refreshTool = new RefreshTool(editor, game);
 		nullTool = new NullTool();
 	}
 
@@ -51,39 +54,16 @@ public class CompositionTool extends NullTool {
 		figureBelowClickPoint = editor.drawing().findFigure(x, y);
 
 		// Don't do anything if we click a textFigure
-
 		if (figureBelowClickPoint == null || figureBelowClickPoint instanceof TextFigure) {
 			setFocusTool.mouseDown(e, x, y);
 			return;
 		}
 
-
-		// Next determine the state of tool to used
-//		String typeOfClicked = ((HotCivFigure) figureBelowClickPoint).getTypeString();
-
-//		if (typeOfClicked.equals(TURN_SHIELD_TYPE_STRING)) {
-//			state = endOfTurnTool;
-//		} else if (e.isShiftDown() && typeOfClicked.equals(UNIT_TYPE_STRING)) {
-//			state = showActionTool;
-//		} else if (typeOfClicked.equals(UNIT_TYPE_STRING)) {
-//			setFocusTool.mouseDown(e, x, y);
-//			state = unitMoveTool;
-//		} else {
-//			state = setFocusTool;
-//		}
-
-
-//		 Finally, delegate to the selected state
-//		state.mouseDown(e, x, y);
-
-
 		setFocusTool.mouseDown(e, x, y);
 		endOfTurnTool.mouseDown(e, x, y);
+		refreshTool.mouseDown(e, x, y);
 		showActionTool.mouseDown(e, x, y);
 		unitMoveTool.mouseDown(e, x, y);
-
-
-
 	}
 
 	@Override

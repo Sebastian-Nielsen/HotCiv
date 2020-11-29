@@ -186,7 +186,7 @@ task hotcivServer(type: JavaExec) {
   description 'Run HotCiv server (Socket)'
 
   classpath sourceSets.test.runtimeClasspath
-  main = 'hotciv.broker.main.HotCivServer'
+  main = 'hotciv.broker.main.Server'
   args port
 }
 
@@ -195,6 +195,20 @@ task hotcivStoryTest(type: JavaExec) {
   description 'Run HotCiv story as MANUAL TEST client (socket)'
 
   classpath sourceSets.test.runtimeClasspath
-  main = 'hotciv.broker.main.HotCivManualClientTest'
+  main = 'hotciv.broker.main.ManualClientTest'
+  args host, port
+}
+
+/*
+ * Develop and manually system test/demonstrate that two socket based hotciv clients (target: 'hotcivClient'),
+ * connected to the hotciv server (target: 'hotcivServer'),
+ * each presenting the user with the MiniDraw based GUI can execute properly as a distributed system.
+ */
+task hotcivClient(type: JavaExec) {
+  group 'SWEA Distribution'
+  description 'Run HotCiv client (socket)'
+
+  classpath sourceSets.test.runtimeClasspath
+  main = 'hotciv.broker.main.Client'
   args host, port
 }
