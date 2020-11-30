@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,18 +6,19 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
-import hotciv.common.concreteUnits.ArcherUnit;
+import hotciv.broker.NameService;
 import hotciv.framework.Player;
 import hotciv.framework.Unit;
 
-import static hotciv.broker.OperationNames.*;
-import static hotciv.framework.Player.RED;
+import static hotciv.broker.Constants.OperationNames.*;
 
-public class HotCivUnitInvoker implements Invoker {
+public class UnitInvoker implements Invoker {
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
-	public HotCivUnitInvoker() {
+	public UnitInvoker(NameService ns) {
+		this.nameService = ns;
 		gson = new Gson();
 		jsonParser = new JsonParser();
 	}
@@ -29,7 +30,7 @@ public class HotCivUnitInvoker implements Invoker {
 		String objectId = requestObject.getObjectId();
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, null);
+		ReplyObject reply;
 		String operation = requestObject.getOperationName();
 
 		Unit unit = lookupUnit(objectId);
@@ -60,6 +61,11 @@ public class HotCivUnitInvoker implements Invoker {
 				reply = new ReplyObject(200, gson.toJson(atkStrength));
 
 				break;
+			case GET_MOVES_LEFT:
+				int movesLeft = unit.getMovesLeft();
+				reply = new ReplyObject(200, gson.toJson(movesLeft));
+
+				break;
 			default:
 				// Unknown operation
 				// TODO: Handle this case
@@ -71,6 +77,7 @@ public class HotCivUnitInvoker implements Invoker {
 	}
 
 	private Unit lookupUnit(String objectId) {
-		return new ArcherUnit(RED);
+		return (Unit) nameService.get(objectId);
 	}
+
 }

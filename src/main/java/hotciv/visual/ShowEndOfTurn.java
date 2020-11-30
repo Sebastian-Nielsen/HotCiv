@@ -2,7 +2,7 @@ package hotciv.visual;
 
 import hotciv.framework.Game;
 import hotciv.stub.StubGame2;
-import hotciv.view.tool.EndOfTurnTool;
+import hotciv.view.tool.RefreshTool;
 import minidraw.framework.DrawingEditor;
 import minidraw.standard.MiniDrawApplication;
 
@@ -19,6 +19,6 @@ public class ShowEndOfTurn {
     editor.open();
     editor.showStatus("Click to shield to see Game's endOfTurn method being called.");
 
-    editor.setTool( new EndOfTurnTool(editor, game) );
+    editor.setTool( new RefreshTool(editor, game) );
   }
 }

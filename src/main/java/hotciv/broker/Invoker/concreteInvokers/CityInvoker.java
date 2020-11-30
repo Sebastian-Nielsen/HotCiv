@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,17 +6,20 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
-import hotciv.common.CityImpl;
+import hotciv.broker.NameService;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
-import static hotciv.broker.OperationNames.*;
+import static hotciv.broker.Constants.NULL_ID;
+import static hotciv.broker.Constants.OperationNames.*;
 
-public class HotCivCityInvoker implements Invoker {
+public class CityInvoker implements Invoker {
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
-	public HotCivCityInvoker() {
+	public CityInvoker(NameService ns) {
+		this.nameService = ns;
 		gson = new Gson();
 		jsonParser = new JsonParser();
 	}
@@ -28,10 +31,13 @@ public class HotCivCityInvoker implements Invoker {
 		String objectId = requestObject.getObjectId();
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, null);
 		String operation = requestObject.getOperationName();
 
 		City city = lookupCity(objectId);
+
+		ReplyObject reply;
+		if (city == null)
+			return gson.toJson(new ReplyObject(200, NULL_ID));
 
 		switch (operation) {
 			case GET_CITY_OWNER:
@@ -63,14 +69,12 @@ public class HotCivCityInvoker implements Invoker {
 				// Unknown operation
 				// TODO: Handle this case
 				throw new RuntimeException("Unknown operation: " + operation);
-
 		}
 
-		// marshall the reply object
 		return gson.toJson(reply);
 	}
 
 	private City lookupCity(String objectId) {
-		return new CityImpl(Player.RED);
+		return (City) nameService.get(objectId);
 	}
 }

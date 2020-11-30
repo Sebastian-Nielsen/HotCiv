@@ -5,7 +5,7 @@ package hotciv.framework;
 Responsibilities:
 1) Know its type name.
 2) Know its owner.
-2) Know its defensive and attacking strengths.
+3) Know its defensive and attacking strengths.
 */
 public interface Unit {
 
@@ -39,4 +39,9 @@ public interface Unit {
    * @return attack strength
    */
   public int getAttackingStrength();
+
+  public String getId();
+
+  public int getMovesLeft();
+
 }

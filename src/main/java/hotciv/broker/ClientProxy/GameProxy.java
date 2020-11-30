@@ -2,48 +2,54 @@ package hotciv.broker.ClientProxy;
 
 import frds.broker.ClientProxy;
 import frds.broker.Requestor;
-import hotciv.common.CityImpl;
-import hotciv.common.Converter;
-import hotciv.broker.OperationNames;
+import hotciv.broker.Constants.*;
 import hotciv.framework.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static hotciv.broker.Constants.NULL_ID;
 
 
 public class GameProxy implements Game, ClientProxy {
 	private final Requestor requestor;
 
 	public static final String HOTCIV_OBJECTID = "singleton";
+	private List<GameObserver> gameObservers;
 
 	public GameProxy(Requestor requestor) {
+		gameObservers = new ArrayList<>();
 		this.requestor = requestor;
 	}
 
 	@Override
 	public Tile getTileAt(Position pos) {
-		String typeString = requestor.sendRequestAndAwaitReply(
+		String id = requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_TILE_AT,
 				String.class, pos);
 
-		return Converter.convertTypestringToTileObject(typeString);
+		return (id.equals(NULL_ID)) ? null : new TileProxy(requestor, id);
 	}
 
 	@Override
 	public Unit getUnitAt(Position pos) {
-		Object[] args = requestor.sendRequestAndAwaitReply(
+		String id = requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_UNIT_AT,
-				Object[].class, pos);
+				String.class, pos);
 
-		String unitType   = (String) args[0];
-		String typeString = (String) args[1];
-		Player owner =  Player.valueOf(typeString);
-
-		return Converter.convertTypeStringToUnitObject(unitType, owner);
+		// System.out.println("¤ test 1 > " + id);  // null
+		// System.out.println("¤ test 2 > " + String.valueOf(id == null));
+		return (id.equals(NULL_ID)) ? null : new UnitProxy(requestor, id);
 	}
 
 	@Override
 	public City getCityAt(Position pos) {
-		return requestor.sendRequestAndAwaitReply(
+		String id = requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_CITY_AT,
-				CityImpl.class, pos);
+				String.class, pos);
+
+		return (id.equals(NULL_ID)) ? null : new CityProxy(requestor, id);
 	}
 
 	@Override
@@ -55,7 +61,7 @@ public class GameProxy implements Game, ClientProxy {
 
 	@Override
 	public Player getWinner() {
-		// TODO: Add try-with-resource
+		// Maybe add try-with-resource
 
 		return requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.GET_WINNER,
@@ -71,9 +77,15 @@ public class GameProxy implements Game, ClientProxy {
 
 	@Override
 	public boolean moveUnit(Position from, Position to) {
-		return requestor.sendRequestAndAwaitReply(
+		boolean isMoveSuccessful =
+			requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.MOVE_UNIT,
 				Boolean.class, from, to);
+
+		notifyObservers(o -> o.worldChangedAt(from));
+		notifyObservers(o -> o.worldChangedAt(to));
+
+		return isMoveSuccessful;
 	}
 
 	@Override
@@ -81,13 +93,21 @@ public class GameProxy implements Game, ClientProxy {
 		requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.END_OF_TURN,
 				null);
+
+		// Could get an array of values instead of making two seperate calls here
+		notifyObservers(o -> o.turnEnds(getPlayerInTurn(), getAge()));
+
 	}
+
+	private void notifyObservers(Consumer<GameObserver> c) { gameObservers.forEach(c); }
 
 	@Override
 	public void changeWorkForceFocusInCityAt(Position p, String balance) {
 		requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.CHANGE_WORKFORCE_FOCUS_IN_CITY_AT,
 				null, p, balance);
+
+		notifyObservers(o -> o.tileFocusChangedAt(p));
 	}
 
 	@Override
@@ -95,22 +115,26 @@ public class GameProxy implements Game, ClientProxy {
 		requestor.sendRequestAndAwaitReply(
 				HOTCIV_OBJECTID, OperationNames.CHANGE_PRODUCTION_IN_CITY_AT,
 				null, p, unitType);
+
+		notifyObservers(o -> o.tileFocusChangedAt(p));
 	}
 
 	@Override
 	public void performUnitActionAt(Position p) {
 		requestor.sendRequestAndAwaitReply(
-			HOTCIV_OBJECTID, OperationNames.PERFORM_UNIT_ACTION_AT,
-			null, p);
+				HOTCIV_OBJECTID, OperationNames.PERFORM_UNIT_ACTION_AT,
+				null, p);
+
+		notifyObservers(o -> o.worldChangedAt(p));
 	}
 
 	@Override
 	public void addObserver(GameObserver observer) {
-
+		gameObservers.add(observer);
 	}
 
 	@Override
-	public void setTileFocus(Position position) {
-
+	public void setTileFocus(Position pos) {
+		notifyObservers(o -> o.tileFocusChangedAt(pos));
 	}
 }

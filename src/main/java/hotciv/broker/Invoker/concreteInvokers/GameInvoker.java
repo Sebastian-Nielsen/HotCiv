@@ -1,4 +1,4 @@
-package hotciv.broker.Invoker;
+package hotciv.broker.Invoker.concreteInvokers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,17 +6,21 @@ import com.google.gson.JsonParser;
 import frds.broker.Invoker;
 import frds.broker.ReplyObject;
 import frds.broker.RequestObject;
+import hotciv.broker.NameService;
 import hotciv.framework.*;
 
-import static hotciv.broker.OperationNames.*;
+import static hotciv.broker.Constants.NULL_ID;
+import static hotciv.broker.Constants.OperationNames.*;
 
-public class HotCivGameInvoker implements Invoker {
+public class GameInvoker implements Invoker {
 	private final Game servant;
 	private final Gson gson;
+	private final NameService nameService;
 	private JsonParser jsonParser;
 
 
-	public HotCivGameInvoker(Game servant) {
+	public GameInvoker(Game servant, NameService nameService) {
+		this.nameService = nameService;
 		this.servant = servant;
 		gson = new Gson();
 		jsonParser = new JsonParser();
@@ -28,7 +32,8 @@ public class HotCivGameInvoker implements Invoker {
 		RequestObject requestObject = gson.fromJson(request, RequestObject.class);
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, null);;
+		ReplyObject reply = new ReplyObject(200, NULL_ID);
+
 		Position pos;
 		String operation = requestObject.getOperationName();
 		switch (operation) {
@@ -77,9 +82,14 @@ public class HotCivGameInvoker implements Invoker {
 				pos = gson.fromJson(array.get(0), Position.class);
 				Unit unit = servant.getUnitAt(pos);
 
-				Object[] payload = new Object[]{unit.getTypeString(), unit.getOwner()};
-
-				reply = new ReplyObject(200, gson.toJson(payload));
+				// If the returned unit isn't null, then set the payload to be the unit.
+				// Else the default ReplyObject is used.
+				if (unit != null) {
+					// In order for the client to refer to a given unit on the server side,
+					// we store an (id, unit) pair, so we know which unit the client is refering to
+					nameService.put(unit.getId(), unit);
+					reply = new ReplyObject(200, gson.toJson(unit.getId()));
+				}
 
 				break;
 			case GET_CITY_AT:
@@ -87,14 +97,21 @@ public class HotCivGameInvoker implements Invoker {
 				pos = gson.fromJson(array.get(0), Position.class);
 				City city = servant.getCityAt(pos);
 
-				reply = new ReplyObject(200, gson.toJson(city));
+				if (city != null) {
+					nameService.put(city.getId(), city);
+					reply = new ReplyObject(200, gson.toJson(city.getId()));
+				}
 
 				break;
 			case GET_TILE_AT:
 				// Parameter convention: [0] = Position
 				pos = gson.fromJson(array.get(0), Position.class);
 				Tile tile = servant.getTileAt(pos);
-				reply = new ReplyObject(200, gson.toJson(tile.getTypeString()));
+
+				if (tile != null) {
+					nameService.put(tile.getId(), tile);
+					reply = new ReplyObject(200, gson.toJson(tile.getId()));
+				}
 
 				break;
 			case GET_AGE:
@@ -109,12 +126,12 @@ public class HotCivGameInvoker implements Invoker {
 				break;
 			case END_OF_TURN:
 				servant.endOfTurn();
-				reply = new ReplyObject(200, null);
 
 				break;
 			default:
+				// Maybe handle this case
+
 				// Unknown operation
-				// TODO: Handle this case
 				throw new RuntimeException("Unknown operation: " + operation);
 		}
 

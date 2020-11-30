@@ -8,46 +8,47 @@ import hotciv.broker.ClientProxy.GameProxy;
 import hotciv.framework.Game;
 import hotciv.framework.Position;
 
-public class HotCivManualClientTest {
+public class ManualClientTest {
 
-  public static void main(String[] args) throws Exception {
-    new HotCivManualClientTest(args[0], args[1]);
-  }
+	public static void main(String[] args) throws Exception {
+		new ManualClientTest(args[0], args[1]);
+	}
 
-  public HotCivManualClientTest(String hostname, String port) {
-    System.out.println(
-            "=== HotCiv MANUAL TEST Client (Socket) (host: " + hostname + ") ==="
-    );
+	public ManualClientTest(String hostname, String port) {
+		System.out.println(
+				"=== HotCiv MANUAL TEST Client (Socket) (host: " + hostname + ", port: " + port + ") ==="
+		);
 
-    // Set up Broker part.
-    ClientRequestHandler crh = new SocketClientRequestHandler();
-    crh.setServer(hostname, Integer.parseInt(port));
+		// Set up Broker part.
+		ClientRequestHandler crh = new SocketClientRequestHandler();
+		crh.setServer(hostname, Integer.parseInt(port));
 
-    Requestor requestor = new StandardJSONRequestor(crh);
+		Requestor requestor = new StandardJSONRequestor(crh);
 
-    Game game = new GameProxy(requestor);
-    testSimpleMethods(game);
-  }
+		Game game = new GameProxy(requestor);
+		testSimpleMethods(game);
+	}
 
-  private void testSimpleMethods(Game game) {
-    System.out.println("=== Testing simple methods ===");
-    System.out.println(" -> Game age       " + game.getAge());
-    System.out.println(" -> Game winner    " + game.getWinner());
-    System.out.println(" -> Game PIT       " + game.getPlayerInTurn());
-    System.out.println(" -> Game end turn  ");
-    game.endOfTurn();
-    System.out.println(" -> Now PIT after endOfTurn: " + game.getPlayerInTurn());
-    System.out.println(" -> Game end turn  ");
-    game.endOfTurn();
-    System.out.println(" -> Game end turn  ");
-    game.endOfTurn();
-    System.out.println(" -> Game end turn  ");
-    game.endOfTurn();
-    // New unit is spawned at RED city (8,12)
-    System.out.println(" -> Game move      " + game.moveUnit(new Position(8,12), new Position(8,13)));
+	private void testSimpleMethods(Game game) {
+		System.out.println("=== Testing simple methods ===");
+		System.out.println(" -> Get city at 0,0" + game.getCityAt(new Position(0, 0)));
+		System.out.println(" -> Game age       " + game.getAge());
+		System.out.println(" -> Game winner    " + game.getWinner());
+		System.out.println(" -> Game PIT       " + game.getPlayerInTurn());
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Now PIT after endOfTurn: " + game.getPlayerInTurn());
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		// New unit is spawned at RED city (8,12)
+		System.out.println(" -> Game move      " + game.moveUnit(new Position(8,12), new Position(8,13)));
 
 
-  }
+	}
 
 }
 

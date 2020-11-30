@@ -19,4 +19,9 @@ public class NullObserver implements GameObserver {
 	public void tileFocusChangedAt(Position position) {
 
 	}
+
+	@Override
+	public void requestUpdate() {
+
+	}
 }

@@ -49,6 +49,7 @@ public class Converter {
 		else throw new RuntimeException("No unit with type-string: " + unitType);
 	}
 
+
 	public static Tile convertTypestringToTileObject(String typestring) {
 		if (DESERT.equals(typestring)) return new DesertTile();
 		if (FOREST.equals(typestring)) return new ForestTile();
