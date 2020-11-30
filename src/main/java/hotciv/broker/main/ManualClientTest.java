@@ -32,20 +32,20 @@ public class ManualClientTest {
 	private void testSimpleMethods(Game game) {
 		System.out.println("=== Testing simple methods ===");
 		System.out.println(" -> Get city at 0,0" + game.getCityAt(new Position(0, 0)));
-//		System.out.println(" -> Game age       " + game.getAge());
-//		System.out.println(" -> Game winner    " + game.getWinner());
-//		System.out.println(" -> Game PIT       " + game.getPlayerInTurn());
-//		System.out.println(" -> Game end turn  ");
-//		game.endOfTurn();
-//		System.out.println(" -> Now PIT after endOfTurn: " + game.getPlayerInTurn());
-//		System.out.println(" -> Game end turn  ");
-//		game.endOfTurn();
-//		System.out.println(" -> Game end turn  ");
-//		game.endOfTurn();
-//		System.out.println(" -> Game end turn  ");
-//		game.endOfTurn();
-//		// New unit is spawned at RED city (8,12)
-//		System.out.println(" -> Game move      " + game.moveUnit(new Position(8,12), new Position(8,13)));
+		System.out.println(" -> Game age       " + game.getAge());
+		System.out.println(" -> Game winner    " + game.getWinner());
+		System.out.println(" -> Game PIT       " + game.getPlayerInTurn());
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Now PIT after endOfTurn: " + game.getPlayerInTurn());
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		System.out.println(" -> Game end turn  ");
+		game.endOfTurn();
+		// New unit is spawned at RED city (8,12)
+		System.out.println(" -> Game move      " + game.moveUnit(new Position(8,12), new Position(8,13)));
 
 
 	}

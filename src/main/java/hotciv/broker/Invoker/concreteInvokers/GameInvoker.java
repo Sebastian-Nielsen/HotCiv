@@ -9,7 +9,8 @@ import frds.broker.RequestObject;
 import hotciv.broker.NameService;
 import hotciv.framework.*;
 
-import static hotciv.broker.OperationNames.*;
+import static hotciv.broker.Constants.NULL_ID;
+import static hotciv.broker.Constants.OperationNames.*;
 
 public class GameInvoker implements Invoker {
 	private final Game servant;
@@ -31,7 +32,7 @@ public class GameInvoker implements Invoker {
 		RequestObject requestObject = gson.fromJson(request, RequestObject.class);
 		JsonArray array = jsonParser.parse(requestObject.getPayload()).getAsJsonArray();
 
-		ReplyObject reply = new ReplyObject(200, "asdf");
+		ReplyObject reply = new ReplyObject(200, NULL_ID);
 
 		Position pos;
 		String operation = requestObject.getOperationName();

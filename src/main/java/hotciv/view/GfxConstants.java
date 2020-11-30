@@ -2,7 +2,7 @@ package hotciv.view;
 
 import hotciv.framework.*;
 
-/** Constants to be accessible by all graphics handling abstractions and
+/** OperationNames to be accessible by all graphics handling abstractions and
  * coordination mappings.
 */
 
@@ -23,7 +23,7 @@ public class GfxConstants {
   // 'feet' on the tile
   public final static int UNIT_OFFSET_Y = 0;
   
-  // === Constants that define positions for props on the gfx display
+  // === OperationNames that define positions for props on the gfx display
   public final static int TURN_SHIELD_X = 559;
   public final static int TURN_SHIELD_Y = 64;
   public final static int AGE_TEXT_X = 535;

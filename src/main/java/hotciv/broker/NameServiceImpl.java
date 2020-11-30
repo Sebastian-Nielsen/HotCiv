@@ -1,8 +1,7 @@
 package hotciv.broker;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+
 
 public class NameServiceImpl implements NameService {
 
@@ -22,22 +21,5 @@ public class NameServiceImpl implements NameService {
 	public Object get(String objectId) {
 		return nameServer.get(objectId);
 	}
-
-
-
-//	@Override
-//	public Unit getUnit(String objectId) {
-//		return (Unit) nameServer.getOrDefault(objectId, null);
-//	}
-//
-//	@Override
-//	public City getCity(String objectId) {
-//		return (City) nameServer.getOrDefault(objectId, null);
-//	}
-//
-//	@Override
-//	public Tile getTile(String objectId) {
-//		return (Tile) nameServer.getOrDefault(objectId, null);
-//	}
 
 }

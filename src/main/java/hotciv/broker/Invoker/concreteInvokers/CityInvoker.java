@@ -10,7 +10,8 @@ import hotciv.broker.NameService;
 import hotciv.framework.City;
 import hotciv.framework.Player;
 
-import static hotciv.broker.OperationNames.*;
+import static hotciv.broker.Constants.NULL_ID;
+import static hotciv.broker.Constants.OperationNames.*;
 
 public class CityInvoker implements Invoker {
 	private final Gson gson;
@@ -36,8 +37,7 @@ public class CityInvoker implements Invoker {
 
 		ReplyObject reply;
 		if (city == null)
-			return gson.toJson(new ReplyObject(200, "asdf"));
-
+			return gson.toJson(new ReplyObject(200, NULL_ID));
 
 		switch (operation) {
 			case GET_CITY_OWNER:
@@ -52,13 +52,11 @@ public class CityInvoker implements Invoker {
 				break;
 			case GET_TREASURY:
 				int treasury = city.getTreasury();
-
-					reply = new ReplyObject(200, gson.toJson(treasury));
+				reply = new ReplyObject(200, gson.toJson(treasury));
 
 				break;
 			case GET_PRODUCTION:
 				String production = city.getProduction();
-
 				reply = new ReplyObject(200, gson.toJson(production));
 
 				break;
@@ -71,10 +69,8 @@ public class CityInvoker implements Invoker {
 				// Unknown operation
 				// TODO: Handle this case
 				throw new RuntimeException("Unknown operation: " + operation);
-
 		}
 
-		// marshall the reply object
 		return gson.toJson(reply);
 	}
 

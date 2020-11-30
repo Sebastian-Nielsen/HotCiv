@@ -8,7 +8,8 @@ import frds.broker.RequestObject;
 import hotciv.broker.NameService;
 import hotciv.framework.Tile;
 
-import static hotciv.broker.OperationNames.GET_TILE_TYPESTRING;
+import static hotciv.broker.Constants.*;
+import static hotciv.broker.Constants.OperationNames.GET_TILE_TYPESTRING;
 import static hotciv.framework.GameConstants.OCEANS;
 
 public class TileInvoker implements Invoker {

@@ -31,7 +31,6 @@ public class Client {
 
 
 		// === GUI
-		// TODO: Use another hotcivFactory
 		DrawingEditor editor =
 				new MiniDrawApplication( "Shift-Click unit to invoke its action",
 						new HotCivFactory4(game) );

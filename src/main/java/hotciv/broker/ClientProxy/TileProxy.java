@@ -1,7 +1,7 @@
 package hotciv.broker.ClientProxy;
 
 import frds.broker.Requestor;
-import hotciv.broker.OperationNames;
+import hotciv.broker.Constants.*;
 import hotciv.framework.Tile;
 
 public class TileProxy implements Tile {

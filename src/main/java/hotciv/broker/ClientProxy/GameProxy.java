@@ -2,15 +2,14 @@ package hotciv.broker.ClientProxy;
 
 import frds.broker.ClientProxy;
 import frds.broker.Requestor;
-import hotciv.broker.OperationNames;
-import hotciv.common.CityImpl;
-import hotciv.common.Converter;
+import hotciv.broker.Constants.*;
 import hotciv.framework.*;
-import hotciv.view.CivDrawing;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static hotciv.broker.Constants.NULL_ID;
 
 
 public class GameProxy implements Game, ClientProxy {
@@ -30,7 +29,7 @@ public class GameProxy implements Game, ClientProxy {
 				HOTCIV_OBJECTID, OperationNames.GET_TILE_AT,
 				String.class, pos);
 
-		return (id.equals("asdf")) ? null : new TileProxy(requestor, id);
+		return (id.equals(NULL_ID)) ? null : new TileProxy(requestor, id);
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class GameProxy implements Game, ClientProxy {
 
 		// System.out.println("¤ test 1 > " + id);  // null
 		// System.out.println("¤ test 2 > " + String.valueOf(id == null));
-		return (id.equals("asdf")) ? null : new UnitProxy(requestor, id);
+		return (id.equals(NULL_ID)) ? null : new UnitProxy(requestor, id);
 	}
 
 	@Override
@@ -50,10 +49,7 @@ public class GameProxy implements Game, ClientProxy {
 				HOTCIV_OBJECTID, OperationNames.GET_CITY_AT,
 				String.class, pos);
 
-
-		// System.out.println("§ test 1 > " + id);  // null
-		// System.out.println("§ test 2 > " + String.valueOf(id == null)); // TRUE
-		return (id.equals("asdf")) ? null : new CityProxy(requestor, id);
+		return (id.equals(NULL_ID)) ? null : new CityProxy(requestor, id);
 	}
 
 	@Override

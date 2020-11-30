@@ -8,7 +8,7 @@ import hotciv.broker.Invoker.concreteInvokers.GameInvoker;
 import hotciv.broker.Invoker.concreteInvokers.TileInvoker;
 import hotciv.broker.Invoker.concreteInvokers.UnitInvoker;
 import hotciv.broker.NameService;
-import hotciv.broker.OperationNames;
+import hotciv.broker.Constants.*;
 import hotciv.framework.Game;
 
 import java.util.HashMap;

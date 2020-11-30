@@ -10,7 +10,7 @@ import hotciv.broker.NameService;
 import hotciv.framework.Player;
 import hotciv.framework.Unit;
 
-import static hotciv.broker.OperationNames.*;
+import static hotciv.broker.Constants.OperationNames.*;
 
 public class UnitInvoker implements Invoker {
 	private final Gson gson;
